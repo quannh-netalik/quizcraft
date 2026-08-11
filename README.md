@@ -15,6 +15,14 @@ Run `npm test` for model and package-contract tests, and `npm run build` for a
 production bundle. To install manually, copy `main.js`, `manifest.json`, and
 `styles.css` into `<vault>/.obsidian/plugins/obquiz/`.
 
+### Source structure
+
+- `src/main.ts` registers the plugin and owns the Markdown processor boundary.
+- `src/quiz-controller.ts` coordinates navigation and quiz lifecycle.
+- `src/quiz-state.ts` contains pure question-state transitions and evaluation.
+- `src/renderers/` contains interaction-specific DOM rendering.
+- `src/config.ts` contains shared plugin identity and display labels.
+
 ## Complete example
 
 ````markdown

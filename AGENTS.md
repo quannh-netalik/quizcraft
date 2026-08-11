@@ -12,7 +12,11 @@ interactive quiz from each `obquiz` YAML code block.
 - Preserve the four question types: `single`, `multiple`, `matching`, and
   `ordering`.
 - Keep schema and answer logic pure in `src/model.ts`.
-- Keep Obsidian and DOM integration in `src/main.ts`.
+- Keep plugin registration in `src/main.ts`, quiz coordination in
+  `src/quiz-controller.ts`, and interaction-specific DOM code in
+  `src/renderers/`.
+- Keep shared plugin identity and display labels in `src/config.ts`; leave
+  renderer-specific constants with their owning renderer.
 - Add no runtime dependency without a concrete requirement.
 - Scope every style under `.obquiz` or `.obquiz-error`.
 - Maintain mouse, touch, and keyboard access.

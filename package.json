@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "description": "Interactive YAML-authored quizzes for Obsidian.",
   "main": "main.js",
-  "files": ["main.js", "manifest.json", "styles.css", "README.md"],
+  "files": [
+    "main.js",
+    "manifest.json",
+    "styles.css",
+    "README.md"
+  ],
   "type": "module",
   "scripts": {
     "dev": "node esbuild.config.mjs",
@@ -11,11 +16,17 @@
     "test:bundle": "node esbuild.test.mjs",
     "test": "npm run test:bundle && node --test tests/*.test.cjs"
   },
-  "keywords": ["obsidian", "quiz", "flashcards", "learning"],
+  "keywords": [
+    "obsidian",
+    "quiz",
+    "flashcards",
+    "learning"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.15.17",
-    "esbuild": "^0.27.1",
+    "esbuild": "^0.28.2",
+    "happy-dom": "^20.11.2",
     "obsidian": "^1.13.1",
     "typescript": "^5.8.3"
   }

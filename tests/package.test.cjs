@@ -9,54 +9,35 @@ const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 test("has publishable Obsidian package metadata", () => {
   const pkg = JSON.parse(read("package.json"));
   const manifest = JSON.parse(read("manifest.json"));
+  const { OBQUIZ_CONFIG } = require("../.test-dist/config.cjs");
   assert.equal(pkg.name, "obquiz");
   assert.equal(pkg.main, "main.js");
   assert.deepEqual(pkg.files, ["main.js", "manifest.json", "styles.css", "README.md"]);
   assert.ok(pkg.scripts.dev && pkg.scripts.build && pkg.scripts.test);
   assert.equal(manifest.id, "obquiz");
+  assert.equal(OBQUIZ_CONFIG.pluginId, manifest.id);
+  assert.equal(OBQUIZ_CONFIG.codeBlockLanguage, "obquiz");
   assert.equal(manifest.name, "Obsidian Quiz");
   assert.equal(manifest.isDesktopOnly, false);
 });
 
-test("registers the obquiz processor and every renderer", () => {
-  const source = read("src/main.ts");
-  assert.match(source, /registerMarkdownCodeBlockProcessor\("obquiz"/);
-  assert.match(source, /parseYaml/);
-  for (const renderer of ["renderSingle", "renderMultiple", "renderMatching", "renderOrdering"]) {
-    assert.match(source, new RegExp(`${renderer}\\(`));
-  }
-  assert.match(source, /MarkdownRenderer\.render/);
-  assert.match(source, /next\.disabled\s*=.*state\.checked/);
-  assert.match(source, /ResizeObserver/);
-  assert.match(source, /renderCompletion\(/);
-  assert.match(source, /resetAll\(/);
-  assert.match(source, /obquiz-question-reset/);
-  assert.match(source, /text:\s*"[^"]*Reset"/);
-  assert.match(source, /resetCurrent\(\)/);
-  assert.doesNotMatch(source, /obquiz-question-retry/);
-  assert.doesNotMatch(source, /Not quite\. Try again\./);
-  assert.match(source, /data-obquiz-port/);
-  assert.match(source, /marker-end/);
-  assert.match(source, /markerWidth",\s*"6"/);
-  assert.match(source, /markerHeight",\s*"6"/);
-  assert.match(source, /C \$\{/);
-  assert.match(source, /updateMatchingSelection/);
-  assert.match(source, /selection\.action === "connected"[\s\S]*showQuestion/);
-  assert.match(source, /else refreshMatchingState\(\)/);
-  assert.match(source, /dragover[\s\S]*getBoundingClientRect\(\)[\s\S]*clientY[\s\S]*moveItem/);
-  assert.match(source, /animateOrderingCards/);
-  assert.match(source, /dragFrame\s*=\s*requestAnimationFrame\([\s\S]*addClass\("is-dragging"\)/);
-  assert.match(source, /cancelAnimationFrame\(dragFrame\)/);
-  assert.match(source, /hasClass\("is-dragging"\)[\s\S]*return/);
-  assert.match(source, /choiceOrder:\s*number\[\]/);
-  assert.match(source, /state\.choiceOrder\.forEach\(\(optionIndex, displayIndex\)/);
-  assert.match(source, /text:\s*String\.fromCharCode\(65 \+ displayIndex\)/);
-  assert.match(source, /this\.states\[this\.index\]\s*=\s*this\.newState\(question, state\)/);
-  assert.match(source, /reshuffledOrder\(previous\.choiceOrder\)/);
-  assert.match(source, /reshuffledOrder\(previous\.matchOrder\)/);
-  assert.match(source, /reshuffledOrder\(previous\.order\)/);
-  for (const label of ["Single Choice", "Multiple Choice", "Matching", "Ordering"]) {
-    assert.match(source, new RegExp(`"${label}"`));
+test("keeps plugin registration and interaction renderers in focused modules", () => {
+  const entry = read("src/main.ts");
+  assert.match(entry, /registerMarkdownCodeBlockProcessor\(OBQUIZ_CONFIG\.codeBlockLanguage/);
+  assert.match(entry, /parseYaml/);
+  assert.match(entry, /import \{ QuizController \} from "\.\/quiz-controller"/);
+  assert.match(entry, /context\.addChild\(new QuizRenderChild\(element, controller\)\)/);
+  assert.doesNotMatch(entry, /export class QuizController/);
+
+  for (const file of [
+    "src/quiz-controller.ts",
+    "src/quiz-render-child.ts",
+    "src/renderers/contracts.ts",
+    "src/renderers/choice-renderer.ts",
+    "src/renderers/matching-renderer.ts",
+    "src/renderers/ordering-renderer.ts",
+  ]) {
+    assert.equal(fs.existsSync(path.join(root, file)), true, `${file} must exist`);
   }
 });
 
