@@ -70,11 +70,6 @@ export class QuizController {
         text: state.correct ? "Correct" : "Incorrect",
       });
     }
-    header.createEl("button", {
-      cls: "obquiz-question-reset",
-      text: "↻ Reset",
-      attr: { "aria-label": "Reset this question" },
-    }).addEventListener("click", () => this.resetCurrent());
   }
 
   private renderInteraction(question: Question, state: QuestionState, host: HTMLElement): void {
@@ -103,20 +98,14 @@ export class QuizController {
   }
 
   private updateCheckButton(question: Question, state: QuestionState): void {
-    const checkButton = this.questionHost.querySelector<HTMLButtonElement>(".obquiz-check");
-    if (checkButton) checkButton.disabled = !isQuestionReady(question, state);
+    const checkButton = this.pager.querySelector<HTMLButtonElement>(".obquiz-check");
+    if (checkButton) checkButton.disabled = state.checked || !isQuestionReady(question, state);
   }
 
   private renderQuestionOutcome(question: Question, state: QuestionState, card: HTMLElement): void {
-    if (!state.checked) {
-      const actions = card.createDiv({ cls: "obquiz-actions" });
-      const check = actions.createEl("button", { text: "Check Answer", cls: "mod-cta obquiz-check" });
-      check.disabled = !isQuestionReady(question, state);
-      check.addEventListener("click", () => this.checkCurrent());
-      return;
-    }
-    if (question.explanation) {
+    if (state.checked && question.explanation) {
       const explanation = card.createDiv({ cls: "obquiz-explanation" });
+      explanation.createDiv({ cls: "obquiz-explanation-label", text: "Explanation" });
       this.renderMarkdown(question.explanation, explanation);
     }
   }
@@ -146,14 +135,39 @@ export class QuizController {
   private renderPager(): void {
     this.pager.removeClass("is-hidden");
     this.pager.empty();
-    const previous = this.pager.createEl("button", { cls: "obquiz-previous", text: "‹ Previous" });
+
+    this.pager.createEl("button", {
+      cls: "obquiz-question-reset",
+      text: "↻",
+      attr: { "aria-label": "Reset this question" },
+    }).addEventListener("click", () => this.resetCurrent());
+
+    const navigation = this.pager.createDiv({ cls: "obquiz-navigation" });
+    const previous = navigation.createEl("button", {
+      cls: "obquiz-previous", text: "<", attr: { "aria-label": "Previous question" },
+    });
     previous.disabled = this.index === 0;
     previous.addEventListener("click", () => this.showQuestion(this.index - 1));
-    this.pager.createDiv({ cls: "obquiz-progress", text: `Question ${this.index + 1} of ${this.quiz.questions.length}` });
+
+    const progress = navigation.createDiv({
+      cls: "obquiz-progress",
+      attr: { "aria-label": `Question ${this.index + 1} of ${this.quiz.questions.length}` },
+    });
+    progress.createSpan({ cls: "obquiz-progress-current", text: `${this.index + 1}` });
+    progress.createSpan({ cls: "obquiz-progress-total", text: `/${this.quiz.questions.length}` });
+
     const isLast = this.index === this.quiz.questions.length - 1;
-    const next = this.pager.createEl("button", { cls: "mod-cta obquiz-next", text: isLast ? "Finish" : "Next ›" });
+    const next = navigation.createEl("button", {
+      cls: "obquiz-next", text: ">", attr: { "aria-label": "Next question" },
+    });
     next.disabled = !this.states[this.index]!.checked;
     next.addEventListener("click", () => isLast ? this.renderCompletion() : this.showQuestion(this.index + 1));
+
+    const question = this.quiz.questions[this.index]!;
+    const state = this.states[this.index]!;
+    const check = this.pager.createEl("button", { text: "Check", cls: "mod-cta obquiz-check" });
+    check.disabled = state.checked || !isQuestionReady(question, state);
+    check.addEventListener("click", () => this.checkCurrent());
   }
 
   private renderCompletion(): void {

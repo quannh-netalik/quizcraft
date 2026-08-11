@@ -41,6 +41,42 @@ test("keeps plugin registration and interaction renderers in focused modules", (
   }
 });
 
+test("renders the compact footer control contract", () => {
+  const controller = read("src/quiz-controller.ts");
+  const css = read("styles.css");
+
+  assert.match(controller, /cls: "obquiz-question-reset",\s*text: "↻"/);
+  assert.match(controller, /aria-label": "Reset this question"/);
+  assert.match(controller, /cls: "obquiz-previous", text: "<"/);
+  assert.match(controller, /aria-label": "Previous question"/);
+  assert.match(controller, /cls: "obquiz-progress-current", text: `\$\{this\.index \+ 1\}`/);
+  assert.match(controller, /cls: "obquiz-progress-total", text: `\/\$\{this\.quiz\.questions\.length\}`/);
+  assert.match(controller, /cls: "obquiz-next", text: ">"/);
+  assert.match(controller, /aria-label": "Next question"/);
+  assert.match(controller, /text: "Check", cls: "mod-cta obquiz-check"/);
+  assert.match(controller, /check\.disabled = state\.checked \|\| !isQuestionReady\(question, state\)/);
+  assert.doesNotMatch(controller, /Check Answer|‹ Previous|Next ›/);
+
+  assert.match(css, /\.obquiz-pager\s*\{[^}]*grid-template-columns:\s*minmax\([^;]+\) auto minmax\([^;]+\)/s);
+  assert.match(css, /\.obquiz-progress-current\s*\{[^}]*font-weight:\s*var\(--font-bold\)/s);
+});
+
+test("keeps footer buttons equal and explanations visually neutral", () => {
+  const controller = read("src/quiz-controller.ts");
+  const css = read("styles.css");
+
+  assert.match(css, /\.obquiz-question-reset,\s*\.obquiz-previous,\s*\.obquiz-next,\s*\.obquiz-check\s*\{[^}]*width:\s*3\.75rem[^}]*min-width:\s*3\.75rem[^}]*min-height:\s*2\.75rem/s);
+  assert.match(css, /\.obquiz-question-reset,\s*\.obquiz-previous,\s*\.obquiz-next\s*\{[^}]*font-size:\s*var\(--font-ui-large\)/s);
+
+  const explanation = css.match(/\.obquiz-explanation\s*\{([^}]*)\}/s)?.[1] ?? "";
+  assert.match(explanation, /background:\s*var\(--background-primary\)/);
+  assert.match(explanation, /border:\s*1px solid color-mix\(in srgb, var\(--obquiz-accent\)/);
+  assert.doesNotMatch(explanation, /var\(--obquiz-success\)/);
+
+  assert.match(controller, /const explanation = card\.createDiv\(\{ cls: "obquiz-explanation" \}\);\s*explanation\.createDiv\(\{ cls: "obquiz-explanation-label", text: "Explanation" \}\);\s*this\.renderMarkdown\(question\.explanation, explanation\)/s);
+  assert.match(css, /\.obquiz-explanation-label\s*\{[^}]*margin-bottom:\s*0\.5rem[^}]*font-size:\s*var\(--font-ui-small\)[^}]*font-weight:\s*var\(--font-semibold\)/s);
+});
+
 test("documents all types and keeps styles scoped", () => {
   const readme = read("README.md");
   const css = read("styles.css");
@@ -59,7 +95,7 @@ test("documents all types and keeps styles scoped", () => {
   assert.match(css, /\.obquiz-match-card\s*\{[^}]*background:\s*var\(--background-primary\)\s*!important/s);
   assert.match(css, /\.obquiz-order-card\s*\{[^}]*background:\s*transparent/s);
   assert.match(css, /\.obquiz-question-reset\s*\{[^}]*background:\s*transparent[^}]*border:\s*(?:0|none|1px solid transparent)[^}]*box-shadow:\s*none/s);
-  assert.match(css, /\.obquiz-previous\s*\{[^}]*background:\s*transparent[^}]*border:\s*(?:0|none|1px solid transparent)[^}]*box-shadow:\s*none/s);
+  assert.match(css, /\.obquiz-previous,\s*\.obquiz-next\s*\{[^}]*background:\s*transparent[^}]*border:\s*(?:0|none|1px solid transparent)[^}]*box-shadow:\s*none/s);
   assert.doesNotMatch(css, /input\[type="checkbox"\]:checked[^}]*\{[^}]*--obquiz-option-background:\s*color-mix/s);
   assert.match(css, /\.obquiz-option\.is-correct\s*\{[^}]*--obquiz-option-border:\s*color-mix/s);
   assert.match(css, /\.obquiz-option\.is-incorrect\s*\{[^}]*--obquiz-option-border:\s*color-mix/s);
@@ -85,7 +121,7 @@ test("documents all types and keeps styles scoped", () => {
   assert.match(css, /\.obquiz-question-type\s*\{[^}]*background:\s*transparent[^}]*border:\s*1px solid var\(--obquiz-border\)/s);
   assert.match(css, /\.obquiz-match-card\s*\{[^}]*appearance:\s*none[^}]*background(?:-color)?:\s*var\(--background-primary\)\s*!important/s);
   assert.match(css, /\.obquiz-question-reset\s*\{[^}]*appearance:\s*none/s);
-  assert.match(css, /\.obquiz-previous\s*\{[^}]*appearance:\s*none/s);
+  assert.match(css, /\.obquiz-previous,\s*\.obquiz-next\s*\{[^}]*appearance:\s*none/s);
   assert.match(css, /\.obquiz-completion/);
   assert.match(css, /input\[type="checkbox"\][^{]*\{[^}]*border-radius:\s*(?:0|2px|3px|4px)/s);
   assert.match(css, /cursor:\s*pointer/);

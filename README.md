@@ -88,19 +88,22 @@ are shuffled when rendered.
 ## Interaction
 
 - Only one question is visible at a time.
-- **Previous** is disabled only on the first question.
-- **Check Answer** remains disabled until the current response is complete. For
+- The footer shows **↻** on the left, **< current/total >** in the center, and
+  **Check** on the right. The current question number is bold.
+- **<** is disabled only on the first question.
+- **Check** remains disabled until the current response is complete. For
   matching questions, every card must be connected.
-- **Next** remains disabled until **Check Answer** evaluates the current answer.
-- The final question uses **Finish**, which opens a scored completion screen.
-- **Reset** is always available in the question header. It clears selections,
+- **Check** remains visible but disabled after it evaluates the current answer.
+- **>** remains disabled until **Check** evaluates the current answer. On the
+  final checked question, **>** opens a scored completion screen.
+- **↻** is always available at the bottom left. It clears selections,
   connections, ordering changes, and evaluation for only that question, restoring
   the initially displayed order.
 - The completion screen reports correct answers and percentage. Its **Try
   Again** button resets the entire quiz.
 - Question state is retained when navigating backward.
 - Explanations are optional multiline Markdown for every question type and
-  appear after evaluation.
+  appear after evaluation in a labeled **Explanation** section.
 
 Choice, matching, and ordering items show their evaluated state directly. The
 plugin does not add a separate result sentence.

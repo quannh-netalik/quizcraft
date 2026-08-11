@@ -569,14 +569,7 @@
   border-color: var(--obquiz-border-hover);
 }
 
-.obquiz-actions {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 1rem;
-}
-
 .obquiz-check,
-.obquiz-next,
 .obquiz-reset-all {
   min-height: 2.6rem;
   cursor: pointer;
@@ -584,7 +577,6 @@
 }
 
 .obquiz-check:hover:not(:disabled),
-.obquiz-next:hover:not(:disabled),
 .obquiz-reset-all:hover:not(:disabled) {
   background: var(--obquiz-accent-hover);
   box-shadow: 0 4px 12px color-mix(in srgb, var(--obquiz-accent) 24%, transparent);
@@ -604,14 +596,20 @@
   padding: 0.9rem 1rem;
   color: var(--text-normal);
   line-height: 1.6;
-  background: color-mix(in srgb, var(--obquiz-success) 7%, var(--background-primary));
-  border: 1px solid color-mix(in srgb, var(--obquiz-success) 45%, var(--obquiz-border));
+  background: var(--background-primary);
+  border: 1px solid color-mix(in srgb, var(--obquiz-accent) 45%, var(--obquiz-border));
   border-radius: var(--obquiz-card-radius);
+}
+
+.obquiz-explanation-label {
+  margin-bottom: 0.5rem;
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-semibold);
 }
 
 .obquiz-pager {
   display: grid;
-  grid-template-columns: 7.5rem minmax(0, 1fr) 7.5rem;
+  grid-template-columns: minmax(7.5rem, 1fr) auto minmax(7.5rem, 1fr);
   gap: 0.75rem;
   align-items: center;
   padding: 0.85rem 1.25rem;
@@ -622,19 +620,26 @@
   display: none;
 }
 
-.obquiz-previous,
-.obquiz-next {
-  width: 7.5rem;
-  min-height: 2.6rem;
+.obquiz-question-reset {
+  justify-self: start;
 }
 
-.obquiz-previous {
+.obquiz-navigation {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.obquiz-previous,
+.obquiz-next {
   --interactive-normal: transparent;
   --interactive-hover: transparent;
   appearance: none;
-  justify-self: start;
+  display: grid;
+  place-items: center;
+  padding: 0;
   color: var(--text-normal);
-  text-align: left;
   background: transparent !important;
   background-image: none !important;
   border: 0 !important;
@@ -643,20 +648,42 @@
   transition: color var(--obquiz-transition), background-color var(--obquiz-transition), border-color var(--obquiz-transition);
 }
 
-.obquiz-previous:hover:not(:disabled) {
+.obquiz-previous:hover:not(:disabled),
+.obquiz-next:hover:not(:disabled) {
   color: var(--obquiz-accent);
   background: transparent !important;
   box-shadow: none !important;
 }
 
-.obquiz-next {
+.obquiz-check {
   justify-self: end;
 }
 
+.obquiz-question-reset,
+.obquiz-previous,
+.obquiz-next,
+.obquiz-check {
+  width: 3.75rem;
+  min-width: 3.75rem;
+  min-height: 2.75rem;
+}
+
+.obquiz-question-reset,
+.obquiz-previous,
+.obquiz-next {
+  font-size: var(--font-ui-large);
+}
+
 .obquiz-progress {
+  min-width: 3.5rem;
   color: var(--text-muted);
   font-size: var(--font-ui-small);
   text-align: center;
+}
+
+.obquiz-progress-current {
+  color: var(--text-normal);
+  font-weight: var(--font-bold);
 }
 
 .obquiz-completion {
@@ -747,14 +774,11 @@
   }
 
   .obquiz-pager {
-    grid-template-columns: 6rem minmax(0, 1fr) 6rem;
+    grid-template-columns: minmax(5rem, 1fr) auto minmax(5rem, 1fr);
+    gap: 0.4rem;
     padding-inline: 0.9rem;
   }
 
-  .obquiz-previous,
-  .obquiz-next {
-    width: 6rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
