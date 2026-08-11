@@ -1,0 +1,767 @@
+.obquiz,
+.obquiz-error {
+  --obquiz-radius: var(--radius-m, 12px);
+  --obquiz-card-radius: var(--radius-s, 9px);
+  --obquiz-border: var(--background-modifier-border);
+  --obquiz-border-hover: var(--background-modifier-border-hover);
+  --obquiz-surface: var(--background-primary);
+  --obquiz-subtle: color-mix(in srgb, var(--background-secondary) 45%, var(--background-primary));
+  --obquiz-accent: var(--interactive-accent);
+  --obquiz-accent-hover: var(--interactive-accent-hover);
+  --obquiz-success: var(--color-green, var(--text-success));
+  --obquiz-danger: var(--color-red, var(--text-error));
+  --obquiz-transition: 140ms ease;
+}
+
+.obquiz {
+  margin-block: 1.25rem;
+  overflow: hidden;
+  color: var(--text-normal);
+  background: var(--obquiz-surface);
+  border: 1px solid var(--obquiz-border);
+  border-radius: var(--obquiz-radius);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 10px 28px rgba(0, 0, 0, 0.055);
+}
+
+.obquiz-title {
+  margin: 0;
+  padding: 1.1rem 1.25rem 0;
+  font-size: var(--font-ui-large);
+  line-height: 1.35;
+}
+
+.obquiz-question {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.obquiz-question-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.obquiz-question-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.obquiz-question-type,
+.obquiz-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.6rem;
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-semibold);
+  line-height: 1;
+  border: 1px solid transparent;
+  border-radius: 999px;
+}
+
+.obquiz-question-type {
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--obquiz-border);
+}
+
+.obquiz-status.is-correct {
+  color: var(--obquiz-success);
+  background: color-mix(in srgb, var(--obquiz-success) 12%, transparent);
+}
+
+.obquiz-status.is-incorrect {
+  color: var(--obquiz-danger);
+  background: color-mix(in srgb, var(--obquiz-danger) 12%, transparent);
+}
+
+.obquiz-question-reset {
+  --interactive-normal: transparent;
+  --interactive-hover: transparent;
+  appearance: none;
+  flex: 0 0 auto;
+  min-height: 2.5rem;
+  padding-inline: 0.7rem;
+  color: var(--text-normal);
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: color var(--obquiz-transition), background-color var(--obquiz-transition), border-color var(--obquiz-transition);
+}
+
+.obquiz-question-reset:hover {
+  color: var(--obquiz-accent);
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.obquiz-prompt {
+  margin-bottom: 1rem;
+  font-size: var(--font-ui-medium);
+  font-weight: var(--font-semibold);
+  line-height: 1.55;
+}
+
+.obquiz-prompt > :first-child,
+.obquiz-option-content > :first-child,
+.obquiz-match-content > :first-child,
+.obquiz-order-content > :first-child,
+.obquiz-explanation > :first-child {
+  margin-top: 0;
+}
+
+.obquiz-prompt > :last-child,
+.obquiz-option-content > :last-child,
+.obquiz-match-content > :last-child,
+.obquiz-order-content > :last-child,
+.obquiz-explanation > :last-child {
+  margin-bottom: 0;
+}
+
+.obquiz-options {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.obquiz-option {
+  --obquiz-option-border: var(--obquiz-border);
+  --obquiz-option-background: transparent;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: center;
+  min-height: 3.25rem;
+  padding: 0.7rem 2.5rem 0.7rem 0.875rem;
+  color: var(--text-normal);
+  background: var(--obquiz-option-background);
+  border: 1px solid var(--obquiz-option-border);
+  border-radius: var(--obquiz-card-radius);
+  cursor: pointer;
+  transition: background-color var(--obquiz-transition), border-color var(--obquiz-transition), box-shadow var(--obquiz-transition), opacity var(--obquiz-transition);
+}
+
+.obquiz-option:hover {
+  --obquiz-option-background: transparent;
+  border-color: var(--obquiz-border-hover);
+  box-shadow: none;
+}
+
+.obquiz-option:has(input:focus-visible),
+.obquiz-match-card:focus-visible,
+.obquiz-order-controls button:focus-visible,
+.obquiz-question-reset:focus-visible,
+.obquiz-check:focus-visible,
+.obquiz-previous:focus-visible,
+.obquiz-next:focus-visible,
+.obquiz-reset-all:focus-visible {
+  outline: 2px solid var(--obquiz-accent);
+  outline-offset: 2px;
+}
+
+.obquiz-option input {
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--obquiz-accent);
+  cursor: pointer;
+}
+
+.obquiz-option input[type="checkbox"] {
+  border-radius: 3px;
+}
+
+.obquiz-option input[type="radio"] {
+  border-radius: 50%;
+}
+
+.obquiz-option-index {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--text-muted);
+  font-weight: var(--font-semibold);
+  border-radius: 50%;
+}
+
+.obquiz-option:has(input:checked):not(.is-correct):not(.is-incorrect):not(.is-missed) {
+  --obquiz-option-border: var(--obquiz-accent);
+  box-shadow: 0 0 0 1px var(--obquiz-accent);
+}
+
+.obquiz-option:has(input:disabled),
+.obquiz-match-card:disabled,
+.obquiz-order-card.is-correct,
+.obquiz-order-card.is-incorrect {
+  cursor: default !important;
+  user-select: none;
+}
+
+.obquiz-option input:disabled {
+  cursor: default !important;
+}
+
+.obquiz-order-card.is-correct,
+.obquiz-match-card.is-correct {
+  color: var(--text-normal);
+  background: color-mix(in srgb, var(--obquiz-success) 9%, var(--obquiz-surface));
+  border-color: var(--obquiz-success);
+  box-shadow: 0 0 0 1px var(--obquiz-success);
+}
+
+.obquiz-order-card.is-incorrect,
+.obquiz-match-card.is-incorrect {
+  color: var(--text-normal);
+  background: color-mix(in srgb, var(--obquiz-danger) 9%, var(--obquiz-surface));
+  border-color: var(--obquiz-danger);
+  box-shadow: 0 0 0 1px var(--obquiz-danger);
+}
+
+.obquiz-option.is-correct {
+  --obquiz-option-border: color-mix(in srgb, var(--obquiz-success) 58%, var(--obquiz-border));
+  --obquiz-option-background: color-mix(in srgb, var(--obquiz-success) 9%, var(--obquiz-surface));
+  border-color: var(--obquiz-option-border);
+  box-shadow: none;
+}
+
+.obquiz-option.is-incorrect {
+  --obquiz-option-border: color-mix(in srgb, var(--obquiz-danger) 58%, var(--obquiz-border));
+  --obquiz-option-background: color-mix(in srgb, var(--obquiz-danger) 9%, var(--obquiz-surface));
+  border-color: var(--obquiz-option-border);
+  box-shadow: none;
+}
+
+.obquiz-option.is-correct:hover,
+.obquiz-option.is-missed:hover {
+  border-color: var(--obquiz-success);
+  box-shadow: 0 0 0 1px var(--obquiz-success), 0 0 10px color-mix(in srgb, var(--obquiz-success) 18%, transparent);
+}
+
+.obquiz-option.is-incorrect:hover {
+  border-color: var(--obquiz-danger);
+  box-shadow: 0 0 0 1px var(--obquiz-danger), 0 0 10px color-mix(in srgb, var(--obquiz-danger) 18%, transparent);
+}
+
+.obquiz-option.is-correct input,
+.obquiz-option.is-missed input {
+  accent-color: var(--obquiz-success);
+  border-color: var(--obquiz-success);
+  opacity: 1;
+}
+
+.obquiz-option.is-incorrect input {
+  accent-color: var(--obquiz-danger);
+  border-color: var(--obquiz-danger);
+  opacity: 1;
+}
+
+.obquiz-option.is-correct input:checked {
+  background-color: var(--obquiz-success) !important;
+  border-color: var(--obquiz-success) !important;
+}
+
+.obquiz-option.is-incorrect input:checked {
+  background-color: var(--obquiz-danger) !important;
+  border-color: var(--obquiz-danger) !important;
+}
+
+.obquiz-option.is-missed {
+  --obquiz-option-border: color-mix(in srgb, var(--obquiz-success) 58%, var(--obquiz-border));
+  --obquiz-option-background: color-mix(in srgb, var(--obquiz-success) 9%, var(--obquiz-surface));
+  border-color: var(--obquiz-option-border);
+}
+
+.obquiz-option.is-correct::after,
+.obquiz-option.is-missed::after {
+  content: "✓";
+  color: var(--obquiz-success);
+  font-weight: var(--font-semibold);
+}
+
+.obquiz-option::after {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.65rem;
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  line-height: 1;
+}
+
+.obquiz-option.is-incorrect::after {
+  content: "×";
+  color: var(--obquiz-danger);
+  font-weight: var(--font-semibold);
+}
+
+.obquiz-matching {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(4.5rem, 12vw, 7.5rem);
+}
+
+.obquiz-match-column {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-auto-rows: 1fr;
+  gap: 0.75rem;
+  align-content: stretch;
+}
+
+.obquiz-match-card {
+  --obquiz-match-card-border: var(--obquiz-border);
+  --interactive-normal: var(--background-primary);
+  --interactive-hover: var(--background-primary);
+  appearance: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 4rem;
+  height: 100%;
+  padding: 0.8rem 1rem;
+  overflow: visible;
+  color: var(--text-normal);
+  white-space: normal;
+  text-align: left;
+  background: var(--background-primary) !important;
+  background-image: none !important;
+  border: 1px solid var(--obquiz-match-card-border);
+  border-radius: var(--obquiz-card-radius);
+  cursor: pointer;
+  transition: opacity var(--obquiz-transition), background-color var(--obquiz-transition), border-color var(--obquiz-transition), box-shadow var(--obquiz-transition);
+}
+
+.obquiz-match-card:hover:not(:disabled) {
+  background: var(--background-primary) !important;
+  border-color: var(--obquiz-border-hover);
+  box-shadow: none;
+}
+
+.obquiz-match-card.is-pending {
+  --obquiz-match-card-border: var(--obquiz-accent);
+  background: var(--background-primary) !important;
+  box-shadow: 0 0 0 1px var(--obquiz-accent);
+}
+
+.obquiz-match-card.is-connected {
+  --obquiz-match-card-border: var(--obquiz-accent);
+}
+
+.obquiz-match-card.is-pending:hover:not(:disabled),
+.obquiz-match-card.is-connected:hover:not(:disabled) {
+  border-color: var(--obquiz-accent);
+  box-shadow: 0 0 0 1px var(--obquiz-accent), 0 0 10px color-mix(in srgb, var(--obquiz-accent) 20%, transparent);
+}
+
+.obquiz-match-card.is-connected .obquiz-match-port,
+.obquiz-match-card.is-pending .obquiz-match-port {
+  background: var(--obquiz-accent);
+}
+
+.obquiz-match-card.is-unconnected {
+  color: var(--text-muted);
+  background: var(--background-primary) !important;
+  --obquiz-match-card-border: color-mix(in srgb, var(--obquiz-border) 62%, transparent);
+}
+
+.obquiz-match-content {
+  min-width: 0;
+  line-height: 1.5;
+}
+
+.obquiz-match-port {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  display: block;
+  box-sizing: border-box;
+  width: 9px;
+  height: 9px;
+  background: var(--obquiz-surface);
+  border: 2px solid var(--obquiz-match-card-border);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--obquiz-surface);
+}
+
+.obquiz-match-column:first-of-type .obquiz-match-port {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+.obquiz-match-column:nth-of-type(2) .obquiz-match-port {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.obquiz-match-card.is-correct .obquiz-match-port {
+  background: var(--obquiz-success);
+  border-color: var(--obquiz-success);
+}
+
+.obquiz-match-card.is-correct {
+  --obquiz-match-card-border: var(--obquiz-success);
+}
+
+.obquiz-match-card.is-incorrect .obquiz-match-port {
+  background: var(--obquiz-danger);
+  border-color: var(--obquiz-danger);
+}
+
+.obquiz-match-card.is-incorrect {
+  --obquiz-match-card-border: var(--obquiz-danger);
+}
+
+.obquiz-match-card.is-correct:hover {
+  border-color: var(--obquiz-success);
+  box-shadow: 0 0 0 1px var(--obquiz-success), 0 0 10px color-mix(in srgb, var(--obquiz-success) 18%, transparent);
+}
+
+.obquiz-match-card.is-incorrect:hover {
+  border-color: var(--obquiz-danger);
+  box-shadow: 0 0 0 1px var(--obquiz-danger), 0 0 10px color-mix(in srgb, var(--obquiz-danger) 18%, transparent);
+}
+
+.obquiz-match-lines {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.obquiz-match-line {
+  fill: none;
+  stroke-width: 2.25;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.obquiz-match-line.is-pending {
+  stroke: var(--obquiz-accent);
+}
+
+.obquiz-match-line.is-correct {
+  stroke: var(--obquiz-success);
+}
+
+.obquiz-match-line.is-incorrect {
+  stroke: var(--obquiz-danger);
+}
+
+.obquiz-match-lines marker path.is-pending {
+  fill: var(--obquiz-accent);
+}
+
+.obquiz-match-lines marker path.is-correct {
+  fill: var(--obquiz-success);
+}
+
+.obquiz-match-lines marker path.is-incorrect {
+  fill: var(--obquiz-danger);
+}
+
+.obquiz-ordering {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.obquiz-order-card {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 3.5rem;
+  padding: 0.7rem 0.8rem;
+  background: transparent;
+  border: 1px solid var(--obquiz-border);
+  border-radius: var(--obquiz-card-radius);
+  transition: background-color var(--obquiz-transition), border-color var(--obquiz-transition), box-shadow var(--obquiz-transition);
+}
+
+.obquiz-order-card:hover:not(.is-correct):not(.is-incorrect) {
+  border-color: var(--obquiz-border-hover);
+  box-shadow: 0 0 0 1px var(--obquiz-border-hover);
+}
+
+.obquiz-order-card.is-correct:hover {
+  border-color: var(--obquiz-success);
+  box-shadow: 0 0 0 1px var(--obquiz-success), 0 0 10px color-mix(in srgb, var(--obquiz-success) 18%, transparent);
+}
+
+.obquiz-order-card.is-incorrect:hover {
+  border-color: var(--obquiz-danger);
+  box-shadow: 0 0 0 1px var(--obquiz-danger), 0 0 10px color-mix(in srgb, var(--obquiz-danger) 18%, transparent);
+}
+
+.obquiz-order-card.is-dragging {
+  background: transparent;
+  border: 1px dashed var(--obquiz-accent);
+  box-shadow: none;
+}
+
+.obquiz-order-card.is-dragging > * {
+  visibility: hidden;
+}
+
+.obquiz-order-card.is-reordering {
+  transition: transform 180ms ease, background-color var(--obquiz-transition), border-color var(--obquiz-transition), box-shadow var(--obquiz-transition);
+}
+
+.obquiz-order-card[draggable="true"] {
+  cursor: grab;
+}
+
+.obquiz-order-card[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.obquiz-drag-handle {
+  color: var(--text-faint);
+  letter-spacing: -0.18em;
+}
+
+.obquiz-order-index {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--text-normal);
+  background: transparent;
+  border: 1px solid var(--obquiz-border);
+  border-radius: 50%;
+}
+
+.obquiz-order-content {
+  min-width: 0;
+  line-height: 1.5;
+}
+
+.obquiz-order-controls {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.obquiz-order-controls button {
+  width: 2.25rem;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: color var(--obquiz-transition), background-color var(--obquiz-transition), border-color var(--obquiz-transition);
+}
+
+.obquiz-order-controls button:hover:not(:disabled) {
+  color: var(--obquiz-accent);
+  background: var(--background-modifier-hover);
+  border-color: var(--obquiz-border-hover);
+}
+
+.obquiz-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+.obquiz-check,
+.obquiz-next,
+.obquiz-reset-all {
+  min-height: 2.6rem;
+  cursor: pointer;
+  transition: background-color var(--obquiz-transition), border-color var(--obquiz-transition), box-shadow var(--obquiz-transition), transform var(--obquiz-transition);
+}
+
+.obquiz-check:hover:not(:disabled),
+.obquiz-next:hover:not(:disabled),
+.obquiz-reset-all:hover:not(:disabled) {
+  background: var(--obquiz-accent-hover);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--obquiz-accent) 24%, transparent);
+  transform: translateY(-1px);
+}
+
+.obquiz-check:disabled,
+.obquiz-next:disabled,
+.obquiz-previous:disabled,
+.obquiz-order-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.obquiz-explanation {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  color: var(--text-normal);
+  line-height: 1.6;
+  background: color-mix(in srgb, var(--obquiz-success) 7%, var(--background-primary));
+  border: 1px solid color-mix(in srgb, var(--obquiz-success) 45%, var(--obquiz-border));
+  border-radius: var(--obquiz-card-radius);
+}
+
+.obquiz-pager {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr) 7.5rem;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--obquiz-border);
+}
+
+.obquiz-pager.is-hidden {
+  display: none;
+}
+
+.obquiz-previous,
+.obquiz-next {
+  width: 7.5rem;
+  min-height: 2.6rem;
+}
+
+.obquiz-previous {
+  --interactive-normal: transparent;
+  --interactive-hover: transparent;
+  appearance: none;
+  justify-self: start;
+  color: var(--text-normal);
+  text-align: left;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: color var(--obquiz-transition), background-color var(--obquiz-transition), border-color var(--obquiz-transition);
+}
+
+.obquiz-previous:hover:not(:disabled) {
+  color: var(--obquiz-accent);
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.obquiz-next {
+  justify-self: end;
+}
+
+.obquiz-progress {
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  text-align: center;
+}
+
+.obquiz-completion {
+  display: grid;
+  place-items: center;
+  min-height: 30rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.obquiz-completion h3 {
+  margin: 1rem 0 0.4rem;
+  font-size: 1.8rem;
+}
+
+.obquiz-completion p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.obquiz-trophy {
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  font-size: 2rem;
+  background: color-mix(in srgb, var(--obquiz-accent) 14%, transparent);
+  border-radius: 50%;
+}
+
+.obquiz-score-ring {
+  display: grid;
+  place-items: center;
+  width: 8rem;
+  height: 8rem;
+  margin: 1.75rem 0;
+  background: conic-gradient(var(--obquiz-accent) var(--obquiz-score), var(--background-modifier-border) 0);
+  border-radius: 50%;
+}
+
+.obquiz-score-ring::before {
+  grid-area: 1 / 1;
+  width: 6.6rem;
+  height: 6.6rem;
+  content: "";
+  background: var(--obquiz-surface);
+  border-radius: 50%;
+}
+
+.obquiz-score-ring span {
+  z-index: 1;
+  grid-area: 1 / 1;
+  font-size: 1.8rem;
+  font-weight: var(--font-bold);
+}
+
+.obquiz-reset-all {
+  padding-inline: 1.15rem;
+}
+
+.obquiz-error {
+  padding: 0.85rem 1rem;
+  color: var(--text-error);
+  background: color-mix(in srgb, var(--text-error) 9%, transparent);
+  border: 1px solid var(--text-error);
+  border-radius: var(--obquiz-radius);
+}
+
+@media (max-width: 600px) {
+  .obquiz-question {
+    padding-inline: 0.9rem;
+  }
+
+  .obquiz-matching {
+    gap: 3.25rem;
+  }
+
+  .obquiz-match-card {
+    padding-inline: 0.7rem;
+  }
+
+  .obquiz-match-column:first-of-type .obquiz-match-port {
+    right: -14px;
+  }
+
+  .obquiz-match-column:nth-of-type(2) .obquiz-match-port {
+    left: -14px;
+  }
+
+  .obquiz-pager {
+    grid-template-columns: 6rem minmax(0, 1fr) 6rem;
+    padding-inline: 0.9rem;
+  }
+
+  .obquiz-previous,
+  .obquiz-next {
+    width: 6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .obquiz *,
+  .obquiz *::before,
+  .obquiz *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
