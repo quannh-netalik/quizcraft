@@ -39,6 +39,9 @@ function installObsidianDom(window) {
   prototype.setText = function setText(value) {
     this.textContent = value;
   };
+  prototype.empty = function empty() {
+    this.replaceChildren();
+  };
 }
 
 module.exports = { installObsidianDom };
