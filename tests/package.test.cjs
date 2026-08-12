@@ -28,7 +28,6 @@ test("keeps plugin registration and interaction renderers in focused modules", (
   assert.match(entry, /registerMarkdownCodeBlockProcessor\(OBQUIZ_CONFIG\.codeBlockLanguage/);
   assert.match(entry, /parseYaml/);
   assert.match(entry, /import \{ QuizController \} from "\.\/quiz-controller"/);
-  assert.match(entry, /context\.addChild\(new QuizRenderChild\(element, controller\)\)/);
   assert.doesNotMatch(entry, /export class QuizController/);
 
   for (const file of [

@@ -8,8 +8,10 @@ export default class ObquizPlugin extends Plugin {
   onload(): void {
     this.registerMarkdownCodeBlockProcessor(OBQUIZ_CONFIG.codeBlockLanguage, (source, element, context) => {
       try {
-        const controller = new QuizController(this, validateQuiz(parseYaml(source)), element, context);
-        context.addChild(new QuizRenderChild(element, controller));
+        const renderChild = new QuizRenderChild(element);
+        const controller = new QuizController(this, validateQuiz(parseYaml(source)), element, context, renderChild);
+        renderChild.attach(controller);
+        context.addChild(renderChild);
         controller.render();
       } catch (error) {
         element.empty();

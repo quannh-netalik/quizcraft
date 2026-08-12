@@ -9,11 +9,13 @@ await esbuild.build({
     "choice-renderer": "src/renderers/choice-renderer.ts",
     "matching-renderer": "src/renderers/matching-renderer.ts",
     "ordering-renderer": "src/renderers/ordering-renderer.ts",
+    main: "src/main.ts",
   },
   bundle: true,
   format: "cjs",
   platform: "node",
   target: "node18",
+  external: ["obsidian"],
   outdir: ".test-dist",
   outExtension: { ".js": ".cjs" },
 });

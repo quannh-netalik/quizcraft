@@ -4,6 +4,7 @@ import { QUESTION_TYPE_LABELS } from "./config";
 import { score } from "./model";
 import type { Question, Quiz } from "./model";
 import { createChoiceInputName, createQuizInstanceId } from "./quiz-instance";
+import type { QuizRenderChild } from "./quiz-render-child";
 import {
   createQuestionState,
   evaluateQuestion,
@@ -28,6 +29,7 @@ export class QuizController {
     private readonly quiz: Quiz,
     private readonly root: HTMLElement,
     private readonly context: MarkdownPostProcessorContext,
+    private readonly renderChild: QuizRenderChild,
   ) {
     this.states = quiz.questions.map((question) => createQuestionState(question));
   }
@@ -192,6 +194,6 @@ export class QuizController {
   }
 
   private renderMarkdown(markdown: string, element: HTMLElement): void {
-    void MarkdownRenderer.render(this.plugin.app, markdown, element, this.context.sourcePath, this.plugin);
+    void MarkdownRenderer.render(this.plugin.app, markdown, element, this.context.sourcePath, this.renderChild);
   }
 }
