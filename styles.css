@@ -515,6 +515,11 @@
   visibility: hidden;
 }
 
+.obquiz-order-card.is-reordering-from {
+  transform: translateY(var(--obquiz-order-offset));
+  transition: none;
+}
+
 .obquiz-order-card.is-reordering {
   transition: transform 180ms ease, background-color var(--obquiz-transition), border-color var(--obquiz-transition), box-shadow var(--obquiz-transition);
 }

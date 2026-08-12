@@ -8,13 +8,14 @@ export function renderOrderingQuestion(
   state: QuestionState,
   context: RendererContext,
 ): RendererCleanup {
+  const ownerWindow = context.host.ownerDocument.defaultView ?? window;
   const list = context.host.createDiv({ cls: "obquiz-ordering" });
   let draggedOriginalIndex: number | null = null;
   let dragFrame: number | null = null;
   const animationFrames = new Set<number>();
 
   const scheduleAnimation = (callback: () => void): number => {
-    const frame = requestAnimationFrame(() => {
+    const frame = ownerWindow.requestAnimationFrame(() => {
       animationFrames.delete(frame);
       callback();
     });
@@ -35,7 +36,7 @@ export function renderOrderingQuestion(
 
   const finishDrag = (): void => {
     if (dragFrame !== null) {
-      cancelAnimationFrame(dragFrame);
+      ownerWindow.cancelAnimationFrame(dragFrame);
       animationFrames.delete(dragFrame);
     }
     dragFrame = null;
@@ -105,7 +106,7 @@ export function renderOrderingQuestion(
 
   return () => {
     finishDrag();
-    animationFrames.forEach((frame) => cancelAnimationFrame(frame));
+    animationFrames.forEach((frame) => ownerWindow.cancelAnimationFrame(frame));
     animationFrames.clear();
   };
 }
@@ -122,13 +123,15 @@ function animateOrderingCards(
     const after = card.getBoundingClientRect();
     const offset = before.top - after.top;
     if (!offset) return;
-    card.style.transition = "none";
-    card.style.transform = `translateY(${offset}px)`;
+    card.setCssProps({ "--obquiz-order-offset": `${offset}px` });
+    card.addClass("is-reordering-from");
     scheduleAnimation(() => {
+      card.removeClass("is-reordering-from");
       card.addClass("is-reordering");
-      card.style.removeProperty("transition");
-      card.style.removeProperty("transform");
-      card.addEventListener("transitionend", () => card.removeClass("is-reordering"), { once: true });
+      card.addEventListener("transitionend", () => {
+        card.removeClass("is-reordering");
+        card.style.removeProperty("--obquiz-order-offset");
+      }, { once: true });
     });
   });
 }

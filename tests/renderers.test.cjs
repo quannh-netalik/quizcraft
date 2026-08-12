@@ -77,8 +77,8 @@ test("matching columns follow independent orders and connections update in place
     observe() {}
     disconnect() { disconnected = true; }
   };
-  global.requestAnimationFrame = () => 41;
-  global.cancelAnimationFrame = (frame) => cancelledFrames.push(frame);
+  window.requestAnimationFrame = () => 41;
+  window.cancelAnimationFrame = (frame) => cancelledFrames.push(frame);
   const host = document.createElement("div");
   const state = {
     selected: new Set(),
@@ -125,8 +125,8 @@ test("matching card text selection suppresses only the pointer activation", asyn
     observe() {}
     disconnect() {}
   };
-  global.requestAnimationFrame = () => 51;
-  global.cancelAnimationFrame = () => {};
+  window.requestAnimationFrame = () => 51;
+  window.cancelAnimationFrame = () => {};
   const host = document.createElement("div");
   const state = {
     selected: new Set(),
@@ -172,8 +172,8 @@ test("ordering cleanup cancels a pending drag animation", async () => {
   const window = new Window();
   installObsidianDom(window);
   const cancelledFrames = [];
-  global.requestAnimationFrame = () => 73;
-  global.cancelAnimationFrame = (frame) => cancelledFrames.push(frame);
+  window.requestAnimationFrame = () => 73;
+  window.cancelAnimationFrame = (frame) => cancelledFrames.push(frame);
   const host = document.createElement("div");
   const state = {
     selected: new Set(),
@@ -203,4 +203,60 @@ test("ordering cleanup cancels a pending drag animation", async () => {
   cleanup();
 
   assert.deepEqual(cancelledFrames, [73]);
+});
+
+test("ordering applies the measured offset before the animation frame runs", async () => {
+  const { Window } = await import("happy-dom");
+  const window = new Window();
+  installObsidianDom(window);
+  const queuedFrames = [];
+  window.requestAnimationFrame = (callback) => {
+    queuedFrames.push(callback);
+    return queuedFrames.length;
+  };
+  window.cancelAnimationFrame = () => {};
+  window.HTMLElement.prototype.setCssProps = function setCssProps(properties) {
+    for (const [name, value] of Object.entries(properties)) this.style.setProperty(name, value);
+  };
+  const host = document.createElement("div");
+  const state = {
+    selected: new Set(),
+    choiceOrder: [],
+    connections: new Map(),
+    promptOrder: [],
+    matchOrder: [],
+    order: [0, 1],
+    checked: false,
+    correct: false,
+  };
+
+  const cleanup = orderingRenderer.renderOrderingQuestion({
+    type: "ordering",
+    question: "Order",
+    items: ["First", "Second"],
+    explanation: null,
+  }, state, {
+    host,
+    renderMarkdown: (markdown, element) => element.setText(markdown),
+    stateChanged: () => {},
+    rerender: () => {},
+  });
+  const cards = host.querySelectorAll(".obquiz-order-card");
+  cards.forEach((card) => {
+    card.getBoundingClientRect = () => ({
+      top: [...card.parentElement.children].indexOf(card) * 40,
+      height: 40,
+    });
+  });
+  const dragStart = new Event("dragstart");
+  Object.defineProperty(dragStart, "dataTransfer", { value: { effectAllowed: "none" } });
+  cards[0].dispatchEvent(dragStart);
+  cards[1].dispatchEvent(new window.MouseEvent("dragover", { bubbles: true, clientY: 61 }));
+
+  const movedCard = host.querySelector('[data-order-item="0"]');
+  assert.equal(movedCard.style.getPropertyValue("--obquiz-order-offset"), "-40px");
+  assert.equal(movedCard.classList.contains("is-reordering-from"), true);
+  assert.equal(movedCard.classList.contains("is-reordering"), false);
+
+  cleanup();
 });
