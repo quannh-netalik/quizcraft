@@ -102,6 +102,10 @@ test("choice labels expose disabled and keyboard-focus state", async () => {
 
   input.dispatchEvent(new Event("blur"));
   assert.equal(label.classList.contains("has-focus-visible"), false);
+
+  input.matches = () => false;
+  input.dispatchEvent(new Event("focus"));
+  assert.equal(label.classList.contains("has-focus-visible"), false);
 });
 
 test("single choice selection moves the selected label state", async () => {

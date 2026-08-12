@@ -151,6 +151,7 @@ test("documents all types and keeps styles scoped", () => {
   assert.match(css, /cursor:\s*pointer/);
   assert.match(css, /:focus-visible/);
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*\.obquiz \.obquiz-option input,[\s\S]*\{[^}]*transition:\s*none/s);
 });
 
 test("avoids discouraged CSS selectors and overrides", () => {

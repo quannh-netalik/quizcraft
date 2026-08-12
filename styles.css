@@ -799,6 +799,7 @@
   }
 
   .obquiz .obquiz-option,
+  .obquiz .obquiz-option input,
   .obquiz .obquiz-match-card,
   .obquiz .obquiz-order-card,
   .obquiz .obquiz-order-controls button,
