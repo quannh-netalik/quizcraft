@@ -4,24 +4,143 @@ Obsidian Quiz renders interactive quizzes from `obquiz` YAML code blocks. One
 format supports single-choice, multiple-choice, matching, and ordering
 questions, either alone or in a paginated set.
 
-## Development
+## Installation
 
-```sh
-npm install
-npm run dev
+Build the plugin, then copy these files into
+`<vault>/.obsidian/plugins/obquiz/`:
+
+- `main.js`
+- `manifest.json`
+- `styles.css`
+
+Reload Obsidian, then enable **Obsidian Quiz** under **Settings → Community
+plugins**.
+
+## Quick start
+
+Add an `obquiz` fenced code block to a note:
+
+````markdown
+```obquiz
+title: HTTP basics
+questions:
+  - type: single
+    question: Which method is idempotent?
+    options:
+      - POST
+      - PUT
+      - PATCH
+    answers: [2]
+    explanation: PUT produces the same resulting state when repeated.
+```
+````
+
+The top-level YAML value must contain a non-empty `questions` list. `title` is
+optional; omit it to render the quiz without a heading.
+
+## Quiz format
+
+### Top-level options
+
+| Option | Required | Description |
+| --- | --- | --- |
+| `title` | No | Non-empty text displayed above the quiz. |
+| `questions` | Yes | One or more question mappings. |
+
+Every question requires:
+
+| Option | Required | Description |
+| --- | --- | --- |
+| `type` | Yes | `single`, `multiple`, `matching`, or `ordering`. |
+| `question` | Yes | Non-empty prompt text. Markdown is supported. |
+| `explanation` | No | Markdown shown after the answer is checked. |
+
+Question prompts, choices, matching cards, ordering items, and explanations are
+rendered as Markdown. Quote YAML text when punctuation could otherwise be
+interpreted as YAML syntax.
+
+### Single choice
+
+Use `single` when exactly one option is correct:
+
+```yaml
+- type: single
+  question: Which status code means **Not Found**?
+  options: [200, 404, 500]
+  answers: [2]
 ```
 
-Run `npm test` for model and package-contract tests, and `npm run build` for a
-production bundle. To install manually, copy `main.js`, `manifest.json`, and
-`styles.css` into `<vault>/.obsidian/plugins/obquiz/`.
+- `options` must contain at least two non-empty strings.
+- `answers` must contain exactly one one-based option position.
 
-### Source structure
+### Multiple choice
 
-- `src/main.ts` registers the plugin and owns the Markdown processor boundary.
-- `src/quiz-controller.ts` coordinates navigation and quiz lifecycle.
-- `src/quiz-state.ts` contains pure question-state transitions and evaluation.
-- `src/renderers/` contains interaction-specific DOM rendering.
-- `src/config.ts` contains shared plugin identity and display labels.
+Use `multiple` when one or more options are correct:
+
+```yaml
+- type: multiple
+  question: Which methods are safe?
+  options: [GET, POST, HEAD, DELETE]
+  answers: [1, 3]
+```
+
+- `options` must contain at least two non-empty strings.
+- `answers` must contain one or more unique, one-based option positions.
+- The response is correct only when every correct option, and no incorrect
+  option, is selected.
+
+`answers` always refers to the authored `options` order. The plugin may display
+the options in a different order.
+
+### Matching
+
+Use `matching` with at least two `[left, right]` pairs:
+
+```yaml
+- type: matching
+  question: Match each method to its behavior.
+  pairs:
+    - [GET, Reads a resource]
+    - [POST, Creates or submits data]
+    - [DELETE, Removes a resource]
+```
+
+Each pair must contain exactly two non-empty strings. The pair order defines the
+correct connections. Both columns are shuffled independently when the question
+is first rendered and when it is reset.
+
+Select one card from each column to connect them. Selecting a connected card
+disconnects it so it can be reassigned. Each card can participate in only one
+connection. Card text remains selectable without creating a connection.
+
+### Ordering
+
+Use `ordering` with the items authored in their correct order:
+
+```yaml
+- type: ordering
+  question: Put the request lifecycle in order.
+  items:
+    - Receive request
+    - Validate input
+    - Process request
+    - Return response
+```
+
+`items` must contain at least two non-empty strings. The plugin shuffles their
+initial display order; drag the items to arrange them before checking.
+
+### Explanations
+
+`explanation` is optional for every question type. It appears only after the
+current answer is checked. Use YAML block syntax for multiline Markdown:
+
+```yaml
+explanation: |
+  The first paragraph can contain **Markdown**.
+
+  Blank lines separate additional paragraphs.
+```
 
 ## Complete example
 
@@ -118,12 +237,32 @@ card borders. The port color follows the card border. Curved SVG paths are
 measured from the rendered port centers, point from left to right with compact
 arrowheads, and recalculate when the layout resizes.
 
-For multiline explanations, use one YAML block marker and blank lines between
-paragraphs:
+## Validation errors
 
-```yaml
-explanation: |
-  First paragraph with **Markdown**.
+Invalid YAML or unsupported quiz data is replaced with an `Obquiz:` error in
+the note. Common causes include an unsupported `type`, fewer than two choices,
+zero-based answer positions, duplicate answers, or malformed matching pairs.
 
-  Second paragraph.
+## Development
+
+```sh
+npm install
+npm run dev
 ```
+
+`npm run dev` watches source files and rebuilds `main.js`. Run the complete
+checks before distributing a build:
+
+```sh
+npm test
+npm run build
+```
+
+### Source structure
+
+- `src/main.ts` registers the plugin and owns the Markdown processor boundary.
+- `src/model.ts` validates YAML and contains pure answer logic.
+- `src/quiz-controller.ts` coordinates navigation and quiz lifecycle.
+- `src/quiz-state.ts` contains pure question-state transitions and evaluation.
+- `src/renderers/` contains interaction-specific DOM rendering.
+- `src/config.ts` contains shared plugin identity and display labels.
