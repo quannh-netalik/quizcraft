@@ -11,6 +11,7 @@ export type QuestionState = {
   selected: Set<number>;
   choiceOrder: number[];
   connections: Map<number, number>;
+  promptOrder: number[];
   matchOrder: number[];
   order: number[];
   checked: boolean;
@@ -25,6 +26,9 @@ export function createQuestionState(
   const choiceOrder = question.type === "single" || question.type === "multiple"
     ? previous ? reshuffledOrder(previous.choiceOrder, random) : shuffledIndices(question.options.length, random)
     : [];
+  const promptOrder = question.type === "matching"
+    ? previous ? reshuffledOrder(previous.promptOrder, random) : shuffledIndices(question.pairs.length, random)
+    : [];
   const matchOrder = question.type === "matching"
     ? previous ? reshuffledOrder(previous.matchOrder, random) : shuffledIndices(question.pairs.length, random)
     : [];
@@ -36,6 +40,7 @@ export function createQuestionState(
     selected: new Set(),
     choiceOrder,
     connections: new Map(),
+    promptOrder,
     matchOrder,
     order,
     checked: false,

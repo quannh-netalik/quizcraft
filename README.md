@@ -82,8 +82,9 @@ questions:
 ````
 
 `answers` uses one-based option positions. The order of `items` is the correct
-answer. Every matching entry contains exactly two strings; second-column cards
-are shuffled when rendered.
+answer. Every matching entry contains exactly two strings; both matching
+columns are shuffled independently when rendered and reset. Matching-card text
+remains selectable without triggering a connection.
 
 ## Interaction
 

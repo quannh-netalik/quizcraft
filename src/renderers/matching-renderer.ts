@@ -5,6 +5,30 @@ import type { RendererCleanup, RendererContext } from "./contracts";
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
+export function createMatchCurve(x1: number, y1: number, x2: number, y2: number) {
+  const bend = Math.max(36, (x2 - x1) * 0.45);
+  const verticalApproach = Math.max(-bend, Math.min(bend, (y1 - y2) * 0.25));
+  return {
+    x1,
+    y1,
+    control1X: x1 + bend,
+    control1Y: y1,
+    control2X: x2 - bend,
+    control2Y: y2 + verticalApproach,
+    x2,
+    y2,
+    bend,
+  };
+}
+
+export function hasCardTextSelection(
+  card: HTMLElement,
+  selection: Selection | null = document.getSelection(),
+): boolean {
+  if (!selection || selection.isCollapsed || !selection.anchorNode || !selection.focusNode) return false;
+  return card.contains(selection.anchorNode) && card.contains(selection.focusNode);
+}
+
 export function renderMatchingQuestion(
   question: MatchingQuestion,
   state: QuestionState,
@@ -32,13 +56,13 @@ export function renderMatchingQuestion(
       const end = to.getBoundingClientRect();
       const x1 = start.left + start.width / 2 - bounds.left;
       const y1 = start.top + start.height / 2 - bounds.top;
-      const x2 = end.left - bounds.left;
+      const x2 = end.left + end.width / 2 - bounds.left;
       const y2 = end.top + end.height / 2 - bounds.top;
-      const bend = Math.max(36, (x2 - x1) * 0.45);
+      const curve = createMatchCurve(x1, y1, x2, y2);
       const result = state.checked ? matchingResult(promptIndex, matchIndex) : "pending";
       const path = document.createElementNS(SVG_NAMESPACE, "path");
       path.setAttribute("class", `obquiz-match-line is-${result}`);
-      path.setAttribute("d", `M ${x1} ${y1} C ${x1 + bend} ${y1}, ${x2 - bend} ${y2}, ${x2} ${y2}`);
+      path.setAttribute("d", `M ${curve.x1} ${curve.y1} C ${curve.control1X} ${curve.control1Y}, ${curve.control2X} ${curve.control2Y}, ${curve.x2} ${curve.y2}`);
       path.setAttribute("marker-end", `url(#obquiz-arrow-${result})`);
       lines.appendChild(path);
     }
@@ -77,7 +101,8 @@ export function renderMatchingQuestion(
     if (selection.action !== "pending") context.stateChanged();
   };
 
-  question.pairs.forEach(([prompt], promptIndex) => {
+  state.promptOrder.forEach((promptIndex) => {
+    const prompt = question.pairs[promptIndex]![0];
     const matchIndex = state.connections.get(promptIndex);
     const result = state.checked && matchIndex !== undefined ? matchingResult(promptIndex, matchIndex) : null;
     const card = createMatchCard(prompt, leftColumn, context.renderMarkdown, () => select("prompt", promptIndex), result);
@@ -148,6 +173,9 @@ function createMatchCard(
   if (result) button.addClass(`is-${result}`);
   const content = button.createDiv({ cls: "obquiz-match-content" });
   renderMarkdown(markdown, content);
-  button.addEventListener("click", action);
+  button.addEventListener("click", (event) => {
+    if (event.detail > 0 && hasCardTextSelection(button)) return;
+    action();
+  });
   return button;
 }

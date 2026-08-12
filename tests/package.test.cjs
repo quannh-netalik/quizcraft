@@ -77,6 +77,12 @@ test("keeps footer buttons equal and explanations visually neutral", () => {
   assert.match(css, /\.obquiz-explanation-label\s*\{[^}]*margin-bottom:\s*0\.5rem[^}]*font-size:\s*var\(--font-ui-small\)[^}]*font-weight:\s*var\(--font-semibold\)/s);
 });
 
+test("matching card text remains selectable", () => {
+  const css = read("styles.css");
+
+  assert.match(css, /\.obquiz-match-content\s*\{[^}]*user-select:\s*text/s);
+});
+
 test("documents all types and keeps styles scoped", () => {
   const readme = read("README.md");
   const css = read("styles.css");
