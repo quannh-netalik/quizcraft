@@ -1,6 +1,6 @@
-# Obsidian Quiz
+# Obquiz
 
-Obsidian Quiz renders interactive quizzes from `obquiz` YAML code blocks. One
+Obquiz renders interactive quizzes from `obquiz` YAML code blocks. One
 format supports single-choice, multiple-choice, matching, and ordering
 questions, either alone or in a paginated set.
 
@@ -13,7 +13,7 @@ Build the plugin, then copy these files into
 - `manifest.json`
 - `styles.css`
 
-Reload Obsidian, then enable **Obsidian Quiz** under **Settings → Community
+Reload Obsidian, then enable **Obquiz** under **Settings → Community
 plugins**.
 
 ## Quick start

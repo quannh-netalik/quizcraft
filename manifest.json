@@ -1,9 +1,10 @@
 {
   "id": "obquiz",
-  "name": "Obsidian Quiz",
+  "name": "Obquiz",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
   "description": "Interactive single, multiple, matching, and ordering quizzes from YAML code blocks.",
-  "author": "",
+  "author": "Quan Nguyen",
+  "authorUrl": "https://github.com/quannh-netalik",
   "isDesktopOnly": false
 }

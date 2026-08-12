@@ -7,7 +7,7 @@ interactive quiz from each `obquiz` YAML code block.
 
 ## Boundaries
 
-- Keep the plugin ID `obquiz`, display name `Obsidian Quiz`, and fence language
+- Keep the plugin ID `obquiz`, display name `Obquiz`, and fence language
   `obquiz` synchronized across package metadata, manifest, source, and README.
 - Preserve the four question types: `single`, `multiple`, `matching`, and
   `ordering`.

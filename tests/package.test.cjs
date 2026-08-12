@@ -17,7 +17,9 @@ test("has publishable Obsidian package metadata", () => {
   assert.equal(manifest.id, "obquiz");
   assert.equal(OBQUIZ_CONFIG.pluginId, manifest.id);
   assert.equal(OBQUIZ_CONFIG.codeBlockLanguage, "obquiz");
-  assert.equal(manifest.name, "Obsidian Quiz");
+  assert.equal(manifest.name, "Obquiz");
+  assert.equal(manifest.author, "Quan Nguyen");
+  assert.equal(manifest.authorUrl, "https://github.com/quannh-netalik");
   assert.equal(manifest.isDesktopOnly, false);
 });
 
