@@ -35,11 +35,23 @@ function optionalExplanation(value: unknown, path: string): string | null {
   return value;
 }
 
+function isNonEmptyStringArray(value: unknown): value is string[] {
+  return Array.isArray(value)
+    && value.length >= 2
+    && value.every((item) => typeof item === "string" && item.trim().length > 0);
+}
+
+function isIntegerArray(value: unknown): value is number[] {
+  return Array.isArray(value)
+    && value.length > 0
+    && value.every(Number.isInteger);
+}
+
 function strings(value: unknown, path: string): string[] {
-  if (!Array.isArray(value) || value.length < 2 || value.some((item) => typeof item !== "string" || !item.trim())) {
+  if (!isNonEmptyStringArray(value)) {
     fail(path, "must contain at least two strings");
   }
-  return [...value] as string[];
+  return [...value];
 }
 
 function validateQuestion(value: unknown, index: number): Question {
@@ -58,10 +70,10 @@ function validateQuestion(value: unknown, index: number): Question {
 
   if (type === "single" || type === "multiple") {
     const options = strings(input.options, `${path}.options`);
-    if (!Array.isArray(input.answers) || !input.answers.length || input.answers.some((answer) => !Number.isInteger(answer))) {
+    if (!isIntegerArray(input.answers)) {
       fail(`${path}.answers`, "must contain one-based integer positions");
     }
-    const answers = [...input.answers] as number[];
+    const answers = [...input.answers];
     if (type === "single" && answers.length !== 1) fail(`${path}.answers`, "single must contain exactly one answer");
     if (new Set(answers).size !== answers.length) fail(`${path}.answers`, "must not contain duplicates");
     for (const answer of answers) {
@@ -88,9 +100,10 @@ export function validateQuiz(value: unknown): Quiz {
   const input = mapping(value);
   if (!input) fail("", "Quiz must be a YAML mapping");
   if (!Array.isArray(input.questions) || !input.questions.length) fail("questions", "must contain at least one question");
-  if (input.title != null && (typeof input.title !== "string" || !input.title.trim())) fail("title", "must be a non-empty string");
+  const title = input.title;
+  if (title != null && (typeof title !== "string" || !title.trim())) fail("title", "must be a non-empty string");
   return {
-    title: input.title == null ? null : (input.title as string).trim(),
+    title: title == null ? null : title.trim(),
     questions: input.questions.map(validateQuestion),
   };
 }

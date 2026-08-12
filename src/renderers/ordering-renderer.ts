@@ -8,13 +8,15 @@ export function renderOrderingQuestion(
   state: QuestionState,
   context: RendererContext,
 ): RendererCleanup {
+  const ownerWindow = context.host.ownerDocument.defaultView ?? window;
   const list = context.host.createDiv({ cls: "obquiz-ordering" });
   let draggedOriginalIndex: number | null = null;
   let dragFrame: number | null = null;
   const animationFrames = new Set<number>();
+  const animationCleanups = new Map<HTMLElement, () => void>();
 
   const scheduleAnimation = (callback: () => void): number => {
-    const frame = requestAnimationFrame(() => {
+    const frame = ownerWindow.requestAnimationFrame(() => {
       animationFrames.delete(frame);
       callback();
     });
@@ -33,9 +35,52 @@ export function renderOrderingQuestion(
     });
   };
 
+  const startOrderingAnimation = (card: HTMLElement, offset: number): void => {
+    animationCleanups.get(card)?.();
+    let frame: number | null = null;
+    let fallback: number | null = null;
+    const finishTransition = (event: TransitionEvent): void => {
+      if (event.target === card && event.propertyName === "transform") cleanup();
+    };
+    const cleanup = (): void => {
+      if (frame !== null) {
+        ownerWindow.cancelAnimationFrame(frame);
+        animationFrames.delete(frame);
+        frame = null;
+      }
+      if (fallback !== null) {
+        ownerWindow.clearTimeout(fallback);
+        fallback = null;
+      }
+      card.removeEventListener("transitionend", finishTransition);
+      card.removeEventListener("transitioncancel", finishTransition);
+      card.removeClass("is-reordering-from");
+      card.removeClass("is-reordering");
+      card.style.removeProperty("--obquiz-order-offset");
+      if (animationCleanups.get(card) === cleanup) animationCleanups.delete(card);
+    };
+
+    animationCleanups.set(card, cleanup);
+    card.setCssProps({ "--obquiz-order-offset": `${offset}px` });
+    card.addClass("is-reordering-from");
+    frame = scheduleAnimation(() => {
+      frame = null;
+      card.removeClass("is-reordering-from");
+      card.addClass("is-reordering");
+      card.addEventListener("transitionend", finishTransition);
+      card.addEventListener("transitioncancel", finishTransition);
+      const transitionTime = getTransitionTime(ownerWindow.getComputedStyle(card));
+      if (transitionTime === 0) {
+        cleanup();
+        return;
+      }
+      fallback = ownerWindow.setTimeout(cleanup, transitionTime + 50);
+    });
+  };
+
   const finishDrag = (): void => {
     if (dragFrame !== null) {
-      cancelAnimationFrame(dragFrame);
+      ownerWindow.cancelAnimationFrame(dragFrame);
       animationFrames.delete(dragFrame);
     }
     dragFrame = null;
@@ -94,7 +139,7 @@ export function renderOrderingQuestion(
       );
       state.order.forEach((item) => list.append(cards.get(item)!));
       updateCards();
-      animateOrderingCards(list, previous, scheduleAnimation);
+      animateOrderingCards(list, previous, startOrderingAnimation);
     });
     card.addEventListener("drop", (event) => {
       event.preventDefault();
@@ -105,7 +150,8 @@ export function renderOrderingQuestion(
 
   return () => {
     finishDrag();
-    animationFrames.forEach((frame) => cancelAnimationFrame(frame));
+    [...animationCleanups.values()].forEach((cleanup) => cleanup());
+    animationFrames.forEach((frame) => ownerWindow.cancelAnimationFrame(frame));
     animationFrames.clear();
   };
 }
@@ -113,7 +159,7 @@ export function renderOrderingQuestion(
 function animateOrderingCards(
   list: HTMLElement,
   previous: Map<number, DOMRect>,
-  scheduleAnimation: (callback: () => void) => number,
+  startAnimation: (card: HTMLElement, offset: number) => void,
 ): void {
   list.querySelectorAll<HTMLElement>(".obquiz-order-card").forEach((card) => {
     if (card.hasClass("is-dragging")) return;
@@ -122,13 +168,27 @@ function animateOrderingCards(
     const after = card.getBoundingClientRect();
     const offset = before.top - after.top;
     if (!offset) return;
-    card.style.transition = "none";
-    card.style.transform = `translateY(${offset}px)`;
-    scheduleAnimation(() => {
-      card.addClass("is-reordering");
-      card.style.removeProperty("transition");
-      card.style.removeProperty("transform");
-      card.addEventListener("transitionend", () => card.removeClass("is-reordering"), { once: true });
-    });
+    startAnimation(card, offset);
   });
+}
+
+function getTransitionTime(style: CSSStyleDeclaration): number {
+  const durations = parseTimes(style.transitionDuration);
+  const delays = parseTimes(style.transitionDelay);
+  const count = Math.max(durations.length, delays.length);
+  let maximum = 0;
+  for (let index = 0; index < count; index += 1) {
+    maximum = Math.max(maximum, durations[index % durations.length]! + delays[index % delays.length]!);
+  }
+  return maximum;
+}
+
+function parseTimes(value: string): number[] {
+  const times = value.split(",").map((part) => {
+    const time = part.trim();
+    const amount = Number.parseFloat(time);
+    if (!Number.isFinite(amount)) return 0;
+    return time.endsWith("ms") ? amount : amount * 1000;
+  });
+  return times.length ? times : [0];
 }

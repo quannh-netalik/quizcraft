@@ -34,6 +34,7 @@ export function renderMatchingQuestion(
   state: QuestionState,
   context: RendererContext,
 ): RendererCleanup {
+  const ownerWindow = context.host.ownerDocument.defaultView ?? window;
   const matching = context.host.createDiv({ cls: "obquiz-matching" });
   const lines = document.createElementNS(SVG_NAMESPACE, "svg");
   lines.classList.add("obquiz-match-lines");
@@ -109,7 +110,7 @@ export function renderMatchingQuestion(
     card.dataset.prompt = String(promptIndex);
     card.toggleClass("is-connected", matchIndex !== undefined && !state.checked);
     card.toggleClass("is-unconnected", state.connections.size > 0 && matchIndex === undefined);
-    card.append(createMatchPort(`prompt-${promptIndex}`));
+    createMatchPort(card, `prompt-${promptIndex}`);
     card.disabled = state.checked;
   });
 
@@ -121,26 +122,24 @@ export function renderMatchingQuestion(
     card.dataset.match = String(matchIndex);
     card.toggleClass("is-connected", promptIndex !== undefined && !state.checked);
     card.toggleClass("is-unconnected", state.connections.size > 0 && promptIndex === undefined);
-    card.prepend(createMatchPort(`match-${matchIndex}`));
+    card.prepend(createMatchPort(card, `match-${matchIndex}`));
     card.disabled = state.checked;
   });
 
-  const initialDrawFrame = requestAnimationFrame(drawLines);
+  const initialDrawFrame = ownerWindow.requestAnimationFrame(drawLines);
   const observer = new ResizeObserver(drawLines);
   observer.observe(matching);
   return () => {
-    cancelAnimationFrame(initialDrawFrame);
+    ownerWindow.cancelAnimationFrame(initialDrawFrame);
     observer.disconnect();
   };
 }
 
-function createMatchPort(name: string): HTMLSpanElement {
-  const port = document.createElement("span");
-  port.className = "obquiz-match-port";
-  port.dataset.obquizPort = name;
-  port.setAttribute("data-obquiz-port", name);
-  port.setAttribute("aria-hidden", "true");
-  return port;
+function createMatchPort(card: HTMLButtonElement, name: string): HTMLSpanElement {
+  return card.createSpan({
+    cls: "obquiz-match-port",
+    attr: { "data-obquiz-port": name, "aria-hidden": "true" },
+  });
 }
 
 function createMatchDefinitions(): SVGDefsElement {
