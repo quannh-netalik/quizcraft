@@ -63,8 +63,75 @@ test("choice selection updates state without rebuilding its host", async () => {
   input.dispatchEvent(new Event("change"));
 
   assert.deepEqual([...state.selected], [0]);
+  assert.equal(input.closest(".obquiz-option").classList.contains("is-selected"), true);
   assert.equal(stateChanges, 1);
   assert.equal(host.firstElementChild, options);
+});
+
+test("choice labels expose disabled and keyboard-focus state", async () => {
+  const { Window } = await import("happy-dom");
+  const window = new Window();
+  installObsidianDom(window);
+  const host = document.createElement("div");
+  const state = {
+    selected: new Set([0]),
+    choiceOrder: [0, 1],
+    connections: new Map(),
+    promptOrder: [],
+    matchOrder: [],
+    order: [],
+    checked: true,
+    correct: true,
+  };
+
+  choiceRenderer.renderChoiceQuestion(choiceQuestion, state, {
+    host,
+    inputName: "quiz-1-question-0",
+    renderMarkdown: (markdown, element) => element.setText(markdown),
+    stateChanged: () => {},
+  });
+  const input = host.querySelector("input");
+  const label = input.closest(".obquiz-option");
+  input.matches = (selector) => selector === ":focus-visible";
+
+  assert.equal(label.classList.contains("is-selected"), true);
+  assert.equal(label.classList.contains("is-disabled"), true);
+
+  input.dispatchEvent(new Event("focus"));
+  assert.equal(label.classList.contains("has-focus-visible"), true);
+
+  input.dispatchEvent(new Event("blur"));
+  assert.equal(label.classList.contains("has-focus-visible"), false);
+});
+
+test("single choice selection moves the selected label state", async () => {
+  const { Window } = await import("happy-dom");
+  const window = new Window();
+  installObsidianDom(window);
+  const host = document.createElement("div");
+  const state = {
+    selected: new Set([0]),
+    choiceOrder: [0, 1],
+    connections: new Map(),
+    promptOrder: [],
+    matchOrder: [],
+    order: [],
+    checked: false,
+    correct: false,
+  };
+
+  choiceRenderer.renderChoiceQuestion({ ...choiceQuestion, type: "single", answers: [2] }, state, {
+    host,
+    inputName: "quiz-1-question-0",
+    renderMarkdown: (markdown, element) => element.setText(markdown),
+    stateChanged: () => {},
+  });
+  const inputs = host.querySelectorAll("input");
+  inputs[1].checked = true;
+  inputs[1].dispatchEvent(new Event("change"));
+
+  assert.equal(inputs[0].closest(".obquiz-option").classList.contains("is-selected"), false);
+  assert.equal(inputs[1].closest(".obquiz-option").classList.contains("is-selected"), true);
 });
 
 test("matching columns follow independent orders and connections update in place", async () => {
