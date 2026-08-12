@@ -39,6 +39,9 @@ export function renderOrderingQuestion(
     animationCleanups.get(card)?.();
     let frame: number | null = null;
     let fallback: number | null = null;
+    const finishTransition = (event: TransitionEvent): void => {
+      if (event.target === card && event.propertyName === "transform") cleanup();
+    };
     const cleanup = (): void => {
       if (frame !== null) {
         ownerWindow.cancelAnimationFrame(frame);
@@ -49,8 +52,8 @@ export function renderOrderingQuestion(
         ownerWindow.clearTimeout(fallback);
         fallback = null;
       }
-      card.removeEventListener("transitionend", cleanup);
-      card.removeEventListener("transitioncancel", cleanup);
+      card.removeEventListener("transitionend", finishTransition);
+      card.removeEventListener("transitioncancel", finishTransition);
       card.removeClass("is-reordering-from");
       card.removeClass("is-reordering");
       card.style.removeProperty("--obquiz-order-offset");
@@ -64,8 +67,8 @@ export function renderOrderingQuestion(
       frame = null;
       card.removeClass("is-reordering-from");
       card.addClass("is-reordering");
-      card.addEventListener("transitionend", cleanup);
-      card.addEventListener("transitioncancel", cleanup);
+      card.addEventListener("transitionend", finishTransition);
+      card.addEventListener("transitioncancel", finishTransition);
       const transitionTime = getTransitionTime(ownerWindow.getComputedStyle(card));
       if (transitionTime === 0) {
         cleanup();

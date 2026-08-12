@@ -359,11 +359,43 @@ test("ordering clears transition state when the transition is cancelled", async 
   harness.runFrames();
   const movedCard = harness.host.querySelector('[data-order-item="1"]');
 
-  movedCard.dispatchEvent(new Event("transitioncancel"));
+  const transitionCancel = new Event("transitioncancel");
+  Object.defineProperty(transitionCancel, "propertyName", { value: "transform" });
+  movedCard.dispatchEvent(transitionCancel);
 
   assert.equal(movedCard.classList.contains("is-reordering"), false);
   assert.equal(movedCard.style.getPropertyValue("--obquiz-order-offset"), "");
   harness.cleanup();
+});
+
+test("ordering ignores unrelated transition events", async () => {
+  for (const eventType of ["transitionend", "transitioncancel"]) {
+    const harness = await createOrderingAnimationHarness();
+    harness.cards[1].dispatchEvent(new harness.window.MouseEvent("dragover", { bubbles: true, clientY: 61 }));
+    harness.runFrames();
+    const movedCard = harness.host.querySelector('[data-order-item="1"]');
+    const unrelatedTransition = new Event(eventType);
+    Object.defineProperty(unrelatedTransition, "propertyName", { value: "border-color" });
+
+    movedCard.dispatchEvent(unrelatedTransition);
+
+    assert.equal(movedCard.classList.contains("is-reordering"), true);
+    assert.notEqual(movedCard.style.getPropertyValue("--obquiz-order-offset"), "");
+
+    const childTransition = new Event(eventType, { bubbles: true });
+    Object.defineProperty(childTransition, "propertyName", { value: "transform" });
+    movedCard.firstElementChild.dispatchEvent(childTransition);
+
+    assert.equal(movedCard.classList.contains("is-reordering"), true);
+
+    const transformTransition = new Event(eventType);
+    Object.defineProperty(transformTransition, "propertyName", { value: "transform" });
+    movedCard.dispatchEvent(transformTransition);
+
+    assert.equal(movedCard.classList.contains("is-reordering"), false);
+    assert.equal(movedCard.style.getPropertyValue("--obquiz-order-offset"), "");
+    harness.cleanup();
+  }
 });
 
 test("ordering clears transition state immediately when transitions have zero duration", async () => {
