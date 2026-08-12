@@ -84,6 +84,17 @@ test("matching card text remains selectable", () => {
   assert.match(css, /\.obquiz-match-content\s*\{[^}]*user-select:\s*text/s);
 });
 
+test("avoids Obsidian source-lint violations in validated models and renderers", () => {
+  const model = read("src/model.ts");
+  const matching = read("src/renderers/matching-renderer.ts");
+  const ordering = read("src/renderers/ordering-renderer.ts");
+
+  assert.doesNotMatch(model, /as string\[\]|as number\[\]|input\.title as string/);
+  assert.doesNotMatch(matching, /(?<!\.)\brequestAnimationFrame\(|document\.createElement\("span"\)/);
+  assert.doesNotMatch(ordering, /(?<!\.)\brequestAnimationFrame\(|\.style\.(?:transition|transform)\s*=/);
+  assert.match(ordering, /setCssProps\(\{ "--obquiz-order-offset":/);
+});
+
 test("documents all types and keeps styles scoped", () => {
   const readme = read("README.md");
   const css = read("styles.css");
@@ -122,6 +133,7 @@ test("documents all types and keeps styles scoped", () => {
   assert.match(css, /\.obquiz-order-card\.is-dragging\s*\{[^}]*background:\s*transparent[^}]*border:\s*1px dashed var\(--obquiz-accent\)[^}]*box-shadow:\s*none/s);
   assert.match(css, /\.obquiz-order-card\.is-dragging > \*\s*\{[^}]*visibility:\s*hidden/s);
   assert.match(css, /\.obquiz-order-card\.is-reordering[\s\S]*transition:\s*transform/);
+  assert.match(css, /\.obquiz-order-card\.is-reordering\.is-reordering-from\s*\{[^}]*transition:\s*none/s);
   assert.match(css, /\.obquiz-option:has\(input:disabled\),\s*\.obquiz-match-card:disabled,\s*\.obquiz-order-card\.is-correct,\s*\.obquiz-order-card\.is-incorrect\s*\{[^}]*cursor:\s*default[^}]*user-select:\s*none/s);
   assert.match(css, /\.obquiz-option input:disabled\s*\{[^}]*cursor:\s*default/s);
   assert.match(css, /\.obquiz-question-type,\s*\.obquiz-status\s*\{[^}]*display:\s*inline-flex[^}]*padding:\s*0\.25rem 0\.6rem[^}]*border-radius:\s*999px/s);
