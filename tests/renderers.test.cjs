@@ -63,7 +63,7 @@ test("choice selection updates state without rebuilding its host", async () => {
   input.dispatchEvent(new Event("change"));
 
   assert.deepEqual([...state.selected], [0]);
-  assert.equal(input.closest(".obquiz-option").classList.contains("is-selected"), true);
+  assert.equal(input.closest(".quizcraft-option").classList.contains("is-selected"), true);
   assert.equal(stateChanges, 1);
   assert.equal(host.firstElementChild, options);
 });
@@ -91,7 +91,7 @@ test("choice labels expose disabled and keyboard-focus state", async () => {
     stateChanged: () => {},
   });
   const input = host.querySelector("input");
-  const label = input.closest(".obquiz-option");
+  const label = input.closest(".quizcraft-option");
   input.matches = (selector) => selector === ":focus-visible";
 
   assert.equal(label.classList.contains("is-selected"), true);
@@ -134,8 +134,8 @@ test("single choice selection moves the selected label state", async () => {
   inputs[1].checked = true;
   inputs[1].dispatchEvent(new Event("change"));
 
-  assert.equal(inputs[0].closest(".obquiz-option").classList.contains("is-selected"), false);
-  assert.equal(inputs[1].closest(".obquiz-option").classList.contains("is-selected"), true);
+  assert.equal(inputs[0].closest(".quizcraft-option").classList.contains("is-selected"), false);
+  assert.equal(inputs[1].closest(".quizcraft-option").classList.contains("is-selected"), true);
 });
 
 test("matching columns follow independent orders and connections update in place", async () => {
@@ -178,8 +178,8 @@ test("matching columns follow independent orders and connections update in place
 
   assert.deepEqual([...state.connections], [[0, 0]]);
   assert.equal(stateChanges, 1);
-  assert.equal(host.querySelectorAll(".obquiz-match-card").length, 4);
-  const columns = host.querySelectorAll(".obquiz-match-column");
+  assert.equal(host.querySelectorAll(".quizcraft-match-card").length, 4);
+  const columns = host.querySelectorAll(".quizcraft-match-column");
   assert.deepEqual([...columns[0].querySelectorAll("[data-prompt]")].map((card) => card.dataset.prompt), ["1", "0"]);
   assert.deepEqual([...columns[1].querySelectorAll("[data-match]")].map((card) => card.dataset.match), ["0", "1"]);
 
@@ -221,7 +221,7 @@ test("matching card text selection suppresses only the pointer activation", asyn
     stateChanged: () => {},
   });
   const card = host.querySelector('[data-prompt="0"]');
-  const content = card.querySelector(".obquiz-match-content");
+  const content = card.querySelector(".quizcraft-match-content");
   const selection = window.getSelection();
   const range = document.createRange();
   range.selectNodeContents(content);
@@ -270,7 +270,7 @@ test("ordering cleanup cancels a pending drag animation", async () => {
   });
   const dragStart = new Event("dragstart");
   Object.defineProperty(dragStart, "dataTransfer", { value: { effectAllowed: "none" } });
-  host.querySelector(".obquiz-order-card").dispatchEvent(dragStart);
+  host.querySelector(".quizcraft-order-card").dispatchEvent(dragStart);
   cleanup();
 
   assert.deepEqual(cancelledFrames, [73]);
@@ -312,7 +312,7 @@ test("ordering applies the measured offset before the animation frame runs", asy
     stateChanged: () => {},
     rerender: () => {},
   });
-  const cards = host.querySelectorAll(".obquiz-order-card");
+  const cards = host.querySelectorAll(".quizcraft-order-card");
   cards.forEach((card) => {
     card.getBoundingClientRect = () => ({
       top: [...card.parentElement.children].indexOf(card) * 40,
@@ -325,7 +325,7 @@ test("ordering applies the measured offset before the animation frame runs", asy
   cards[1].dispatchEvent(new window.MouseEvent("dragover", { bubbles: true, clientY: 61 }));
 
   const movedCard = host.querySelector('[data-order-item="0"]');
-  assert.equal(movedCard.style.getPropertyValue("--obquiz-order-offset"), "-40px");
+  assert.equal(movedCard.style.getPropertyValue("--quizcraft-order-offset"), "-40px");
   assert.equal(movedCard.classList.contains("is-reordering-from"), true);
   assert.equal(movedCard.classList.contains("is-reordering"), false);
 
@@ -371,7 +371,7 @@ async function createOrderingAnimationHarness(transitionDuration = "180ms") {
     stateChanged: () => {},
     rerender: () => {},
   });
-  const cards = host.querySelectorAll(".obquiz-order-card");
+  const cards = host.querySelectorAll(".quizcraft-order-card");
   cards.forEach((card) => {
     card.getBoundingClientRect = () => ({
       top: [...card.parentElement.children].indexOf(card) * 40,
@@ -407,7 +407,7 @@ test("ordering restarts an active card animation from a transition-free inversio
 
   assert.equal(movedCard.classList.contains("is-reordering"), false);
   assert.equal(movedCard.classList.contains("is-reordering-from"), true);
-  assert.equal(movedCard.style.getPropertyValue("--obquiz-order-offset"), "-40px");
+  assert.equal(movedCard.style.getPropertyValue("--quizcraft-order-offset"), "-40px");
   harness.cleanup();
 });
 
@@ -421,7 +421,7 @@ test("ordering teardown clears active transition state", async () => {
 
   assert.equal(movedCard.classList.contains("is-reordering"), false);
   assert.equal(movedCard.classList.contains("is-reordering-from"), false);
-  assert.equal(movedCard.style.getPropertyValue("--obquiz-order-offset"), "");
+  assert.equal(movedCard.style.getPropertyValue("--quizcraft-order-offset"), "");
 });
 
 test("ordering clears transition state when the transition is cancelled", async () => {
@@ -435,7 +435,7 @@ test("ordering clears transition state when the transition is cancelled", async 
   movedCard.dispatchEvent(transitionCancel);
 
   assert.equal(movedCard.classList.contains("is-reordering"), false);
-  assert.equal(movedCard.style.getPropertyValue("--obquiz-order-offset"), "");
+  assert.equal(movedCard.style.getPropertyValue("--quizcraft-order-offset"), "");
   harness.cleanup();
 });
 
@@ -451,7 +451,7 @@ test("ordering ignores unrelated transition events", async () => {
     movedCard.dispatchEvent(unrelatedTransition);
 
     assert.equal(movedCard.classList.contains("is-reordering"), true);
-    assert.notEqual(movedCard.style.getPropertyValue("--obquiz-order-offset"), "");
+    assert.notEqual(movedCard.style.getPropertyValue("--quizcraft-order-offset"), "");
 
     const childTransition = new Event(eventType, { bubbles: true });
     Object.defineProperty(childTransition, "propertyName", { value: "transform" });
@@ -464,7 +464,7 @@ test("ordering ignores unrelated transition events", async () => {
     movedCard.dispatchEvent(transformTransition);
 
     assert.equal(movedCard.classList.contains("is-reordering"), false);
-    assert.equal(movedCard.style.getPropertyValue("--obquiz-order-offset"), "");
+    assert.equal(movedCard.style.getPropertyValue("--quizcraft-order-offset"), "");
     harness.cleanup();
   }
 });
@@ -477,6 +477,6 @@ test("ordering clears transition state immediately when transitions have zero du
 
   const movedCard = harness.host.querySelector('[data-order-item="1"]');
   assert.equal(movedCard.classList.contains("is-reordering"), false);
-  assert.equal(movedCard.style.getPropertyValue("--obquiz-order-offset"), "");
+  assert.equal(movedCard.style.getPropertyValue("--quizcraft-order-offset"), "");
   harness.cleanup();
 });

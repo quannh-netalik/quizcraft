@@ -1,8 +1,8 @@
 import type { QuestionType } from "./model";
 
-export const OBQUIZ_CONFIG = {
-  pluginId: "obquiz",
-  codeBlockLanguage: "obquiz",
+export const QUIZCRAFT_CONFIG = {
+  pluginId: "quizcraft",
+  codeBlockLanguage: "quizcraft",
 } as const;
 
 export const QUESTION_TYPE_LABELS: Readonly<Record<QuestionType, string>> = {

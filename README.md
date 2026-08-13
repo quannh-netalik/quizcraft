@@ -1,27 +1,27 @@
-# Obquiz
+# Quizcraft
 
-Obquiz renders interactive quizzes from `obquiz` YAML code blocks. One
+Quizcraft renders interactive quizzes from `quizcraft` YAML code blocks. One
 format supports single-choice, multiple-choice, matching, and ordering
 questions, either alone or in a paginated set.
 
 ## Installation
 
 Build the plugin, then copy these files into
-`<vault>/.obsidian/plugins/obquiz/`:
+`<vault>/.obsidian/plugins/quizcraft/`:
 
 - `main.js`
 - `manifest.json`
 - `styles.css`
 
-Reload Obsidian, then enable **Obquiz** under **Settings → Community
+Reload Obsidian, then enable **Quizcraft** under **Settings → Community
 plugins**.
 
 ## Quick start
 
-Add an `obquiz` fenced code block to a note:
+Add a `quizcraft` fenced code block to a note:
 
 ````markdown
-```obquiz
+```quizcraft
 title: HTTP basics
 questions:
   - type: single
@@ -145,7 +145,7 @@ explanation: |
 ## Complete example
 
 ````markdown
-```obquiz
+```quizcraft
 title: HTTP and architecture fundamentals
 questions:
   - type: single
@@ -239,7 +239,7 @@ arrowheads, and recalculate when the layout resizes.
 
 ## Validation errors
 
-Invalid YAML or unsupported quiz data is replaced with an `Obquiz:` error in
+Invalid YAML or unsupported quiz data is replaced with a `Quizcraft:` error in
 the note. Common causes include an unsupported `type`, fewer than two choices,
 zero-based answer positions, duplicate answers, or malformed matching pairs.
 

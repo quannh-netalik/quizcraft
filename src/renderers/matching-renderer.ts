@@ -35,13 +35,13 @@ export function renderMatchingQuestion(
   context: RendererContext,
 ): RendererCleanup {
   const ownerWindow = context.host.ownerDocument.defaultView ?? window;
-  const matching = context.host.createDiv({ cls: "obquiz-matching" });
+  const matching = context.host.createDiv({ cls: "quizcraft-matching" });
   const lines = document.createElementNS(SVG_NAMESPACE, "svg");
-  lines.classList.add("obquiz-match-lines");
+  lines.classList.add("quizcraft-match-lines");
   lines.setAttribute("aria-hidden", "true");
   matching.appendChild(lines);
-  const leftColumn = matching.createDiv({ cls: "obquiz-match-column" });
-  const rightColumn = matching.createDiv({ cls: "obquiz-match-column" });
+  const leftColumn = matching.createDiv({ cls: "quizcraft-match-column" });
+  const rightColumn = matching.createDiv({ cls: "quizcraft-match-column" });
   let pendingPrompt: number | null = null;
   let pendingMatch: number | null = null;
 
@@ -50,8 +50,8 @@ export function renderMatchingQuestion(
     const bounds = matching.getBoundingClientRect();
     lines.setAttribute("viewBox", `0 0 ${bounds.width} ${bounds.height}`);
     for (const [promptIndex, matchIndex] of state.connections) {
-      const from = matching.querySelector<HTMLElement>(`[data-obquiz-port="prompt-${promptIndex}"]`);
-      const to = matching.querySelector<HTMLElement>(`[data-obquiz-port="match-${matchIndex}"]`);
+      const from = matching.querySelector<HTMLElement>(`[data-quizcraft-port="prompt-${promptIndex}"]`);
+      const to = matching.querySelector<HTMLElement>(`[data-quizcraft-port="match-${matchIndex}"]`);
       if (!from || !to) continue;
       const start = from.getBoundingClientRect();
       const end = to.getBoundingClientRect();
@@ -62,9 +62,9 @@ export function renderMatchingQuestion(
       const curve = createMatchCurve(x1, y1, x2, y2);
       const result = state.checked ? matchingResult(promptIndex, matchIndex) : "pending";
       const path = document.createElementNS(SVG_NAMESPACE, "path");
-      path.setAttribute("class", `obquiz-match-line is-${result}`);
+      path.setAttribute("class", `quizcraft-match-line is-${result}`);
       path.setAttribute("d", `M ${curve.x1} ${curve.y1} C ${curve.control1X} ${curve.control1Y}, ${curve.control2X} ${curve.control2Y}, ${curve.x2} ${curve.y2}`);
-      path.setAttribute("marker-end", `url(#obquiz-arrow-${result})`);
+      path.setAttribute("marker-end", `url(#quizcraft-arrow-${result})`);
       lines.appendChild(path);
     }
   };
@@ -137,8 +137,8 @@ export function renderMatchingQuestion(
 
 function createMatchPort(card: HTMLButtonElement, name: string): HTMLSpanElement {
   return card.createSpan({
-    cls: "obquiz-match-port",
-    attr: { "data-obquiz-port": name, "aria-hidden": "true" },
+    cls: "quizcraft-match-port",
+    attr: { "data-quizcraft-port": name, "aria-hidden": "true" },
   });
 }
 
@@ -146,7 +146,7 @@ function createMatchDefinitions(): SVGDefsElement {
   const definitions = document.createElementNS(SVG_NAMESPACE, "defs");
   for (const state of ["pending", "correct", "incorrect"]) {
     const marker = document.createElementNS(SVG_NAMESPACE, "marker");
-    marker.id = `obquiz-arrow-${state}`;
+    marker.id = `quizcraft-arrow-${state}`;
     marker.setAttribute("markerWidth", "6");
     marker.setAttribute("markerHeight", "6");
     marker.setAttribute("refX", "6");
@@ -168,9 +168,9 @@ function createMatchCard(
   action: () => void,
   result: "correct" | "incorrect" | null,
 ): HTMLButtonElement {
-  const button = host.createEl("button", { cls: "obquiz-match-card" });
+  const button = host.createEl("button", { cls: "quizcraft-match-card" });
   if (result) button.addClass(`is-${result}`);
-  const content = button.createDiv({ cls: "obquiz-match-content" });
+  const content = button.createDiv({ cls: "quizcraft-match-content" });
   renderMarkdown(markdown, content);
   button.addEventListener("click", (event) => {
     if (event.detail > 0 && hasCardTextSelection(button)) return;

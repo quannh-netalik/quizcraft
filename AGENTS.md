@@ -1,14 +1,14 @@
-# Obquiz agent guide
+# Quizcraft agent guide
 
 ## Purpose
 
-Obquiz is a publishable Obsidian community plugin. It renders one paginated,
-interactive quiz from each `obquiz` YAML code block.
+Quizcraft is a publishable Obsidian community plugin. It renders one paginated,
+interactive quiz from each `quizcraft` YAML code block.
 
 ## Boundaries
 
-- Keep the plugin ID `obquiz`, display name `Obquiz`, and fence language
-  `obquiz` synchronized across package metadata, manifest, source, and README.
+- Keep the plugin ID `quizcraft`, display name `Quizcraft`, and fence language
+  `quizcraft` synchronized across package metadata, manifest, source, and README.
 - Preserve the four question types: `single`, `multiple`, `matching`, and
   `ordering`.
 - Keep schema and answer logic pure in `src/model.ts`.
@@ -18,12 +18,12 @@ interactive quiz from each `obquiz` YAML code block.
 - Keep shared plugin identity and display labels in `src/config.ts`; leave
   renderer-specific constants with their owning renderer.
 - Add no runtime dependency without a concrete requirement.
-- Scope every style under `.obquiz` or `.obquiz-error`.
+- Scope every style under `.quizcraft` or `.quizcraft-error`.
 - Maintain mouse, touch, and keyboard access.
 
 ## Authoring contract
 
-- Treat the `obquiz` YAML format documented in `README.md` as the public API.
+- Treat the `quizcraft` YAML format documented in `README.md` as the public API.
 - Keep `title` and `explanation` optional. Require at least one question.
 - Keep question prompts and all answer content as non-empty strings rendered
   through Obsidian's Markdown renderer.
@@ -91,6 +91,6 @@ Also run `git diff --check` before committing.
 Release artifacts are exactly `main.js`, `manifest.json`, and `styles.css`.
 Source code, tests, README, and package metadata remain in the repository but
 are not copied into an installed vault plugin folder. When installation is
-requested, copy the three artifacts to `../.obsidian/plugins/obquiz/` and verify
+requested, copy the three artifacts to `../.obsidian/plugins/quizcraft/` and verify
 each installed file is byte-identical to its repository source. Report build,
 artifact equality, and in-app Obsidian verification as separate evidence.
