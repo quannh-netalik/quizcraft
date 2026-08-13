@@ -1,6 +1,6 @@
 {
   "name": "quizcraft",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Interactive YAML-authored quizzes for Obsidian.",
   "main": "main.js",
   "files": [
