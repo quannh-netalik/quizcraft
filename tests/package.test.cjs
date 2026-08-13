@@ -23,6 +23,19 @@ test("has publishable Obsidian package metadata", () => {
   assert.equal(manifest.isDesktopOnly, false);
 });
 
+test("release workflow builds and attests every published plugin artifact", () => {
+  const workflow = read(".github/workflows/release.yml");
+
+  assert.match(workflow, /push:\s*\n\s+tags:\s*\n\s+- ['"]\*\.\*\.\*['"]/);
+  assert.match(workflow, /\[\[ "\$GITHUB_REF_NAME" =~ \^\[0-9\]\+\\\.\[0-9\]\+\\\.\[0-9\]\+\$ \]\]/);
+  assert.match(workflow, /contents:\s*write/);
+  assert.match(workflow, /id-token:\s*write/);
+  assert.match(workflow, /attestations:\s*write/);
+  assert.match(workflow, /uses:\s*actions\/attest-build-provenance@v4/);
+  assert.match(workflow, /subject-path:\s*\|\s*\n\s+main\.js\s*\n\s+manifest\.json\s*\n\s+styles\.css/);
+  assert.match(workflow, /gh release create "\$GITHUB_REF_NAME"\s*\\\s*\n\s+main\.js manifest\.json styles\.css/);
+});
+
 test("keeps plugin registration and interaction renderers in focused modules", () => {
   const entry = read("src/main.ts");
   assert.match(entry, /registerMarkdownCodeBlockProcessor\(QUIZCRAFT_CONFIG\.codeBlockLanguage/);
