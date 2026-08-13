@@ -78,7 +78,7 @@
   background: color-mix(in srgb, var(--obquiz-danger) 12%, transparent);
 }
 
-.obquiz-question-reset {
+.obquiz .obquiz-question-reset {
   --interactive-normal: transparent;
   --interactive-hover: transparent;
   appearance: none;
@@ -86,18 +86,18 @@
   min-height: 2.5rem;
   padding-inline: 0.7rem;
   color: var(--text-normal);
-  background: transparent !important;
-  background-image: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  background: var(--interactive-normal);
+  background-image: none;
+  border: 0;
+  box-shadow: none;
   cursor: pointer;
   transition: color var(--obquiz-transition), background-color var(--obquiz-transition), border-color var(--obquiz-transition);
 }
 
-.obquiz-question-reset:hover {
+.obquiz .obquiz-question-reset:hover {
   color: var(--obquiz-accent);
-  background: transparent !important;
-  box-shadow: none !important;
+  background: var(--interactive-hover);
+  box-shadow: none;
 }
 
 .obquiz-prompt {
@@ -152,7 +152,7 @@
   box-shadow: none;
 }
 
-.obquiz-option:has(input:focus-visible),
+.obquiz-option.has-focus-visible,
 .obquiz-match-card:focus-visible,
 .obquiz-order-controls button:focus-visible,
 .obquiz-question-reset:focus-visible,
@@ -189,25 +189,25 @@
   border-radius: 50%;
 }
 
-.obquiz-option:has(input:checked):not(.is-correct):not(.is-incorrect):not(.is-missed) {
+.obquiz-option.is-selected:not(.is-correct):not(.is-incorrect):not(.is-missed) {
   --obquiz-option-border: var(--obquiz-accent);
   box-shadow: 0 0 0 1px var(--obquiz-accent);
 }
 
-.obquiz-option:has(input:disabled),
-.obquiz-match-card:disabled,
+.obquiz-option.is-disabled,
+.obquiz .obquiz-match-card:disabled,
 .obquiz-order-card.is-correct,
 .obquiz-order-card.is-incorrect {
-  cursor: default !important;
+  cursor: default;
   user-select: none;
 }
 
-.obquiz-option input:disabled {
-  cursor: default !important;
+.obquiz .obquiz-option input:disabled {
+  cursor: default;
 }
 
 .obquiz-order-card.is-correct,
-.obquiz-match-card.is-correct {
+.obquiz .obquiz-match-card.is-correct {
   color: var(--text-normal);
   background: color-mix(in srgb, var(--obquiz-success) 9%, var(--obquiz-surface));
   border-color: var(--obquiz-success);
@@ -215,7 +215,7 @@
 }
 
 .obquiz-order-card.is-incorrect,
-.obquiz-match-card.is-incorrect {
+.obquiz .obquiz-match-card.is-incorrect {
   color: var(--text-normal);
   background: color-mix(in srgb, var(--obquiz-danger) 9%, var(--obquiz-surface));
   border-color: var(--obquiz-danger);
@@ -260,14 +260,18 @@
   opacity: 1;
 }
 
-.obquiz-option.is-correct input:checked {
-  background-color: var(--obquiz-success) !important;
-  border-color: var(--obquiz-success) !important;
+.obquiz .obquiz-option.is-correct input:checked {
+  --checkbox-color: var(--obquiz-success);
+  --checkbox-color-hover: var(--obquiz-success);
+  background-color: var(--obquiz-success);
+  border-color: var(--obquiz-success);
 }
 
-.obquiz-option.is-incorrect input:checked {
-  background-color: var(--obquiz-danger) !important;
-  border-color: var(--obquiz-danger) !important;
+.obquiz .obquiz-option.is-incorrect input:checked {
+  --checkbox-color: var(--obquiz-danger);
+  --checkbox-color-hover: var(--obquiz-danger);
+  background-color: var(--obquiz-danger);
+  border-color: var(--obquiz-danger);
 }
 
 .obquiz-option.is-missed {
@@ -316,7 +320,7 @@
   align-content: stretch;
 }
 
-.obquiz-match-card {
+.obquiz .obquiz-match-card {
   --obquiz-match-card-border: var(--obquiz-border);
   --interactive-normal: var(--background-primary);
   --interactive-hover: var(--background-primary);
@@ -332,23 +336,23 @@
   color: var(--text-normal);
   white-space: normal;
   text-align: left;
-  background: var(--background-primary) !important;
-  background-image: none !important;
+  background: var(--background-primary);
+  background-image: none;
   border: 1px solid var(--obquiz-match-card-border);
   border-radius: var(--obquiz-card-radius);
   cursor: pointer;
   transition: opacity var(--obquiz-transition), background-color var(--obquiz-transition), border-color var(--obquiz-transition), box-shadow var(--obquiz-transition);
 }
 
-.obquiz-match-card:hover:not(:disabled) {
-  background: var(--background-primary) !important;
+.obquiz .obquiz-match-card:hover:not(:disabled) {
+  background: var(--background-primary);
   border-color: var(--obquiz-border-hover);
   box-shadow: none;
 }
 
-.obquiz-match-card.is-pending {
+.obquiz .obquiz-match-card.is-pending {
   --obquiz-match-card-border: var(--obquiz-accent);
-  background: var(--background-primary) !important;
+  background: var(--background-primary);
   box-shadow: 0 0 0 1px var(--obquiz-accent);
 }
 
@@ -367,9 +371,9 @@
   background: var(--obquiz-accent);
 }
 
-.obquiz-match-card.is-unconnected {
+.obquiz .obquiz-match-card.is-unconnected {
   color: var(--text-muted);
-  background: var(--background-primary) !important;
+  background: var(--background-primary);
   --obquiz-match-card-border: color-mix(in srgb, var(--obquiz-border) 62%, transparent);
 }
 
@@ -421,12 +425,12 @@
   --obquiz-match-card-border: var(--obquiz-danger);
 }
 
-.obquiz-match-card.is-correct:hover {
+.obquiz .obquiz-match-card.is-correct:hover {
   border-color: var(--obquiz-success);
   box-shadow: 0 0 0 1px var(--obquiz-success), 0 0 10px color-mix(in srgb, var(--obquiz-success) 18%, transparent);
 }
 
-.obquiz-match-card.is-incorrect:hover {
+.obquiz .obquiz-match-card.is-incorrect:hover {
   border-color: var(--obquiz-danger);
   box-shadow: 0 0 0 1px var(--obquiz-danger), 0 0 10px color-mix(in srgb, var(--obquiz-danger) 18%, transparent);
 }
@@ -638,8 +642,8 @@
   justify-content: center;
 }
 
-.obquiz-previous,
-.obquiz-next {
+.obquiz .obquiz-previous,
+.obquiz .obquiz-next {
   --interactive-normal: transparent;
   --interactive-hover: transparent;
   appearance: none;
@@ -647,19 +651,19 @@
   place-items: center;
   padding: 0;
   color: var(--text-normal);
-  background: transparent !important;
-  background-image: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
+  background: var(--interactive-normal);
+  background-image: none;
+  border: 0;
+  box-shadow: none;
   cursor: pointer;
   transition: color var(--obquiz-transition), background-color var(--obquiz-transition), border-color var(--obquiz-transition);
 }
 
-.obquiz-previous:hover:not(:disabled),
-.obquiz-next:hover:not(:disabled) {
+.obquiz .obquiz-previous:hover:not(:disabled),
+.obquiz .obquiz-next:hover:not(:disabled) {
   color: var(--obquiz-accent);
-  background: transparent !important;
-  box-shadow: none !important;
+  background: var(--interactive-hover);
+  box-shadow: none;
 }
 
 .obquiz-check {
@@ -768,7 +772,7 @@
     gap: 3.25rem;
   }
 
-  .obquiz-match-card {
+  .obquiz .obquiz-match-card {
     padding-inline: 0.7rem;
   }
 
@@ -789,10 +793,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .obquiz *,
-  .obquiz *::before,
-  .obquiz *::after {
-    scroll-behavior: auto !important;
-    transition: none !important;
+  .obquiz {
+    --obquiz-transition: 0ms;
+    scroll-behavior: auto;
+  }
+
+  .obquiz .obquiz-option,
+  .obquiz .obquiz-option input,
+  .obquiz .obquiz-match-card,
+  .obquiz .obquiz-order-card,
+  .obquiz .obquiz-order-controls button,
+  .obquiz .obquiz-question-reset,
+  .obquiz .obquiz-check,
+  .obquiz .obquiz-previous,
+  .obquiz .obquiz-next,
+  .obquiz .obquiz-reset-all {
+    transition: none;
   }
 }
