@@ -36,10 +36,10 @@ export class QuizController {
 
   render(): void {
     this.root.empty();
-    this.root.addClass("obquiz");
-    if (this.quiz.title) this.root.createEl("h3", { cls: "obquiz-title", text: this.quiz.title });
-    this.questionHost = this.root.createDiv({ cls: "obquiz-question-host" });
-    this.pager = this.root.createDiv({ cls: "obquiz-pager" });
+    this.root.addClass("quizcraft");
+    if (this.quiz.title) this.root.createEl("h3", { cls: "quizcraft-title", text: this.quiz.title });
+    this.questionHost = this.root.createDiv({ cls: "quizcraft-question-host" });
+    this.pager = this.root.createDiv({ cls: "quizcraft-pager" });
     this.showQuestion(0);
   }
 
@@ -53,22 +53,22 @@ export class QuizController {
     this.questionHost.empty();
     const question = this.quiz.questions[index]!;
     const state = this.states[index]!;
-    const card = this.questionHost.createDiv({ cls: "obquiz-question" });
+    const card = this.questionHost.createDiv({ cls: "quizcraft-question" });
     this.renderHeader(question, state, card);
-    const prompt = card.createDiv({ cls: "obquiz-prompt" });
+    const prompt = card.createDiv({ cls: "quizcraft-prompt" });
     this.renderMarkdown(question.question, prompt);
-    this.renderInteraction(question, state, card.createDiv({ cls: "obquiz-interaction" }));
+    this.renderInteraction(question, state, card.createDiv({ cls: "quizcraft-interaction" }));
     this.renderQuestionOutcome(question, state, card);
     this.renderPager();
   }
 
   private renderHeader(question: Question, state: QuestionState, card: HTMLElement): void {
-    const header = card.createDiv({ cls: "obquiz-question-header" });
-    const meta = header.createDiv({ cls: "obquiz-question-meta" });
-    meta.createSpan({ cls: "obquiz-question-type", text: QUESTION_TYPE_LABELS[question.type] });
+    const header = card.createDiv({ cls: "quizcraft-question-header" });
+    const meta = header.createDiv({ cls: "quizcraft-question-meta" });
+    meta.createSpan({ cls: "quizcraft-question-type", text: QUESTION_TYPE_LABELS[question.type] });
     if (state.checked) {
       meta.createSpan({
-        cls: `obquiz-status is-${state.correct ? "correct" : "incorrect"}`,
+        cls: `quizcraft-status is-${state.correct ? "correct" : "incorrect"}`,
         text: state.correct ? "Correct" : "Incorrect",
       });
     }
@@ -100,14 +100,14 @@ export class QuizController {
   }
 
   private updateCheckButton(question: Question, state: QuestionState): void {
-    const checkButton = this.pager.querySelector<HTMLButtonElement>(".obquiz-check");
+    const checkButton = this.pager.querySelector<HTMLButtonElement>(".quizcraft-check");
     if (checkButton) checkButton.disabled = state.checked || !isQuestionReady(question, state);
   }
 
   private renderQuestionOutcome(question: Question, state: QuestionState, card: HTMLElement): void {
     if (state.checked && question.explanation) {
-      const explanation = card.createDiv({ cls: "obquiz-explanation" });
-      explanation.createDiv({ cls: "obquiz-explanation-label", text: "Explanation" });
+      const explanation = card.createDiv({ cls: "quizcraft-explanation" });
+      explanation.createDiv({ cls: "quizcraft-explanation-label", text: "Explanation" });
       this.renderMarkdown(question.explanation, explanation);
     }
   }
@@ -139,35 +139,35 @@ export class QuizController {
     this.pager.empty();
 
     this.pager.createEl("button", {
-      cls: "obquiz-question-reset",
+      cls: "quizcraft-question-reset",
       text: "↻",
       attr: { "aria-label": "Reset this question" },
     }).addEventListener("click", () => this.resetCurrent());
 
-    const navigation = this.pager.createDiv({ cls: "obquiz-navigation" });
+    const navigation = this.pager.createDiv({ cls: "quizcraft-navigation" });
     const previous = navigation.createEl("button", {
-      cls: "obquiz-previous", text: "<", attr: { "aria-label": "Previous question" },
+      cls: "quizcraft-previous", text: "<", attr: { "aria-label": "Previous question" },
     });
     previous.disabled = this.index === 0;
     previous.addEventListener("click", () => this.showQuestion(this.index - 1));
 
     const progress = navigation.createDiv({
-      cls: "obquiz-progress",
+      cls: "quizcraft-progress",
       attr: { "aria-label": `Question ${this.index + 1} of ${this.quiz.questions.length}` },
     });
-    progress.createSpan({ cls: "obquiz-progress-current", text: `${this.index + 1}` });
-    progress.createSpan({ cls: "obquiz-progress-total", text: `/${this.quiz.questions.length}` });
+    progress.createSpan({ cls: "quizcraft-progress-current", text: `${this.index + 1}` });
+    progress.createSpan({ cls: "quizcraft-progress-total", text: `/${this.quiz.questions.length}` });
 
     const isLast = this.index === this.quiz.questions.length - 1;
     const next = navigation.createEl("button", {
-      cls: "obquiz-next", text: ">", attr: { "aria-label": "Next question" },
+      cls: "quizcraft-next", text: ">", attr: { "aria-label": "Next question" },
     });
     next.disabled = !this.states[this.index]!.checked;
     next.addEventListener("click", () => isLast ? this.renderCompletion() : this.showQuestion(this.index + 1));
 
     const question = this.quiz.questions[this.index]!;
     const state = this.states[this.index]!;
-    const check = this.pager.createEl("button", { text: "Check", cls: "mod-cta obquiz-check" });
+    const check = this.pager.createEl("button", { text: "Check", cls: "mod-cta quizcraft-check" });
     check.disabled = state.checked || !isQuestionReady(question, state);
     check.addEventListener("click", () => this.checkCurrent());
   }
@@ -177,14 +177,14 @@ export class QuizController {
     this.questionHost.empty();
     this.pager.addClass("is-hidden");
     const result = score(this.states.map((state) => state.correct));
-    const completion = this.questionHost.createDiv({ cls: "obquiz-completion" });
-    completion.createDiv({ cls: "obquiz-trophy", text: "🏆" });
+    const completion = this.questionHost.createDiv({ cls: "quizcraft-completion" });
+    completion.createDiv({ cls: "quizcraft-trophy", text: "🏆" });
     completion.createEl("h3", { text: "Quiz complete" });
     completion.createEl("p", { text: `You answered ${result.correct} of ${result.total} questions correctly.` });
-    const ring = completion.createDiv({ cls: "obquiz-score-ring" });
-    ring.style.setProperty("--obquiz-score", `${result.percentage * 3.6}deg`);
+    const ring = completion.createDiv({ cls: "quizcraft-score-ring" });
+    ring.style.setProperty("--quizcraft-score", `${result.percentage * 3.6}deg`);
     ring.createSpan({ text: `${result.percentage}%` });
-    completion.createEl("button", { cls: "mod-cta obquiz-reset-all", text: "↻ Try Again" })
+    completion.createEl("button", { cls: "mod-cta quizcraft-reset-all", text: "↻ Try Again" })
       .addEventListener("click", () => this.resetAll());
   }
 

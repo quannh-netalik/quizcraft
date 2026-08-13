@@ -58,8 +58,8 @@ test("scopes Markdown rendering and cleanup to the registered quiz child", async
   try {
     const modulePath = path.join(__dirname, "../.test-dist/main.cjs");
     delete require.cache[require.resolve(modulePath)];
-    const ObquizPlugin = require(modulePath).default;
-    const plugin = new ObquizPlugin();
+    const QuizcraftPlugin = require(modulePath).default;
+    const plugin = new QuizcraftPlugin();
     plugin.onload();
 
     const children = [];
@@ -68,7 +68,7 @@ test("scopes Markdown rendering and cleanup to the registered quiz child", async
       addChild: (child) => children.push(child),
     });
 
-    assert.equal(registered[0].language, "obquiz");
+    assert.equal(registered[0].language, "quizcraft");
     assert.equal(children.length, 1);
     assert.ok(renderedComponents.length > 0);
     assert.ok(renderedComponents.every((component) => component === children[0]));

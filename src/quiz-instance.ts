@@ -6,5 +6,5 @@ export function createQuizInstanceId(): string {
 }
 
 export function createChoiceInputName(instanceId: string, questionIndex: number): string {
-  return `obquiz-${instanceId}-${questionIndex}`;
+  return `quizcraft-${instanceId}-${questionIndex}`;
 }

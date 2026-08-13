@@ -12,12 +12,12 @@ export function renderChoiceQuestion(
   state: QuestionState,
   context: ChoiceRendererContext,
 ): void {
-  const options = context.host.createDiv({ cls: "obquiz-options" });
+  const options = context.host.createDiv({ cls: "quizcraft-options" });
   const inputType = question.type === "single" ? "radio" : "checkbox";
   const updateOptionClasses: Array<() => void> = [];
 
   state.choiceOrder.forEach((optionIndex, displayIndex) => {
-    const label = options.createEl("label", { cls: "obquiz-option" });
+    const label = options.createEl("label", { cls: "quizcraft-option" });
     if (state.checked) {
       const result = choiceResult(optionIndex, state.selected, question.answers);
       if (result) label.addClass(`is-${result}`);
@@ -35,8 +35,8 @@ export function renderChoiceQuestion(
     };
     updateOptionClasses.push(updateClasses);
     updateClasses();
-    label.createSpan({ cls: "obquiz-option-index", text: String.fromCharCode(65 + displayIndex) });
-    const content = label.createDiv({ cls: "obquiz-option-content" });
+    label.createSpan({ cls: "quizcraft-option-index", text: String.fromCharCode(65 + displayIndex) });
+    const content = label.createDiv({ cls: "quizcraft-option-content" });
     context.renderMarkdown(question.options[optionIndex]!, content);
 
     input.addEventListener("focus", () => {

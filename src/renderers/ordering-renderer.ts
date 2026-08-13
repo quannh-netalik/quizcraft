@@ -9,7 +9,7 @@ export function renderOrderingQuestion(
   context: RendererContext,
 ): RendererCleanup {
   const ownerWindow = context.host.ownerDocument.defaultView ?? window;
-  const list = context.host.createDiv({ cls: "obquiz-ordering" });
+  const list = context.host.createDiv({ cls: "quizcraft-ordering" });
   let draggedOriginalIndex: number | null = null;
   let dragFrame: number | null = null;
   const animationFrames = new Set<number>();
@@ -25,11 +25,11 @@ export function renderOrderingQuestion(
   };
 
   const updateCards = (): void => {
-    list.querySelectorAll<HTMLElement>(".obquiz-order-card").forEach((item) => {
+    list.querySelectorAll<HTMLElement>(".quizcraft-order-card").forEach((item) => {
       const originalIndex = Number(item.dataset.orderItem);
       const position = state.order.indexOf(originalIndex);
-      item.querySelector<HTMLElement>(".obquiz-order-index")?.setText(String(position + 1));
-      const controls = item.querySelectorAll<HTMLButtonElement>(".obquiz-order-controls button");
+      item.querySelector<HTMLElement>(".quizcraft-order-index")?.setText(String(position + 1));
+      const controls = item.querySelectorAll<HTMLButtonElement>(".quizcraft-order-controls button");
       if (controls[0]) controls[0].disabled = state.checked || position === 0;
       if (controls[1]) controls[1].disabled = state.checked || position === state.order.length - 1;
     });
@@ -56,12 +56,12 @@ export function renderOrderingQuestion(
       card.removeEventListener("transitioncancel", finishTransition);
       card.removeClass("is-reordering-from");
       card.removeClass("is-reordering");
-      card.style.removeProperty("--obquiz-order-offset");
+      card.style.removeProperty("--quizcraft-order-offset");
       if (animationCleanups.get(card) === cleanup) animationCleanups.delete(card);
     };
 
     animationCleanups.set(card, cleanup);
-    card.setCssProps({ "--obquiz-order-offset": `${offset}px` });
+    card.setCssProps({ "--quizcraft-order-offset": `${offset}px` });
     card.addClass("is-reordering-from");
     frame = scheduleAnimation(() => {
       frame = null;
@@ -95,15 +95,15 @@ export function renderOrderingQuestion(
   };
 
   state.order.forEach((originalIndex, currentIndex) => {
-    const card = list.createDiv({ cls: "obquiz-order-card" });
+    const card = list.createDiv({ cls: "quizcraft-order-card" });
     card.dataset.orderItem = String(originalIndex);
     if (state.checked) card.addClass(`is-${orderingResult(state.order, currentIndex)}`);
     card.draggable = !state.checked;
-    card.createDiv({ cls: "obquiz-drag-handle", text: "⋮⋮", attr: { "aria-hidden": "true" } });
-    card.createSpan({ cls: "obquiz-order-index", text: String(currentIndex + 1) });
-    const content = card.createDiv({ cls: "obquiz-order-content" });
+    card.createDiv({ cls: "quizcraft-drag-handle", text: "⋮⋮", attr: { "aria-hidden": "true" } });
+    card.createSpan({ cls: "quizcraft-order-index", text: String(currentIndex + 1) });
+    const content = card.createDiv({ cls: "quizcraft-order-content" });
     context.renderMarkdown(question.items[originalIndex]!, content);
-    const controls = card.createDiv({ cls: "obquiz-order-controls" });
+    const controls = card.createDiv({ cls: "quizcraft-order-controls" });
     const up = controls.createEl("button", { text: "↑", attr: { "aria-label": "Move up" } });
     const down = controls.createEl("button", { text: "↓", attr: { "aria-label": "Move down" } });
     up.disabled = state.checked || currentIndex === 0;
@@ -129,12 +129,12 @@ export function renderOrderingQuestion(
         : event.clientY <= bounds.top + bounds.height / 2;
       if (!crossedMidpoint) return;
       const previous = new Map<number, DOMRect>();
-      list.querySelectorAll<HTMLElement>(".obquiz-order-card").forEach((item) => {
+      list.querySelectorAll<HTMLElement>(".quizcraft-order-card").forEach((item) => {
         previous.set(Number(item.dataset.orderItem), item.getBoundingClientRect());
       });
       state.order = moveItem(state.order, from, to);
       const cards = new Map(
-        Array.from(list.querySelectorAll<HTMLElement>(".obquiz-order-card"))
+        Array.from(list.querySelectorAll<HTMLElement>(".quizcraft-order-card"))
           .map((item) => [Number(item.dataset.orderItem), item] as const),
       );
       state.order.forEach((item) => list.append(cards.get(item)!));
@@ -161,7 +161,7 @@ function animateOrderingCards(
   previous: Map<number, DOMRect>,
   startAnimation: (card: HTMLElement, offset: number) => void,
 ): void {
-  list.querySelectorAll<HTMLElement>(".obquiz-order-card").forEach((card) => {
+  list.querySelectorAll<HTMLElement>(".quizcraft-order-card").forEach((card) => {
     if (card.hasClass("is-dragging")) return;
     const before = previous.get(Number(card.dataset.orderItem));
     if (!before) return;
