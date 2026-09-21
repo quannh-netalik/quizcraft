@@ -12,7 +12,9 @@
   "type": "module",
   "scripts": {
     "dev": "bun build.ts",
-    "build": "tsc --noEmit && bun build.ts --production"
+    "build": "bun run typecheck && bun build.ts --production",
+    "typecheck": "tsc",
+    "lint": "oxlint --deny-warnings"
   },
   "keywords": [
     "obsidian",
@@ -22,9 +24,10 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^22.15.17",
+    "@types/bun": "^1.4.4",
     "happy-dom": "^20.11.2",
     "obsidian": "^1.13.1",
+    "oxlint": "^1.90.0",
     "typescript": "^5.8.3"
   }
 }
