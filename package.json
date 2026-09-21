@@ -11,8 +11,8 @@
   ],
   "type": "module",
   "scripts": {
-    "dev": "node esbuild.config.mjs",
-    "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production"
+    "dev": "bun build.ts",
+    "build": "tsc --noEmit && bun build.ts --production"
   },
   "keywords": [
     "obsidian",
@@ -23,7 +23,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^22.15.17",
-    "esbuild": "^0.28.2",
     "happy-dom": "^20.11.2",
     "obsidian": "^1.13.1",
     "typescript": "^5.8.3"
