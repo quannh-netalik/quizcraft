@@ -14,7 +14,9 @@
     "dev": "bun build.ts",
     "build": "bun run typecheck && bun build.ts --production",
     "typecheck": "tsc",
-    "lint": "oxlint --deny-warnings"
+    "lint": "oxlint --deny-warnings",
+    "test": "bun test",
+    "check": "bun run typecheck && bun run lint && bun test"
   },
   "keywords": [
     "obsidian",
