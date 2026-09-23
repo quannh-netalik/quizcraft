@@ -1,7 +1,7 @@
 {
   "name": "quizcraft",
   "version": "0.1.1",
-  "description": "Interactive YAML-authored quizzes for Obsidian.",
+  "description": "Interactive quiz, code, slide and calculator widgets from Obsidian callouts.",
   "main": "main.js",
   "files": [
     "main.js",
@@ -11,10 +11,12 @@
   ],
   "type": "module",
   "scripts": {
-    "dev": "node esbuild.config.mjs",
-    "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production",
-    "test:bundle": "node esbuild.test.mjs",
-    "test": "npm run test:bundle && node --test tests/*.test.cjs"
+    "dev": "bun build.ts",
+    "build": "bun run typecheck && bun build.ts --production",
+    "typecheck": "tsc",
+    "lint": "oxlint --deny-warnings",
+    "test": "bun test",
+    "check": "bun run typecheck && bun run lint && bun test"
   },
   "keywords": [
     "obsidian",
@@ -24,10 +26,10 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^22.15.17",
-    "esbuild": "^0.28.2",
+    "@types/bun": "^1.4.4",
     "happy-dom": "^20.11.2",
     "obsidian": "^1.13.1",
+    "oxlint": "^1.90.0",
     "typescript": "^5.8.3"
   }
 }

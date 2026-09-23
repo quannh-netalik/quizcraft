@@ -3,7 +3,7 @@
   "name": "Quizcraft",
   "version": "0.1.1",
   "minAppVersion": "1.5.0",
-  "description": "Interactive single, multiple, matching, and ordering quizzes from YAML code blocks.",
+  "description": "Turns callouts into interactive widgets: graded quizzes, ordering and matching cards, code editors, slide carousels, live calculators and HTML demos. Never edits notes.",
   "author": "Quan Nguyen",
   "authorUrl": "https://github.com/quannh-netalik",
   "isDesktopOnly": false
