@@ -5,6 +5,11 @@
     "correctness": "error",
     "suspicious": "warn"
   },
+  "rules": {
+    "eqeqeq": "error",
+    "no-unused-vars": "error",
+    "typescript/no-explicit-any": "error"
+  },
   "env": {
     "browser": true
   },
