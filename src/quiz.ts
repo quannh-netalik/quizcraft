@@ -1,5 +1,6 @@
 import { setIcon } from "obsidian";
 import { decorateBody } from "./answer";
+import { guard } from "./lib/dom";
 import type { Widget } from "./widgets";
 
 export const QUIZ_SELECTOR = '.callout[data-callout="quiz"]';
@@ -43,10 +44,7 @@ export function setupCard(callout: QuizCallout): void {
   marker.replaceWith(qa);
   decorateBody(body);
   callout.eqQa = qa;
-  head.addEventListener("click", (e) => {
-    e.preventDefault();
-    qa.classList.toggle("is-open");
-  });
+  guard(head, () => qa.classList.toggle("is-open"));
 }
 
 export const quizCard: Widget = {
