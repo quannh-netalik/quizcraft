@@ -1,4 +1,5 @@
 import { setIcon } from "obsidian";
+import { decorateBody } from "./answer";
 import type { Widget } from "./widgets";
 
 export const QUIZ_SELECTOR = '.callout[data-callout="quiz"]';
@@ -40,6 +41,7 @@ export function setupCard(callout: QuizCallout): void {
   const body = qa.createDiv({ cls: "eq-qa-body" });
   while (marker.nextSibling) body.appendChild(marker.nextSibling);
   marker.replaceWith(qa);
+  decorateBody(body);
   callout.eqQa = qa;
   head.addEventListener("click", (e) => {
     e.preventDefault();
