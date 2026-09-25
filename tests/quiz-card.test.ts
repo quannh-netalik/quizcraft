@@ -44,6 +44,13 @@ describe("setupCard", () => {
     expect((box as QuizCallout).eqQa).toBeUndefined();
   });
 
+  test("a marker with no answer after it stays in place", () => {
+    const box = callout("quiz", `${QUESTION}<p><mark>Answer</mark></p>`);
+    setupCard(box);
+    expect((box as QuizCallout).eqQa).toBeUndefined();
+    expect(content(box).querySelector("mark")).not.toBeNull();
+  });
+
   test("clicking the head toggles the answer open", () => {
     const box = callout("quiz", `${QUESTION}<p><mark>Answer</mark></p><p>B</p>`);
     setupCard(box);

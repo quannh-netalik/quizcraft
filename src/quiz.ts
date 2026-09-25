@@ -32,7 +32,8 @@ export function setupCard(callout: QuizCallout): void {
   callout.dataset.eqCard = "1";
   callout.classList.add("eq-card");
   const marker = findAnswerMarker(content);
-  if (!marker) return;
+  // a marker with nothing after it (answer not written yet) stays visible as is
+  if (!marker?.nextElementSibling) return;
   const qa = createDiv({ cls: "eq-qa" });
   const head = qa.createDiv({ cls: "eq-qa-head" });
   setIcon(head.createSpan({ cls: "eq-qa-icon" }), "eye");
