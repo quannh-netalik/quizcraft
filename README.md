@@ -29,6 +29,35 @@ Rules shared by every widget:
 - A callout the plugin cannot parse is left exactly as Obsidian rendered it.
 - Answers live in the note itself, after a `==Answer==` marker line.
 
+## Quiz cards
+
+A `[!quiz]` callout is a question card. A line holding only `==Answer==`
+starts the answer: everything after it moves into a collapsible
+**Show answer** section at the bottom of the card.
+
+```markdown
+> [!quiz] Question 1
+> Which planet is closest to the Sun?
+> - A) Venus
+> - B) Mercury
+> - C) Mars
+>
+> ==Answer==
+>
+> **B)** Mercury
+> Mercury orbits at about 0.39 AU.
+>
+> **Why not the others**
+> - Venus is second, Mars is fourth.
+```
+
+- A line starting with a bold letter (`**B)**` or `**B.**`) is a key line and
+  shows the letter as a badge. Write one key line per correct option.
+- A line holding only `**Why not the others**` starts a muted sub-section; the
+  list after it belongs to it.
+- Without an `==Answer==` line, or with nothing after it, the card has no
+  answer section.
+
 ## Development
 
 Requires [Bun](https://bun.sh) 1.4 or later.
