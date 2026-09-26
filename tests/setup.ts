@@ -1,6 +1,7 @@
 // Preloaded by bun test (bunfig.toml): a happy-dom window as the global DOM, plus an `obsidian` stub.
 import { mock } from "bun:test";
 import { Window } from "happy-dom";
+import { installObsidianDom } from "./obsidian-dom";
 import * as obsidian from "./obsidian-stub";
 
 const window = new Window({ url: "http://localhost/" });
@@ -29,4 +30,5 @@ for (const key of KEYS) {
   globals[key] = typeof value === "function" && /^[a-z]/.test(key) ? value.bind(window) : value;
 }
 
+installObsidianDom();
 mock.module("obsidian", () => obsidian);
