@@ -69,6 +69,19 @@ bun run check    # typecheck, lint, test
 bun run build    # production build
 ```
 
+### Testing in a vault
+
+Link the repo into a test vault so each build is picked up on reload:
+
+```sh
+ln -s "$PWD" /path/to/vault/.obsidian/plugins/quizcraft
+bun run dev
+```
+
+Then enable **Quizcraft** under *Settings → Community plugins* and run
+*Reload app without saving* after each build. Check both Reading view and
+Live Preview: Live Preview re-renders callouts while you type.
+
 ## License
 
 MIT
