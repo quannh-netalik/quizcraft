@@ -4,6 +4,9 @@ import { optionLetter } from "./parse";
 import { QUIZ_SELECTOR, type QuizCallout } from "./quiz";
 import type { Widget } from "./widgets";
 
+/** The letter an option has in the markdown; grading always uses it. */
+const letterOf = (li: HTMLElement): string => li.dataset.eqLetter ?? "";
+
 /**
  * [!quiz] with 2+ lettered options (`- A) text`): pick and submit.
  * Each option keeps the letter it has in the markdown in data-eq-letter.
@@ -20,12 +23,31 @@ export function setupChoice(callout: QuizCallout): void {
   callout.dataset.eqReady = "1";
   callout.classList.add("eq-quiz");
   // more than one key line = pick several (checkboxes), otherwise one (radios)
-  const multi = (callout.eqQa ? keyLetters(callout.eqQa) : []).length > 1;
+  const qa = callout.eqQa;
+  const multi = (qa ? keyLetters(qa) : []).length > 1;
   callout.classList.add(multi ? "eq-multi" : "eq-single");
+
+  // footer sits between the options and the answer section
+  const footer = createDiv({ cls: "eq-footer" });
+  content.insertBefore(footer, qa ?? null);
+  const status = footer.createSpan({ cls: "eq-status" });
+  const btn = footer.createEl("button", { cls: "eq-btn", text: "Submit Answer" });
+  const submitted = () => callout.classList.contains("eq-done");
+  guard(btn, () => {
+    if (submitted()) return;
+    const key = qa ? keyLetters(qa) : [];
+    const picked = options.filter((li) => li.classList.contains("eq-selected")).map(letterOf);
+    const right = picked.length === key.length && picked.every((l) => key.includes(l));
+    callout.classList.add("eq-done");
+    status.setText(right ? "Correct!" : "Not quite");
+    status.className = `eq-status ${right ? "is-right" : "is-wrong"}`;
+  });
+
   for (const li of options) {
     li.dataset.eqLetter = optionLetter(li.textContent ?? "");
     li.classList.add("eq-option");
     guard(li, () => {
+      if (submitted()) return;
       if (multi) {
         li.classList.toggle("eq-selected");
         return;
