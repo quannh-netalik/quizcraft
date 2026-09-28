@@ -19,6 +19,11 @@
   border-top: 1px solid var(--edu-quiz-line, var(--background-modifier-border));
 }
 
+/* lettered quizzes: hidden until Submit */
+.eq-card .eq-qa.eq-answer:not(.eq-revealed) { display: none; }
+.eq-card .eq-footer:has(+ .eq-qa:not(.eq-answer)),
+.eq-card .eq-footer:has(+ .eq-qa.eq-revealed) { margin-bottom: 0; }
+
 .eq-card .eq-qa-head {
   display: flex;
   align-items: center;
@@ -59,8 +64,8 @@
 .eq-card .eq-qa-body code { font-size: 0.88em; }
 
 /* correct option line: (B) option text — the badge is the only green in the body */
-.theme-light { --eq-right: #1d6335; --eq-wrong: #b91c1c; --eq-btn-disabled-bg: #f3f4f6; --eq-btn-disabled: #9ca3af; }
-.theme-dark { --eq-right: #48a868; --eq-wrong: #f17171; --eq-btn-disabled-bg: #292a30; --eq-btn-disabled: #6b6c75; }
+.theme-light { --eq-right: #1d6335; --eq-wrong: #b91c1c; --eq-right-bg: #e2f8ea; --eq-wrong-bg: #fdecec; --eq-btn-disabled-bg: #f3f4f6; --eq-btn-disabled: #9ca3af; }
+.theme-dark { --eq-right: #48a868; --eq-wrong: #f17171; --eq-right-bg: #122618; --eq-wrong-bg: #2b1316; --eq-btn-disabled-bg: #292a30; --eq-btn-disabled: #6b6c75; }
 .eq-card .eq-qa-body p.eq-key {
   display: flex;
   align-items: flex-start;
@@ -124,7 +129,7 @@
   cursor: pointer;
   transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
 }
-.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option:hover {
+.callout.eq-card.eq-quiz:not(.eq-done) > .callout-content > ul > li.eq-option:hover {
   border-color: var(--eq-brand);
   background-color: var(--eq-hover);
 }
@@ -132,6 +137,23 @@
   border-color: var(--eq-brand);
   box-shadow: 0 0 0 1px var(--eq-brand);
   background-color: var(--eq-selected-bg);
+}
+.callout.eq-card.eq-quiz.eq-done > .callout-content > ul > li.eq-option { cursor: default; }
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-correct {
+  border-color: var(--eq-right);
+  box-shadow: 0 0 0 1px var(--eq-right);
+  background-color: var(--eq-right-bg);
+  color: var(--text-normal);
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-wrong {
+  border-color: var(--eq-wrong);
+  box-shadow: 0 0 0 1px var(--eq-wrong);
+  background-color: var(--eq-wrong-bg);
+  color: var(--text-normal);
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-missed {
+  border-color: var(--eq-right);
+  border-style: dashed;
 }
 
 /* footer: tinted strip under the options, status on the left, Submit on the right */
