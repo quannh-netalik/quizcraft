@@ -33,6 +33,16 @@ export function decorateBody(body: HTMLElement): void {
   }
 }
 
+/** Letters of the correct options, in the order the key lines list them. */
+export function keyLetters(qa: HTMLElement): string[] {
+  const out: string[] = [];
+  for (const s of qa.querySelectorAll(".eq-qa-body strong")) {
+    const letter = KEY_LETTER_RE.exec(s.textContent?.trim() ?? "")?.[1];
+    if (letter && !out.includes(letter)) out.push(letter);
+  }
+  return out;
+}
+
 const isKey = (n: Node | undefined): boolean =>
   n?.nodeName === "STRONG" && KEY_LETTER_RE.test(n.textContent?.trim() ?? "");
 

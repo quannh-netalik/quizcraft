@@ -1,3 +1,4 @@
+import { keyLetters } from "./answer";
 import { guard } from "./lib/dom";
 import { optionLetter } from "./parse";
 import { QUIZ_SELECTOR, type QuizCallout } from "./quiz";
@@ -17,11 +18,18 @@ export function setupChoice(callout: QuizCallout): void {
   );
   if (options.length < 2) return;
   callout.dataset.eqReady = "1";
-  callout.classList.add("eq-quiz", "eq-single");
+  callout.classList.add("eq-quiz");
+  // more than one key line = pick several (checkboxes), otherwise one (radios)
+  const multi = (callout.eqQa ? keyLetters(callout.eqQa) : []).length > 1;
+  callout.classList.add(multi ? "eq-multi" : "eq-single");
   for (const li of options) {
     li.dataset.eqLetter = optionLetter(li.textContent ?? "");
     li.classList.add("eq-option");
     guard(li, () => {
+      if (multi) {
+        li.classList.toggle("eq-selected");
+        return;
+      }
       for (const o of options) o.classList.remove("eq-selected");
       li.classList.add("eq-selected");
     });
