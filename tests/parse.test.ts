@@ -4,6 +4,7 @@ import { optionLetter } from "../src/parse";
 describe("optionLetter", () => {
   test.each([
     ["A) one", "A"],
+    ["B. two", "B"],
     ["  C) indented", "C"],
     ["D)", "D"],
   ])("reads %p as %p", (text, letter) => {
