@@ -104,3 +104,32 @@
 .eq-card .eq-qa-body p.eq-sub strong { font-weight: 700; color: inherit; }
 .eq-card .eq-sub-list { font-size: 16px; color: var(--eq-ans-muted); }
 .eq-card .eq-sub-list li::marker { color: var(--eq-ans-muted); }
+
+/* ===== Lettered [!quiz]: option tiles =====
+   Specificity is raised (.callout.eq-card.eq-quiz ... li.eq-option) because snippets load after plugin CSS. */
+.theme-light {
+  --eq-brand: #5553ff;
+  --eq-hover: rgba(85, 83, 255, 0.06);
+  --eq-selected-bg: rgba(85, 83, 255, 0.10);
+}
+.theme-dark {
+  --eq-brand: #8b8af7;
+  --eq-hover: rgba(182, 182, 226, 0.06);
+  --eq-selected-bg: rgba(182, 182, 226, 0.14);
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option {
+  position: relative;
+  margin: 0;
+  padding: 11px 48px 11px 16px !important;
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option:hover {
+  border-color: var(--eq-brand);
+  background-color: var(--eq-hover);
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-selected {
+  border-color: var(--eq-brand);
+  box-shadow: 0 0 0 1px var(--eq-brand);
+  background-color: var(--eq-selected-bg);
+}
