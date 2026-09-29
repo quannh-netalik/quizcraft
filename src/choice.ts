@@ -1,6 +1,6 @@
 import { keyLetters } from "./answer";
 import { guard } from "./lib/dom";
-import { optionLetter } from "./parse";
+import { grade, optionLetter } from "./parse";
 import { QUIZ_SELECTOR, type QuizCallout } from "./quiz";
 import type { Widget } from "./widgets";
 
@@ -22,9 +22,11 @@ export function setupChoice(callout: QuizCallout): void {
   if (options.length < 2) return;
   callout.dataset.eqReady = "1";
   callout.classList.add("eq-quiz");
-  // more than one key line = pick several (checkboxes), otherwise one (radios)
+  // more than one key line = pick several (checkboxes), otherwise one (radios).
+  // The question can also say so itself, for a multi-select quiz with one right option.
   const qa = callout.eqQa;
-  const multi = (qa ? keyLetters(qa) : []).length > 1;
+  const question = [...content.childNodes].filter((n) => n !== qa).map((n) => n.textContent).join(" ");
+  const multi = (qa ? keyLetters(qa) : []).length > 1 || /multi-select/i.test(question);
   callout.classList.add(multi ? "eq-multi" : "eq-single");
 
   // footer sits between the options and the answer section
@@ -53,14 +55,12 @@ export function setupChoice(callout: QuizCallout): void {
     }
     const key = qa ? keyLetters(qa) : [];
     const picked = options.filter((li) => li.classList.contains("eq-selected")).map(letterOf);
-    const right = picked.length === key.length && picked.every((l) => key.includes(l));
+    const { right, marks } = grade(options.map(letterOf), picked, key);
     callout.classList.add("eq-done");
     for (const li of options) {
-      const chosen = li.classList.contains("eq-selected");
-      const inKey = key.includes(letterOf(li));
       li.classList.remove("eq-selected");
-      if (chosen) li.classList.add(inKey ? "eq-correct" : "eq-wrong");
-      else if (inKey) li.classList.add("eq-missed");
+      const mark = marks.get(letterOf(li));
+      if (mark) li.classList.add(`eq-${mark}`);
     }
     status.setText(right ? "Correct!" : "Not quite");
     status.className = `eq-status ${right ? "is-right" : "is-wrong"}`;
