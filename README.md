@@ -58,6 +58,22 @@ starts the answer: everything after it moves into a collapsible
 - Without an `==Answer==` line, or with nothing after it, the card has no
   answer section.
 
+### Grading
+
+A card whose list has two or more lettered options (`- A) text` or
+`- A. text`) becomes an interactive quiz:
+
+1. Click an option to pick it. **Submit Answer** stays disabled until you pick one.
+2. **Submit Answer** grades the picks against the key lines. Picked options turn
+   green or red; a correct option you did not pick gets a dashed border.
+3. The answer section, hidden until now, opens below the footer.
+4. **Try again** clears the picks and hides the answer again.
+
+Two or more key lines make the quiz multi-select (checkboxes). A question
+with one right option can still ask for checkboxes by containing
+`*(Multi-select)*`. A quiz with no key lines shows *No answer key found*
+instead of grading.
+
 ## Development
 
 Requires [Bun](https://bun.sh) 1.4 or later.
