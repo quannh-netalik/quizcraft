@@ -14,7 +14,7 @@
   --eq-ans-head: #23222b; --eq-ans-head-hover: #2a2933; --eq-ans-head-text: #8b8af7;
   --eq-ans-muted: #8d8e96;
 }
-.callout.eq-card > .callout-content > .eq-qa {
+.callout.eq-card[data-callout="quiz"] > .callout-content > .eq-qa {  /* beats a snippet's :last-child margin reset */
   margin: 16px -24px -16px;
   border-top: 1px solid var(--edu-quiz-line, var(--background-modifier-border));
 }
@@ -189,8 +189,9 @@
   cursor: default;
 }
 
-/* Radio (single answer) / checkbox (multi-select) markers */
-.eq-quiz .eq-option::before {
+/* Radio (single answer) / checkbox (multi-select) markers.
+   [data-callout] in the selector beats snippets that restyle li::before for bullets. */
+.callout[data-callout="quiz"].eq-quiz .eq-option::before {
   content: "";
   display: inline-block;
   box-sizing: border-box;
@@ -202,36 +203,36 @@
   background-color: transparent;
   transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
 }
-.eq-quiz.eq-single .eq-option::before { border-radius: 50%; }
-.eq-quiz.eq-multi  .eq-option::before { border-radius: 3px; }
+.callout[data-callout="quiz"].eq-quiz.eq-single .eq-option::before { border-radius: 50%; }
+.callout[data-callout="quiz"].eq-quiz.eq-multi  .eq-option::before { border-radius: 3px; }
 
 /* selected */
-.eq-quiz .eq-option.eq-selected::before { border-color: var(--eq-brand); }
-.eq-quiz.eq-single .eq-option.eq-selected::before {
+.callout[data-callout="quiz"].eq-quiz .eq-option.eq-selected::before { border-color: var(--eq-brand); }
+.callout[data-callout="quiz"].eq-quiz.eq-single .eq-option.eq-selected::before {
   background-color: var(--eq-brand);
   box-shadow: inset 0 0 0 2px var(--edu-quiz-bg, var(--background-primary));
 }
-.eq-quiz.eq-multi .eq-option.eq-selected::before,
-.eq-quiz.eq-multi .eq-option.eq-correct::before,
-.eq-quiz.eq-multi .eq-option.eq-wrong::before {
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-selected::before,
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-correct::before,
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-wrong::before {
   background: var(--eq-brand) no-repeat center / 10px
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3.5 3.5L11 1.5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 /* after submit: picked options keep their mark, in result colour */
-.eq-quiz .eq-option.eq-correct::before { border-color: var(--eq-right); }
-.eq-quiz .eq-option.eq-wrong::before   { border-color: var(--eq-wrong); }
-.eq-quiz.eq-single .eq-option.eq-correct::before {
+.callout[data-callout="quiz"].eq-quiz .eq-option.eq-correct::before { border-color: var(--eq-right); }
+.callout[data-callout="quiz"].eq-quiz .eq-option.eq-wrong::before   { border-color: var(--eq-wrong); }
+.callout[data-callout="quiz"].eq-quiz.eq-single .eq-option.eq-correct::before {
   background-color: var(--eq-right);
   box-shadow: inset 0 0 0 2px var(--eq-right-bg);
 }
-.eq-quiz.eq-single .eq-option.eq-wrong::before {
+.callout[data-callout="quiz"].eq-quiz.eq-single .eq-option.eq-wrong::before {
   background-color: var(--eq-wrong);
   box-shadow: inset 0 0 0 2px var(--eq-wrong-bg);
 }
-.eq-quiz.eq-multi .eq-option.eq-correct::before { background-color: var(--eq-right); }
-.eq-quiz.eq-multi .eq-option.eq-wrong::before   { background-color: var(--eq-wrong); }
-.eq-quiz .eq-option.eq-missed::before { border-color: var(--eq-right); border-style: dashed; }
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-correct::before { background-color: var(--eq-right); }
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-wrong::before   { background-color: var(--eq-wrong); }
+.callout[data-callout="quiz"].eq-quiz .eq-option.eq-missed::before { border-color: var(--eq-right); border-style: dashed; }
 
 /* result mark on the right edge of the tile, instead of a tick glued to the text */
 .callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option::after {
