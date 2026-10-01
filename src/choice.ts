@@ -54,6 +54,11 @@ export function setupChoice(callout: QuizCallout): void {
       return;
     }
     const key = qa ? keyLetters(qa) : [];
+    if (!key.length) {
+      // grading would mark every pick wrong; say what is missing instead
+      status.setText("No answer key found");
+      return;
+    }
     const picked = options.filter((li) => li.classList.contains("eq-selected")).map(letterOf);
     const { right, marks } = grade(options.map(letterOf), picked, key);
     callout.classList.add("eq-done");
