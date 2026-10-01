@@ -1,4 +1,5 @@
 import type { MarkdownPostProcessorContext, Plugin } from "obsidian";
+import { choiceQuiz } from "./choice";
 import { quizCard } from "./quiz";
 
 /** What a widget gets besides its callout element. */
@@ -19,7 +20,7 @@ export interface Widget {
 }
 
 /** Widgets run in this order, so a widget may rely on the ones before it. */
-export const WIDGETS: Widget[] = [quizCard];
+export const WIDGETS: Widget[] = [quizCard, choiceQuiz];
 
 /** `root` itself when it matches, otherwise every match below it. */
 export function findAll(root: HTMLElement, selector: string): HTMLElement[] {
