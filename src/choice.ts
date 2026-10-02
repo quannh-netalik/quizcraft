@@ -1,7 +1,7 @@
 import { keyLetters, relabelKey } from "./answer";
 import { guard } from "./lib/dom";
 import { sameOrder, shuffled } from "./lib/shuffle";
-import { grade, optionLetter } from "./parse";
+import { canShuffle, grade, optionLetter } from "./parse";
 import { QUIZ_SELECTOR, type QuizCallout } from "./quiz";
 import type { Widget } from "./widgets";
 
@@ -44,7 +44,12 @@ export function setupChoice(callout: QuizCallout): void {
   // sorting a fresh copy; toSorted() is ES2023, which mobile builds may lack
   // oxlint-disable-next-line unicorn/no-array-sort
   const labels = options.map(letterOf).sort();
+  const shuffle = canShuffle(
+    options.map((li) => li.textContent ?? ""),
+    qa?.textContent ?? "",
+  );
   const deal = () => {
+    if (!shuffle) return;
     const order = shuffled(options, sameOrder(options));
     const map = new Map<string, string>();
     order.forEach((li, i) => {
