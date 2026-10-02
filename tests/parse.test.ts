@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { grade, optionLetter } from "../src/parse";
+import { canShuffle, grade, optionLetter } from "../src/parse";
 
 describe("optionLetter", () => {
   test.each([
@@ -55,5 +55,34 @@ describe("grade", () => {
 
   test("an empty key is never right", () => {
     expect(grade(letters, [], []).right).toBe(false);
+  });
+});
+
+describe("canShuffle", () => {
+  test("plain options may be dealt", () => {
+    expect(canShuffle(["A) Paris", "B) Rome", "C) Berlin"])).toBe(true);
+  });
+
+  test.each([
+    ["D) All of the above"],
+    ["D) none of these"],
+    ["C) Both"],
+    ["C) Neither"],
+    ["D) A and B"],
+    ["D) A & C"],
+    ["C) The option above"],
+  ])("keeps order for %p", (last) => {
+    expect(canShuffle(["A) one", "B) two", last])).toBe(false);
+  });
+
+  test.each([["Option C is wrong because..."], ["Unlike (B), this..."], ["A or B would also do"], ["Answers B are close"]])(
+    "keeps order when the answer says %p",
+    (answer) => {
+      expect(canShuffle(["A) one", "B) two", "C) three"], answer)).toBe(false);
+    },
+  );
+
+  test("a lone capital in prose is not a citation", () => {
+    expect(canShuffle(["A) one", "B) two"], "I think A is right.")).toBe(true);
   });
 });

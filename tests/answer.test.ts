@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { decorateBody } from "../src/answer";
+import { decorateBody, keyLetters, relabelKey } from "../src/answer";
 
 function body(html: string): HTMLElement {
   document.body.innerHTML = `<div class="eq-qa-body">${html}</div>`;
@@ -55,5 +55,33 @@ describe("decorateBody", () => {
     decorateBody(el);
     decorateBody(el);
     expect(el.querySelectorAll(".eq-key-text")).toHaveLength(1);
+  });
+});
+
+function qa(html: string): HTMLElement {
+  document.body.innerHTML = `<div class="eq-qa"><div class="eq-qa-body">${html}</div></div>`;
+  return document.body.firstElementChild as HTMLElement;
+}
+
+describe("relabelKey", () => {
+  test("shows the dealt letter but grades by the markdown one", () => {
+    const el = qa(`<p><strong>B)</strong> two</p>`);
+    relabelKey(el, new Map([["B", "D"]]));
+    expect(el.querySelector("strong")!.textContent).toBe("D)");
+    expect(keyLetters(el)).toEqual(["B"]);
+  });
+
+  test("relabels again from the markdown letter on the next deal", () => {
+    const el = qa(`<p><strong>A.</strong> one</p>`);
+    relabelKey(el, new Map([["A", "C"]]));
+    relabelKey(el, new Map([["A", "B"]]));
+    expect(el.querySelector("strong")!.textContent).toBe("B.");
+  });
+
+  test("moves the badge letter too", () => {
+    const el = qa(`<p><strong>B)</strong> two</p>`);
+    decorateBody(el.querySelector(".eq-qa-body")!);
+    relabelKey(el, new Map([["B", "A"]]));
+    expect(el.querySelector<HTMLElement>(".eq-key-letter")!.dataset.letter).toBe("A");
   });
 });

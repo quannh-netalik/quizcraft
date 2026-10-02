@@ -1,7 +1,7 @@
 {
   "id": "quizcraft",
   "name": "Quizcraft",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "minAppVersion": "1.5.0",
   "description": "Turns callouts into interactive widgets: graded quizzes, ordering and matching cards, code editors, slide carousels, live calculators and HTML demos. Never edits notes.",
   "author": "Quan Nguyen",
