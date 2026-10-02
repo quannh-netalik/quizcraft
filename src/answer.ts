@@ -43,6 +43,25 @@ export function keyLetters(qa: HTMLElement): string[] {
   return out;
 }
 
+/**
+ * Show each key letter under its letter after a shuffle. `map` goes from the
+ * markdown letter to the displayed one; data-eq-orig keeps the markdown letter
+ * so the key can be relabelled again on the next deal.
+ */
+export function relabelKey(qa: HTMLElement, map: ReadonlyMap<string, string>): void {
+  for (const s of qa.querySelectorAll<HTMLElement>(".eq-qa-body strong")) {
+    if (!s.dataset.eqOrig) {
+      const m = /^([A-Z])([).])$/.exec(s.textContent?.trim() ?? "");
+      if (!m?.[1] || !m[2]) continue;
+      s.dataset.eqOrig = m[1];
+      s.dataset.eqSep = m[2];
+    }
+    const shown = map.get(s.dataset.eqOrig) ?? s.dataset.eqOrig;
+    s.textContent = shown + (s.dataset.eqSep ?? ".");
+    if (s.dataset.letter) s.dataset.letter = shown; // .eq-key-letter badge
+  }
+}
+
 const isKey = (n: Node | undefined): boolean =>
   n?.nodeName === "STRONG" && KEY_LETTER_RE.test(n.textContent?.trim() ?? "");
 
