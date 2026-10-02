@@ -8,11 +8,17 @@ import type { Widget } from "./widgets";
 /** The letter an option has in the markdown; grading always uses it. */
 const letterOf = (li: HTMLElement): string => li.dataset.eqLetter ?? "";
 
-/** Show `letter` in place of the option's leading `X)` / `X.`. */
-function relabel(li: HTMLElement, letter: string): void {
+/**
+ * Show `letter` in place of the option's leading `X)` / `X.`. Only the first
+ * non-blank text node holds it: later ones ("**B.** bold", a nested list) are
+ * the option's own text and stay as written.
+ */
+export function relabel(li: HTMLElement, letter: string): void {
   const walker = document.createTreeWalker(li, NodeFilter.SHOW_TEXT);
   for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-    n.textContent = (n.textContent ?? "").replace(/^(\s*)[A-Z](?=[).])/, `$1${letter}`);
+    if (!n.textContent?.trim()) continue;
+    n.textContent = n.textContent.replace(/^(\s*)[A-Z](?=[).])/, `$1${letter}`);
+    return;
   }
 }
 
