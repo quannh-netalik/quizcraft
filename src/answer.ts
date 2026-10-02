@@ -33,11 +33,15 @@ export function decorateBody(body: HTMLElement): void {
   }
 }
 
-/** Letters of the correct options, in the order the key lines list them. */
+/**
+ * Letters of the correct options, in the order the key lines list them.
+ * Always the markdown letters: after a shuffle the text shows the dealt letter,
+ * data-eq-orig the one the options are graded by.
+ */
 export function keyLetters(qa: HTMLElement): string[] {
   const out: string[] = [];
-  for (const s of qa.querySelectorAll(".eq-qa-body strong")) {
-    const letter = KEY_LETTER_RE.exec(s.textContent?.trim() ?? "")?.[1];
+  for (const s of qa.querySelectorAll<HTMLElement>(".eq-qa-body strong")) {
+    const letter = s.dataset.eqOrig ?? KEY_LETTER_RE.exec(s.textContent?.trim() ?? "")?.[1];
     if (letter && !out.includes(letter)) out.push(letter);
   }
   return out;
