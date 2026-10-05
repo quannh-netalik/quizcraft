@@ -16,7 +16,8 @@
     "typecheck": "tsc",
     "lint": "oxlint --deny-warnings",
     "test": "bun test",
-    "check": "bun run typecheck && bun run lint && bun test"
+    "check": "bun run typecheck && bun run lint && bun test",
+    "bump": "bun scripts/version-bump.ts"
   },
   "keywords": [
     "obsidian",
