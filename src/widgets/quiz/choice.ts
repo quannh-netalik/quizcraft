@@ -1,9 +1,9 @@
 import { keyLetters, relabelKey } from "./answer";
-import { guard } from "./lib/dom";
-import { sameOrder, shuffled } from "./lib/shuffle";
+import { guard } from "../../lib/dom";
+import { sameOrder, shuffled } from "../../lib/shuffle";
 import { canShuffle, grade, optionLetter } from "./parse";
-import { QUIZ_SELECTOR, type QuizCallout } from "./quiz";
-import type { Widget } from "./widgets";
+import { QUIZ_SELECTOR, type QuizCallout } from "./card";
+import type { Widget } from "../registry";
 
 /** The letter an option has in the markdown; grading always uses it. */
 const letterOf = (li: HTMLElement): string => li.dataset.eqLetter ?? "";

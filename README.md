@@ -83,7 +83,26 @@ bun install
 bun run dev      # unminified build to main.js
 bun run check    # typecheck, lint, test
 bun run build    # production build
+bun run bump 0.3.0  # set version in package.json, manifest.json, versions.json
 ```
+
+### Project layout
+
+```text
+src/main.ts              plugin entry: one markdown post-processor
+src/widgets/registry.ts  Widget interface and the ordered widget list
+src/widgets/quiz/        [!quiz] card, answer section, choice grading
+src/lib/                 DOM helpers and shuffle, shared by widgets
+tests/stubs/             obsidian API stand-ins and DOM helpers for happy-dom
+tests/helpers/           callout fixtures
+tests/<area>/            tests, one folder per src area
+scripts/                 release tooling
+```
+
+A new widget gets its own folder under `src/widgets/`, exports a `Widget`,
+and is added to `WIDGETS` in the registry. The layout follows what most
+large community plugins do (Dataview, Templater, Tasks, obsidian-git): a thin
+entry file, one folder per feature, stubs kept beside the tests.
 
 ### Testing in a vault
 

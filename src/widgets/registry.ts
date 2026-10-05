@@ -1,6 +1,6 @@
 import type { MarkdownPostProcessorContext, Plugin } from "obsidian";
-import { choiceQuiz } from "./choice";
-import { quizCard } from "./quiz";
+import { choiceQuiz } from "./quiz/choice";
+import { quizCard } from "./quiz/card";
 
 /** What a widget gets besides its callout element. */
 export interface WidgetEnv {
