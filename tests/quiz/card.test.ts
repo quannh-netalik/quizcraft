@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { findAnswerMarker, setupCard, type QuizCallout } from "../src/widgets/quiz/card";
-import { callout, click, content } from "./helpers";
+import { findAnswerMarker, setupCard, type QuizCallout } from "../../src/widgets/quiz/card";
+import { callout, click, content } from "../helpers/dom";
 
 const QUESTION = `<p>Which one?</p><ul><li>A) one</li><li>B) two</li></ul>`;
 

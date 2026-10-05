@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { sameOrder, shuffled } from "../src/lib/shuffle";
+import { sameOrder, shuffled } from "../../src/lib/shuffle";
 
 /** A fake Math.random that replays `values` in a loop. */
 const seq = (...values: number[]) => {

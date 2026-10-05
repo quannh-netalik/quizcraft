@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { decorateBody, keyLetters, relabelKey } from "../src/widgets/quiz/answer";
+import { decorateBody, keyLetters, relabelKey } from "../../src/widgets/quiz/answer";
 
 function body(html: string): HTMLElement {
   document.body.innerHTML = `<div class="eq-qa-body">${html}</div>`;

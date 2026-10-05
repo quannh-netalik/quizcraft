@@ -1,8 +1,8 @@
 // Preloaded by bun test (bunfig.toml): a happy-dom window as the global DOM, plus an `obsidian` stub.
 import { mock } from "bun:test";
 import { Window } from "happy-dom";
-import { installObsidianDom } from "./obsidian-dom";
-import * as obsidian from "./obsidian-stub";
+import { installObsidianDom } from "./stubs/obsidian-dom";
+import * as obsidian from "./stubs/obsidian";
 
 const window = new Window({ url: "http://localhost/" });
 const globals = globalThis as unknown as Record<string, unknown>;

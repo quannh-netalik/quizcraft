@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { relabel } from "../src/widgets/quiz/choice";
+import { relabel } from "../../src/widgets/quiz/choice";
 
 function li(html: string): HTMLElement {
   const el = document.createElement("li");
