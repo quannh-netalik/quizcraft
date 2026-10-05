@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import QuizcraftPlugin from "../src/main";
-import { findAll, renderWidgets, type Widget } from "../src/widgets";
+import { findAll, renderWidgets, type Widget } from "../src/widgets/registry";
 
 test("plugin registers a single markdown post-processor", () => {
   const plugin = new QuizcraftPlugin({} as never, {} as never);

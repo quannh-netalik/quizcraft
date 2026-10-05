@@ -1,7 +1,7 @@
 import { setIcon } from "obsidian";
 import { decorateBody } from "./answer";
-import { guard } from "./lib/dom";
-import type { Widget } from "./widgets";
+import { guard } from "../../lib/dom";
+import type { Widget } from "../registry";
 
 export const QUIZ_SELECTOR = '.callout[data-callout="quiz"]';
 

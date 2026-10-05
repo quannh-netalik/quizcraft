@@ -1,5 +1,5 @@
 import { Plugin } from "obsidian";
-import { renderWidgets } from "./widgets";
+import { renderWidgets } from "./widgets/registry";
 
 export default class QuizcraftPlugin extends Plugin {
   override onload(): void {

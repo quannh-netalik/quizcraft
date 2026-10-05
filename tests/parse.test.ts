@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { canShuffle, grade, optionLetter } from "../src/parse";
+import { canShuffle, grade, optionLetter } from "../src/widgets/quiz/parse";
 
 describe("optionLetter", () => {
   test.each([
