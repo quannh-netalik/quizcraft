@@ -317,3 +317,133 @@
 .eq-tabs > .callout-content > .callout.eq-tabpanel > .callout-content { padding: 16px 0 0; margin: 0; }
 .eq-tab-icon { display: inline-flex; }
 .eq-tab-icon svg { width: 16px; height: 16px; }
+
+/* ===== [!code]: dark editor (Ace vs-dark #1a191f in both modes, like code blocks) ===== */
+.callout.eq-code[data-callout="code"] {
+  --eq-tabs-border: #2c2b33; --eq-tabs-head: #23222b; --eq-tabs-bg: #1a191f;
+  --eq-tabs-text: #a9a8b3; --eq-tabs-on: #ffffff; --eq-tabs-accent: #8b8af7;
+  background: var(--eq-tabs-bg);
+  border: 1px solid var(--eq-tabs-border);
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: none;
+}
+/* title card: code icon + bright title on its own strip, hairline above the tab row */
+.callout[data-callout="code"] { --callout-icon: lucide-code-xml; }
+.callout.eq-code[data-callout="code"] > .callout-title {
+  padding: 10px 16px;
+  gap: 8px;
+  align-items: center;
+  background: var(--eq-tabs-head);
+  border-bottom: 1px solid var(--eq-tabs-border);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.1px;
+  color: #e6e6eb;
+}
+.callout.eq-code[data-callout="code"] > .callout-title .callout-fold { display: none; }
+.callout.eq-code[data-callout="code"] > .callout-title .callout-icon {
+  display: flex;
+  align-items: center;
+  color: var(--eq-tabs-accent);
+}
+.callout.eq-code[data-callout="code"] > .callout-title .callout-icon svg { width: 15px; height: 15px; }
+.eq-code > .callout-content > .eq-tabbar { background: #1f1e26; }
+.callout.eq-code[data-callout="code"] > .callout-content { padding: 0; margin: 0; background: var(--eq-tabs-bg); }
+
+.eq-code > .callout-content > .eq-tabbar {
+  display: flex;
+  gap: 2px;
+  padding: 4px 8px 0;
+  background: var(--eq-tabs-head);
+  border-bottom: 1px solid var(--eq-tabs-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.eq-code > .callout-content > .eq-tabbar .eq-tab {
+  all: unset;
+  cursor: pointer;
+  flex: none;
+  padding: 8px 12px 7px;
+  font-family: var(--font-interface);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--eq-tabs-text);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  border-radius: 6px 6px 0 0;
+}
+.eq-code > .callout-content > .eq-tabbar .eq-tab { transition: color 0.12s, background-color 0.12s; }
+.eq-code > .callout-content > .eq-tabbar .eq-tab:hover { color: var(--eq-tabs-on); background: rgba(139, 138, 247, 0.08); }
+.eq-code > .callout-content > .eq-tabbar .eq-tab.is-active { color: var(--eq-tabs-on); border-bottom-color: var(--eq-tabs-accent); }
+.eq-code > .callout-content > .eq-tabbar .eq-tab:focus-visible { box-shadow: inset 0 0 0 2px var(--eq-tabs-accent); }
+.eq-code > .callout-content > .callout.eq-tabpanel {
+  display: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.eq-code > .callout-content > .callout.eq-tabpanel.is-active { display: block; }
+.eq-code > .callout-content > .callout.eq-tabpanel > .callout-title { display: none; }
+.eq-code > .callout-content > .callout.eq-tabpanel > .callout-content { padding: 0; margin: 0; }
+.eq-code pre { margin: 0 !important; border-radius: 0 !important; padding: 14px 16px; }
+
+/* [!file] callouts: bare panes, name strip above the code */
+.eq-code .callout.eq-filepane[data-callout="file"] {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.eq-code .callout.eq-filepane > .callout-title {
+  padding: 7px 16px;
+  gap: 0;
+  border-bottom: 1px solid var(--eq-tabs-border);
+  font-family: var(--font-monospace);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 18px;
+  color: var(--eq-tabs-text);
+}
+.eq-code .callout.eq-filepane > .callout-title :is(.callout-icon, .callout-fold) { display: none; }
+.eq-code .callout.eq-filepane > .callout-content { padding: 0; margin: 0; }
+.eq-code .eq-fileview > .callout.eq-filepane > .callout-title { display: none; }
+
+/* multi-file: file list on the left, one file on the right */
+.eq-code .eq-files {
+  display: grid;
+  grid-template-columns: minmax(150px, 22%) 1fr;
+  background: #1a191f;
+}
+.eq-filenav {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  border-right: 1px solid #2c2b33;
+  max-height: 560px;
+  overflow-y: auto;
+}
+.eq-filenav .eq-file {
+  all: unset;
+  cursor: pointer;
+  padding: 5px 14px;
+  font-family: var(--font-monospace);
+  font-size: 12px;
+  color: #a9a8b3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.eq-filenav .eq-file:hover { color: #fff; background: rgba(255, 255, 255, 0.04); }
+.eq-filenav .eq-file.is-active { color: #fff; background: rgba(139, 138, 247, 0.18); box-shadow: inset 2px 0 0 #8b8af7; }
+.eq-fileview { min-width: 0; }
+.eq-fileview > .callout.eq-filepane { display: none; max-height: 560px; overflow: auto; }
+.eq-fileview > .callout.eq-filepane.is-active { display: block; }
