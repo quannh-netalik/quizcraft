@@ -447,3 +447,7 @@
 .eq-fileview { min-width: 0; }
 .eq-fileview > .callout.eq-filepane { display: none; max-height: 560px; overflow: auto; }
 .eq-fileview > .callout.eq-filepane.is-active { display: block; }
+
+/* a caption equal to the callout name ("Code", "Tabs") is Obsidian's default: hide it */
+.callout.eq-notitle:is([data-callout="code"], [data-callout="tabs"]) > .callout-title { display: none; }
+.eq-code.eq-notitle > .callout-content > .eq-tabbar { padding-top: 6px; background: var(--eq-tabs-head); }

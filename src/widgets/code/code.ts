@@ -1,7 +1,7 @@
 import { guard } from "../../lib/dom";
 import type { Widget } from "../registry";
 import { setupFiles } from "./files";
-import { calloutName } from "./tabs";
+import { calloutName, markDefaultTitle } from "./tabs";
 
 export const CODE_SELECTOR = '.callout[data-callout="code"]';
 
@@ -26,9 +26,14 @@ export function setupCode(box: EditorBox): void {
   const content = box.querySelector<HTMLElement>(":scope > .callout-content");
   if (!content) return;
   const panels = [...content.querySelectorAll<HTMLElement>(':scope > .callout[data-callout="tab"]')];
-  if (!panels.length) return;
   box.dataset.eqTabs = "1";
   box.classList.add("eq-code");
+  markDefaultTitle(box);
+  // one language: `>> [!file]` callouts straight under [!code], no tab row
+  if (!panels.length) {
+    setupFiles(content);
+    return;
+  }
 
   const bar = createDiv({ cls: "eq-tabbar" });
   content.prepend(bar);

@@ -63,6 +63,12 @@ describe("setupTabs", () => {
     expect(el.querySelectorAll(".eq-tabbar")).toHaveLength(1);
   });
 
+  test("marks a default title", () => {
+    document.body.innerHTML = box("tabs", "Tabs", tab("A"));
+    const el = document.body.firstElementChild as HTMLElement;
+    setupTabs(el);
+    expect(el.classList.contains("eq-notitle")).toBe(true);
+  });
 });
 
 describe("setupCode language sync", () => {

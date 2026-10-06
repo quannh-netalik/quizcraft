@@ -10,6 +10,15 @@ export function calloutName(el: HTMLElement, fallback: string): string {
 }
 
 /**
+ * `> [!code]` with no caption renders Obsidian's default title "Code". Such a
+ * title says nothing, so the box gets .eq-notitle and the CSS hides it.
+ */
+export function markDefaultTitle(box: HTMLElement): void {
+  const title = box.querySelector(":scope > .callout-title .callout-title-inner")?.textContent?.trim().toLowerCase();
+  if (title && title === box.dataset.callout) box.classList.add("eq-notitle");
+}
+
+/**
  * `> [!tabs] caption` holding `>> [!tab] Name` callouts: flat content tabs.
  * `>> [!tab|leaf] Name` puts the Lucide icon `leaf` before the name.
  * Each box keeps its own selection; the first tab starts active.
@@ -22,6 +31,7 @@ export function setupTabs(box: HTMLElement): void {
   if (!panels.length) return;
   box.dataset.eqTabs = "1";
   box.classList.add("eq-tabs");
+  markDefaultTitle(box);
 
   const bar = createDiv({ cls: "eq-tabbar" });
   content.prepend(bar);
