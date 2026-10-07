@@ -1,5 +1,5 @@
 import { guard } from "../../lib/dom";
-import { calloutName } from "./tabs";
+import { calloutName } from "./tabbar";
 
 /**
  * `[!file] name` callouts inside an editor tab become bare panes. One file =

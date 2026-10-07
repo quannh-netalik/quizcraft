@@ -1,7 +1,6 @@
-import { guard } from "../../lib/dom";
 import type { Widget } from "../registry";
 import { setupFiles } from "./files";
-import { calloutName, markDefaultTitle } from "./tabs";
+import { buildTabBar, markDefaultTitle } from "./tabbar";
 
 export const CODE_SELECTOR = '.callout[data-callout="code"]';
 
@@ -35,34 +34,17 @@ export function setupCode(box: EditorBox): void {
     return;
   }
 
-  const bar = createDiv({ cls: "eq-tabbar" });
-  content.prepend(bar);
-  const tabs = panels.map((panel) => {
-    panel.classList.add("eq-tabpanel");
-    const name = calloutName(panel, "Tab");
-    const btn = bar.createEl("button", { cls: "eq-tab", text: name });
-    setupFiles(panel.querySelector<HTMLElement>(":scope > .callout-content"));
-    return { name, panel, btn };
-  });
-  const select = (name: string, strict = false) => {
-    const picked = tabs.find((t) => t.name === name) ?? (strict ? undefined : tabs[0]);
-    if (!picked) return;
-    for (const t of tabs) {
-      t.btn.classList.toggle("is-active", t === picked);
-      t.panel.classList.toggle("is-active", t === picked);
-    }
-  };
-  box.eqSelect = select;
-  for (const t of tabs) {
-    guard(t.btn, () => {
-      select(t.name);
+  for (const panel of panels) setupFiles(panel.querySelector<HTMLElement>(":scope > .callout-content"));
+  const { select } = buildTabBar(content, panels, {
+    onPick: (t) => {
       localStorage.setItem(LANGUAGE_KEY, t.name);
       for (const other of document.querySelectorAll<EditorBox>(".eq-code")) {
         // a Go-only editor must not jump to its first tab when Python is picked elsewhere
         if (other !== box) other.eqSelect?.(t.name, true);
       }
-    });
-  }
+    },
+  });
+  box.eqSelect = select;
   select(localStorage.getItem(LANGUAGE_KEY) ?? "");
 }
 
