@@ -393,6 +393,9 @@
 .eq-code > .callout-content > .callout.eq-tabpanel > .callout-title { display: none; }
 .eq-code > .callout-content > .callout.eq-tabpanel > .callout-content { padding: 0; margin: 0; }
 .eq-code pre { margin: 0 !important; border-radius: 0 !important; padding: 14px 16px; }
+/* editor code is smaller than plain code blocks (14px/23px); [data-callout] beats a snippet's line-height */
+.callout.eq-code[data-callout="code"] { --code-size: 12px; }
+.callout.eq-code[data-callout="code"] pre { line-height: 19px; }
 
 /* [!file] callouts: bare panes, name strip above the code */
 .eq-code .callout.eq-filepane[data-callout="file"] {
@@ -423,6 +426,8 @@
   grid-template-columns: minmax(150px, 22%) 1fr;
   background: #1a191f;
 }
+/* anything after the files in a tab (the tab's italic caption) spans the full width below them */
+.eq-code .eq-files > :not(.eq-filenav, .eq-fileview) { grid-column: 1 / -1; }
 .eq-filenav {
   display: flex;
   flex-direction: column;
