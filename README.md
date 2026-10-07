@@ -74,6 +74,51 @@ with one right option can still ask for checkboxes by containing
 `*(Multi-select)*`. A quiz with no key lines shows *No answer key found*
 instead of grading.
 
+## Code editors and tabs
+
+`[!code]` draws a dark code editor. Each `[!tab]` inside it is one language;
+each tab holds one code block, or `[!file]` callouts when the example has
+several files:
+
+```markdown
+> [!code] Reading a file
+>> [!tab] Go
+>> ```go
+>> data, err := os.ReadFile("notes.txt")
+>> ```
+>
+>> [!tab] Python
+>>> [!file] main.py
+>>> ```python
+>>> from util import read
+>>> ```
+>>
+>>> [!file] util.py
+>>> ```python
+>>> def read(path): ...
+>>> ```
+```
+
+- One file shows its name above the code; two or more get a file list on the
+  left.
+- With a single language, put the `[!file]` callouts straight under `[!code]`.
+- Picking a language switches every editor that has it, and later editors
+  open on it.
+- `> [!code]` with no caption hides the default "Code" title.
+
+`[!tabs]` makes plain content tabs. Each `[!tab]` is one tab and holds any
+Markdown. `[!tab|leaf]` shows the [Lucide](https://lucide.dev) icon `leaf`
+before the name. Each `[!tabs]` box keeps its own selection.
+
+```markdown
+> [!tabs] Install
+>> [!tab|apple] macOS
+>> `brew install bun`
+>
+>> [!tab|terminal] Linux
+>> `curl -fsSL https://bun.sh/install | bash`
+```
+
 ## Development
 
 Requires [Bun](https://bun.sh) 1.4 or later.
@@ -92,6 +137,7 @@ bun run bump 0.3.0  # set version in package.json, manifest.json, versions.json
 src/main.ts              plugin entry: one markdown post-processor
 src/widgets/registry.ts  Widget interface and the ordered widget list
 src/widgets/quiz/        [!quiz] card, answer section, choice grading
+src/widgets/code/        [!code] editor, [!file] panes, [!tabs] and the shared tab bar
 src/lib/                 DOM helpers and shuffle, shared by widgets
 tests/stubs/             obsidian API stand-ins and DOM helpers for happy-dom
 tests/helpers/           callout fixtures
