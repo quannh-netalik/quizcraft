@@ -456,3 +456,62 @@
 /* a caption equal to the callout name ("Code", "Tabs") is Obsidian's default: hide it */
 .callout.eq-notitle:is([data-callout="code"], [data-callout="tabs"]) > .callout-title { display: none; }
 .eq-code.eq-notitle > .callout-content > .eq-tabbar { padding-top: 6px; background: var(--eq-tabs-head); }
+
+/* ===== Carousel: > [!carousel] + image lines, one slide at a time ===== */
+.theme-light { --eq-car-bg: #ffffff; --eq-car-border: #e5e7eb; --eq-car-text: #374151; --eq-car-icon: #4b5563; }
+.theme-dark { --eq-car-bg: #1a191f; --eq-car-border: #363442; --eq-car-text: #c1c2c6; --eq-car-icon: #c0bdcb; }
+
+.callout.eq-carousel {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.callout.eq-carousel > .callout-title { display: none; }
+.callout.eq-carousel > .callout-content { padding: 0; margin: 0; }
+
+.eq-car {
+  background: var(--eq-car-bg);
+  border: 1px solid var(--eq-car-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.eq-car-stage { padding: 16px; }
+.eq-car-slide { display: none; justify-content: center; }
+.eq-car-slide.is-active { display: flex; }
+.eq-car-slide .internal-embed, .eq-car-slide img { margin: 0 !important; max-width: 100%; }
+
+.eq-car-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-top: 1px solid var(--eq-car-border);
+}
+.eq-car-left, .eq-car-right { display: flex; gap: 8px; flex: 1; }
+.eq-car-right { justify-content: flex-end; }
+.eq-car-count { font-size: 14px; color: var(--eq-car-text); font-variant-numeric: tabular-nums; }
+/* `.eq-car button.eq-car-btn` (0,2,1) beats Obsidian's `button:not(.clickable-icon)` (0,1,1) */
+.theme-light { --eq-car-primary: #5553ff; --eq-car-ghost-hover: #f0f0ff; }
+.theme-dark { --eq-car-primary: #5b59f0; --eq-car-ghost-hover: #2a2933; }
+.eq-car button.eq-car-btn {
+  all: unset;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: var(--background-modifier-hover);
+  border: 1px solid transparent;
+  box-shadow: none;
+  color: var(--eq-car-icon);
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+.eq-car button.eq-car-btn:disabled,
+.eq-car button.eq-car-btn:disabled:hover {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
