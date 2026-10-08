@@ -476,9 +476,20 @@
   border-radius: 8px;
   overflow: hidden;
 }
-.eq-car-stage { padding: 16px; }
-.eq-car-slide { display: none; justify-content: center; }
-.eq-car-slide.is-active { display: flex; }
+/* all slides share one grid cell, so the box is as tall as the tallest slide
+   and the footer does not jump while paging */
+.eq-car-stage {
+  display: grid;
+  padding: 16px;
+}
+.eq-car-slide {
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
+.eq-car-slide.is-active { visibility: visible; }
 .eq-car-slide .internal-embed, .eq-car-slide img { margin: 0 !important; max-width: 100%; }
 
 .eq-car-bar {
@@ -510,8 +521,27 @@
   color: var(--eq-car-icon);
   transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
+.eq-car button.eq-car-btn:hover { background: var(--eq-car-ghost-hover); color: var(--eq-car-primary); }
 .eq-car button.eq-car-btn:disabled,
 .eq-car button.eq-car-btn:disabled:hover {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* fullscreen: slide fills the screen, footer stays at the bottom */
+.eq-car:fullscreen { display: flex; flex-direction: column; border-radius: 0; }
+.eq-car:fullscreen .eq-car-stage { flex: 1; }
+.eq-car:fullscreen .eq-car-slide img { max-height: calc(100vh - 160px); }
+
+.eq-car-caption {
+  margin-top: -4px;
+  padding: 0 16px 12px;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  min-height: 20px;
+}
+.eq-car-caption:empty { display: none; }
+/* the caption replaces Obsidian's own alt-text label under embeds */
+body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: none; }
