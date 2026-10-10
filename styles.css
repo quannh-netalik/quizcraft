@@ -548,3 +548,6 @@
 .eq-car-caption:empty { display: none; }
 /* the caption replaces Obsidian's own alt-text label under embeds */
 body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: none; }
+/* no lingering focus look after a mouse click; the ring is for keyboard focus only */
+.eq-car button.eq-car-btn:focus { outline: none; box-shadow: none; }
+.eq-car button.eq-car-btn:focus-visible { box-shadow: 0 0 0 2px var(--eq-car-bg), 0 0 0 4px var(--eq-car-primary); }

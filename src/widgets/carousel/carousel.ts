@@ -6,9 +6,14 @@ export const CAROUSEL_SELECTOR = '.callout[data-callout="carousel"]';
 const svg = (d: string): string =>
   `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 
-/** Alt text of an image or of the image inside an embed. */
-const altOf = (s: HTMLElement): string =>
-  s.getAttribute("alt") ?? s.querySelector("img")?.getAttribute("alt") ?? "";
+/** Obsidian fills alt with the file name when the embed has no caption. */
+const FILE_NAME_RE = /\.(svg|png|jpe?g|gif|webp|avif|bmp)$/i;
+
+/** Caption for a slide: its alt text, unless that is only the file name. */
+export function captionOf(s: HTMLElement): string {
+  const alt = s.getAttribute("alt") || s.querySelector("img")?.getAttribute("alt") || "";
+  return FILE_NAME_RE.test(alt.trim()) ? "" : alt;
+}
 
 /** Footer button, icon only; `title` doubles as the accessible name. */
 function iconButton(cls: string, title: string, path: string): HTMLButtonElement {
@@ -65,7 +70,7 @@ export function setupCarousel(box: HTMLElement): void {
     next.disabled = i === slides.length - 1;
     restart.disabled = i === 0;
     const slide = slides[i];
-    caption.setText(slide ? altOf(slide) : "");
+    caption.setText(slide ? captionOf(slide) : "");
   };
   guard(prev, () => go(i - 1));
   guard(next, () => go(i + 1));

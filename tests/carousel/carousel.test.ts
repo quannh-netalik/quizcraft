@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { setupCarousel } from "../../src/widgets/carousel/carousel";
+import { captionOf, setupCarousel } from "../../src/widgets/carousel/carousel";
 import { callout, click } from "../helpers/dom";
 
 /** `n` bare image embeds, the way Obsidian renders them before the images load. */
@@ -70,5 +70,21 @@ describe("setupCarousel", () => {
     const el = carousel("a", "b");
     setupCarousel(el);
     expect(el.querySelectorAll(".eq-car")).toHaveLength(1);
+  });
+});
+
+function img(alt: string): HTMLElement {
+  const s = document.createElement("span");
+  s.setAttribute("alt", alt);
+  return s;
+}
+
+describe("captionOf", () => {
+  test("uses alt text", () => {
+    expect(captionOf(img("The request path"))).toBe("The request path");
+  });
+
+  test.each([["diagram.png"], ["Photo 1.JPG"], ["chart.svg "]])("hides file name %p", (alt) => {
+    expect(captionOf(img(alt))).toBe("");
   });
 });
