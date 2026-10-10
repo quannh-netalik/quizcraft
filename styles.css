@@ -475,12 +475,15 @@
   border: 1px solid var(--eq-car-border);
   border-radius: 8px;
   overflow: hidden;
+  outline: none;
 }
+.eq-car:focus-visible { box-shadow: 0 0 0 2px var(--eq-car-primary); }
 /* all slides share one grid cell, so the box is as tall as the tallest slide
    and the footer does not jump while paging */
 .eq-car-stage {
   display: grid;
   padding: 16px;
+  cursor: pointer;
 }
 .eq-car-slide {
   grid-area: 1 / 1;

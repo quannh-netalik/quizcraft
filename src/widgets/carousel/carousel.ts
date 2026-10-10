@@ -34,7 +34,7 @@ export function setupCarousel(box: HTMLElement): void {
   box.dataset.eqCar = "1";
   box.classList.add("eq-carousel");
 
-  const wrap = createDiv({ cls: "eq-car" });
+  const wrap = createDiv({ cls: "eq-car", attr: { tabindex: "0" } });
   const stage = wrap.createDiv({ cls: "eq-car-stage" });
   for (const s of slides) stage.createDiv({ cls: "eq-car-slide" }).appendChild(s);
 
@@ -73,6 +73,15 @@ export function setupCarousel(box: HTMLElement): void {
   guard(full, () => {
     if (document.fullscreenElement) void document.exitFullscreen();
     else void wrap.requestFullscreen?.();
+  });
+  // clicking a slide pages forward; guard also keeps it from opening the image
+  // or moving the cursor into the callout source
+  guard(stage, () => go(i + 1));
+  // arrow keys page while the box has focus
+  wrap.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    go(e.key === "ArrowRight" ? i + 1 : i - 1);
   });
   go(0);
 }
