@@ -1,10 +1,8 @@
+import { setIcon } from "obsidian";
 import { guard } from "../../lib/dom";
 import type { Widget } from "../registry";
 
 export const CAROUSEL_SELECTOR = '.callout[data-callout="carousel"]';
-
-const svg = (d: string): string =>
-  `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 
 /** Obsidian fills alt with the file name when the embed has no caption. */
 const FILE_NAME_RE = /\.(svg|png|jpe?g|gif|webp|avif|bmp)$/i;
@@ -15,10 +13,10 @@ export function captionOf(s: HTMLElement): string {
   return FILE_NAME_RE.test(alt.trim()) ? "" : alt;
 }
 
-/** Footer button, icon only; `title` doubles as the accessible name. */
-function iconButton(cls: string, title: string, path: string): HTMLButtonElement {
+/** Footer button with a Lucide icon; `title` doubles as the accessible name. */
+function iconButton(cls: string, title: string, icon: string): HTMLButtonElement {
   const b = createEl("button", { cls: `eq-car-btn ${cls}`, attr: { title, "aria-label": title } });
-  b.innerHTML = svg(path);
+  setIcon(b, icon);
   return b;
 }
 
@@ -46,13 +44,13 @@ export function setupCarousel(box: HTMLElement): void {
   // footer: [fullscreen][restart]  i / n  [prev][next]
   const bar = wrap.createDiv({ cls: "eq-car-bar" });
   const left = bar.createDiv({ cls: "eq-car-left" });
-  const full = iconButton("eq-car-full", "Fullscreen", '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>');
-  const restart = iconButton("eq-car-restart", "Restart", '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/>');
+  const full = iconButton("eq-car-full", "Fullscreen", "maximize");
+  const restart = iconButton("eq-car-restart", "Restart", "rotate-ccw");
   left.append(full, restart);
   const count = bar.createDiv({ cls: "eq-car-count" });
   const right = bar.createDiv({ cls: "eq-car-right" });
-  const prev = iconButton("eq-car-prev", "Previous", '<path d="M15 18l-6-6 6-6"/>');
-  const next = iconButton("eq-car-next", "Next", '<path d="M9 18l6-6-6-6"/>');
+  const prev = iconButton("eq-car-prev", "Previous", "chevron-left");
+  const next = iconButton("eq-car-next", "Next", "chevron-right");
   right.append(prev, next);
   // the caption sits right under the image, inside the box
   const caption = createDiv({ cls: "eq-car-caption" });
