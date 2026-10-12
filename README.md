@@ -119,6 +119,23 @@ before the name. Each `[!tabs]` box keeps its own selection.
 >> `curl -fsSL https://bun.sh/install | bash`
 ```
 
+## Carousel
+
+`[!carousel]` with two or more image embeds shows them as slides, one at a
+time:
+
+```markdown
+> [!carousel]
+> ![[request-1.png|Client sends the request]]
+> ![[request-2.png|Server checks the token]]
+> ![[request-3.png]]
+```
+
+- The text after `|` is the caption. An embed without one has no caption.
+- Use the footer buttons, click the slide, or press the arrow keys while the
+  carousel has focus.
+- The box keeps the height of the tallest slide, so the footer does not move.
+
 ## Development
 
 Requires [Bun](https://bun.sh) 1.4 or later.
@@ -138,6 +155,7 @@ src/main.ts              plugin entry: one markdown post-processor
 src/widgets/registry.ts  Widget interface and the ordered widget list
 src/widgets/quiz/        [!quiz] card, answer section, choice grading
 src/widgets/code/        [!code] editor, [!file] panes, [!tabs] and the shared tab bar
+src/widgets/carousel/    [!carousel] image slides
 src/lib/                 DOM helpers and shuffle, shared by widgets
 tests/stubs/             obsidian API stand-ins and DOM helpers for happy-dom
 tests/helpers/           callout fixtures
