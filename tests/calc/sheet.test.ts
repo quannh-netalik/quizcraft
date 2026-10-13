@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { cellKey, formatResult, parseFormulas, setupCalc } from "../../src/widgets/calc/sheet";
-import { callout } from "../helpers/dom";
+import { callout, click } from "../helpers/dom";
 
 /** A [!calc] callout whose table body is `rows`; `==x==` cells are given as <mark>. */
 function sheet(meta: string, rows: string[][]): HTMLElement {
@@ -77,11 +77,31 @@ describe("setupCalc", () => {
     expect(cell(el, 4, 2).textContent).toBe("400.3");
   });
 
+  test("reset restores the note's values", () => {
+    const el = sheet("B3=B1+B2", rows());
+    const input = cell(el, 1, 2).querySelector("input")!;
+    type(input, "5");
+    expect(cell(el, 3, 2).textContent).toBe("405");
+    click(el.querySelector(".eq-calc-reset")!);
+    expect(input.value).toBe("1000");
+    expect(cell(el, 3, 2).textContent).toBe("1400");
+  });
 
   test("keeps the static value of an unsupported formula", () => {
     const el = sheet("B3=SUM(B1:B2)", rows());
     expect(cell(el, 3, 2).textContent).toBe("1400");
   });
 
+  test("a cycle stops at the cell's own value instead of recursing forever", () => {
+    const el = sheet("B3=B4+1;B4=B3+1", rows());
+    // B3 = B4 + 1, where B4 = (B3 as written, 1400) + 1
+    expect(cell(el, 3, 2).textContent).toBe("1402");
+    expect(cell(el, 4, 2).textContent).toBe("1401");
+  });
 
+  test("is idempotent", () => {
+    const el = sheet("B3=B1+B2", rows());
+    setupCalc(el);
+    expect(el.querySelectorAll(".eq-calc-reset")).toHaveLength(1);
+  });
 });

@@ -1,3 +1,5 @@
+import { setIcon } from "obsidian";
+import { guard } from "../../lib/dom";
 import type { Widget } from "../registry";
 import { evaluate, type Expr, FormulaError, parse } from "./formula";
 
@@ -100,7 +102,11 @@ export function setupCalc(box: HTMLElement): void {
 
   // cells being evaluated right now: meeting one again means a cycle (A1=B1, B1=A1)
   const busy = new Set<string>();
+  // results of this recalc, so a cell many formulas read is computed once
+  const memo = new Map<string, number>();
   const value = (key: string): number => {
+    const known = memo.get(key);
+    if (known !== undefined) return known;
     const cell = cells.get(key);
     if (!cell) return 0;
     const expr = compiled.get(key);
@@ -108,16 +114,29 @@ export function setupCalc(box: HTMLElement): void {
     if (!expr || busy.has(key)) return toNumber(cell.input ? cell.input.value : cell.base);
     busy.add(key);
     try {
-      return evaluate(expr, value);
+      const v = evaluate(expr, value);
+      memo.set(key, v);
+      return v;
     } finally {
       busy.delete(key);
     }
   };
   const recalc = () => {
+    memo.clear();
     for (const key of compiled.keys()) cells.get(key)?.td.setText(formatResult(value(key)));
   };
   for (const cell of cells.values()) cell.input?.addEventListener("input", recalc);
   recalc();
+
+  // reset puts every input back to the value the note gives it
+  const title = box.querySelector<HTMLElement>(":scope > .callout-title");
+  if (!title) return;
+  const reset = title.createDiv({ cls: "eq-calc-reset", attr: { "aria-label": "Reset values", role: "button" } });
+  setIcon(reset, "rotate-ccw");
+  guard(reset, () => {
+    for (const cell of cells.values()) if (cell.input) cell.input.value = cell.base;
+    recalc();
+  });
 }
 
 export const calcSheet: Widget = {
