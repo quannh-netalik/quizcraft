@@ -1,5 +1,5 @@
 import type { Widget } from "../registry";
-import { evaluate, type Expr, parse } from "./formula";
+import { evaluate, type Expr, FormulaError, parse } from "./formula";
 
 export const CALC_SELECTOR = '.callout[data-callout="calc"]';
 
@@ -23,9 +23,12 @@ export function toNumber(text: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-/** How an output cell shows a result: at most 6 decimals, no trailing zeros. */
+/**
+ * How an output cell shows a result: at most 6 decimals, no trailing zeros.
+ * Division by zero and the like show an em dash, not "NaN" or "Infinity".
+ */
 export function formatResult(v: number): string {
-  return String(Number(v.toFixed(6)));
+  return Number.isFinite(v) ? String(Number(v.toFixed(6))) : "\u2014";
 }
 
 /**
@@ -84,16 +87,31 @@ export function setupCalc(box: HTMLElement): void {
   const cells = readCells(table);
   const compiled = new Map<string, Expr>();
   for (const [key, formula] of formulas) {
-    cells.get(key)?.td.addClass("eq-calc-out");
-    compiled.set(key, parse(formula));
+    const cell = cells.get(key);
+    if (!cell) continue;
+    cell.td.addClass("eq-calc-out");
+    try {
+      compiled.set(key, parse(formula));
+    } catch (error) {
+      // a formula outside the language keeps the value the note shows
+      if (!(error instanceof FormulaError)) throw error;
+    }
   }
 
+  // cells being evaluated right now: meeting one again means a cycle (A1=B1, B1=A1)
+  const busy = new Set<string>();
   const value = (key: string): number => {
     const cell = cells.get(key);
     if (!cell) return 0;
     const expr = compiled.get(key);
-    if (expr) return evaluate(expr, value);
-    return toNumber(cell.input ? cell.input.value : cell.base);
+    // inside a cycle the cell counts as the number the note gives it
+    if (!expr || busy.has(key)) return toNumber(cell.input ? cell.input.value : cell.base);
+    busy.add(key);
+    try {
+      return evaluate(expr, value);
+    } finally {
+      busy.delete(key);
+    }
   };
   const recalc = () => {
     for (const key of compiled.keys()) cells.get(key)?.td.setText(formatResult(value(key)));

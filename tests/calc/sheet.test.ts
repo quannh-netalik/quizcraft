@@ -48,6 +48,10 @@ describe("formatResult", () => {
     expect(formatResult(2)).toBe("2");
   });
 
+  test("shows an em dash for non-finite values", () => {
+    expect(formatResult(Infinity)).toBe("\u2014");
+    expect(formatResult(Number.NaN)).toBe("\u2014");
+  });
 });
 
 /** Two inputs, a total and a weekly figure. */
@@ -74,6 +78,10 @@ describe("setupCalc", () => {
   });
 
 
+  test("keeps the static value of an unsupported formula", () => {
+    const el = sheet("B3=SUM(B1:B2)", rows());
+    expect(cell(el, 3, 2).textContent).toBe("1400");
+  });
 
 
 });
