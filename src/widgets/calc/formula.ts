@@ -33,3 +33,134 @@ export function tokenize(src: string): Token[] {
   }
   return out;
 }
+
+export type BinOp = "+" | "-" | "*" | "/" | "^";
+
+/**
+ * round/ceil/floor take an optional number of digits, like a spreadsheet:
+ * `round(3.14159, 2)` is 3.14, `ceil(12, -1)` is 20.
+ */
+const FUNCTIONS = {
+  round: Math.round,
+  ceil: Math.ceil,
+  floor: Math.floor,
+} as const;
+
+export type FnName = keyof typeof FUNCTIONS;
+
+const isFn = (name: string): name is FnName => Object.hasOwn(FUNCTIONS, name);
+
+function applyFn(name: FnName, x: number, digits = 0): number {
+  const scale = 10 ** Math.trunc(digits);
+  return FUNCTIONS[name](x * scale) / scale;
+}
+
+/** Parsed formula. */
+export type Expr =
+  | { kind: "num"; value: number }
+  | { kind: "ref"; key: string }
+  | { kind: "neg"; arg: Expr }
+  | { kind: "bin"; op: BinOp; left: Expr; right: Expr }
+  | { kind: "call"; name: FnName; args: Expr[] };
+
+/**
+ * Parse a formula. Grammar, loosest first:
+ *
+ *     expr  := term (("+" | "-") term)*
+ *     term  := unary (("*" | "/") unary)*
+ *     unary := ("-" | "+") unary | power
+ *     power := atom ("^" atom)*
+ *     atom  := number | ref | name "(" expr ("," expr)? ")" | "(" expr ")"
+ */
+export function parse(src: string): Expr {
+  const tokens = tokenize(src);
+  let i = 0;
+  const isOp = (...ops: string[]): string | undefined => {
+    const t = tokens[i];
+    return t?.kind === "op" && ops.includes(t.op) ? t.op : undefined;
+  };
+  const expect = (op: string): void => {
+    if (!isOp(op)) throw new FormulaError(`expected "${op}" in ${src}`);
+    i++;
+  };
+
+  const atom = (): Expr => {
+    const t = tokens[i++];
+    if (t?.kind === "num") return { kind: "num", value: t.value };
+    if (t?.kind === "ref") return { kind: "ref", key: t.key };
+    if (t?.kind === "name") {
+      if (!isFn(t.name)) throw new FormulaError(`unknown function ${t.name} in ${src}`);
+      expect("(");
+      const args = [expr()];
+      if (isOp(",")) {
+        i++;
+        args.push(expr());
+      }
+      expect(")");
+      return { kind: "call", name: t.name, args };
+    }
+    if (t?.kind === "op" && t.op === "(") {
+      const inner = expr();
+      expect(")");
+      return inner;
+    }
+    throw new FormulaError(`unexpected ${t ? JSON.stringify(t) : "end"} in ${src}`);
+  };
+  const power = (): Expr => {
+    let left = atom();
+    while (isOp("^")) {
+      i++;
+      left = { kind: "bin", op: "^", left, right: atom() };
+    }
+    return left;
+  };
+  const unary = (): Expr => {
+    const op = isOp("-", "+");
+    if (!op) return power();
+    i++;
+    const arg = unary();
+    return op === "-" ? { kind: "neg", arg } : arg;
+  };
+  const binary = (next: () => Expr, ...ops: BinOp[]) => (): Expr => {
+    let left = next();
+    for (let op = isOp(...ops); op; op = isOp(...ops)) {
+      i++;
+      left = { kind: "bin", op: op as BinOp, left, right: next() };
+    }
+    return left;
+  };
+  const term = binary(unary, "*", "/");
+  const expr = binary(term, "+", "-");
+
+  const out = expr();
+  if (i < tokens.length) throw new FormulaError(`unexpected trailing input in ${src}`);
+  return out;
+}
+
+/** Value of a cell, by key. */
+export type Lookup = (key: string) => number;
+
+/** Value of `e`, reading cells through `lookup`. Division by zero gives Infinity or NaN. */
+export function evaluate(e: Expr, lookup: Lookup): number {
+  switch (e.kind) {
+    case "num":
+      return e.value;
+    case "ref":
+      return lookup(e.key);
+    case "neg":
+      return -evaluate(e.arg, lookup);
+    case "bin": {
+      const a = evaluate(e.left, lookup);
+      const b = evaluate(e.right, lookup);
+      if (e.op === "+") return a + b;
+      if (e.op === "-") return a - b;
+      if (e.op === "*") return a * b;
+      if (e.op === "/") return a / b;
+      return a ** b;
+    }
+    case "call": {
+      const [x, digits] = e.args.map((a) => evaluate(a, lookup));
+      return applyFn(e.name, x ?? Number.NaN, digits);
+    }
+  }
+}

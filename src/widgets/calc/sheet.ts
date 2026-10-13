@@ -1,4 +1,5 @@
 import type { Widget } from "../registry";
+import { evaluate, type Expr, parse } from "./formula";
 
 export const CALC_SELECTOR = '.callout[data-callout="calc"]';
 
@@ -14,6 +15,17 @@ export interface Cell {
 /** Spreadsheet key of a body cell: column letter and 1-based row, `A1` top left. */
 export function cellKey(col: number, row: number): string {
   return String.fromCodePoint(65 + col) + String(row + 1);
+}
+
+/** A cell's text as a number; anything unreadable counts as 0, like an empty cell. */
+export function toNumber(text: string): number {
+  const n = Number(text.trim());
+  return Number.isFinite(n) ? n : 0;
+}
+
+/** How an output cell shows a result: at most 6 decimals, no trailing zeros. */
+export function formatResult(v: number): string {
+  return String(Number(v.toFixed(6)));
 }
 
 /**
@@ -60,7 +72,7 @@ export function readCells(table: HTMLTableElement): Map<string, Cell> {
 /**
  * `> [!calc] title` holding a table: a small spreadsheet. Row n, column k of
  * the table body is cell `<letter k><n>`. `==x==` cells become inputs; cells
- * named in the metadata hold formulas.
+ * named in the metadata hold formulas and recompute on every edit.
  */
 export function setupCalc(box: HTMLElement): void {
   if (box.dataset.eqCalc) return;
@@ -70,7 +82,24 @@ export function setupCalc(box: HTMLElement): void {
   box.classList.add("eq-calc");
   const formulas = parseFormulas(box.dataset.calloutMetadata ?? "");
   const cells = readCells(table);
-  for (const key of formulas.keys()) cells.get(key)?.td.addClass("eq-calc-out");
+  const compiled = new Map<string, Expr>();
+  for (const [key, formula] of formulas) {
+    cells.get(key)?.td.addClass("eq-calc-out");
+    compiled.set(key, parse(formula));
+  }
+
+  const value = (key: string): number => {
+    const cell = cells.get(key);
+    if (!cell) return 0;
+    const expr = compiled.get(key);
+    if (expr) return evaluate(expr, value);
+    return toNumber(cell.input ? cell.input.value : cell.base);
+  };
+  const recalc = () => {
+    for (const key of compiled.keys()) cells.get(key)?.td.setText(formatResult(value(key)));
+  };
+  for (const cell of cells.values()) cell.input?.addEventListener("input", recalc);
+  recalc();
 }
 
 export const calcSheet: Widget = {
