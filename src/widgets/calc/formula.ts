@@ -69,7 +69,7 @@ export type Expr =
  *     expr  := term (("+" | "-") term)*
  *     term  := unary (("*" | "/") unary)*
  *     unary := ("-" | "+") unary | power
- *     power := atom ("^" atom)*
+ *     power := atom ("^" unary)?
  *     atom  := number | ref | name "(" expr ("," expr)? ")" | "(" expr ")"
  */
 export function parse(src: string): Expr {
@@ -106,13 +106,12 @@ export function parse(src: string): Expr {
     }
     throw new FormulaError(`unexpected ${t ? JSON.stringify(t) : "end"} in ${src}`);
   };
+  // right-associative: 2^3^2 is 2^(3^2); the exponent may carry a sign (2^-1)
   const power = (): Expr => {
-    let left = atom();
-    while (isOp("^")) {
-      i++;
-      left = { kind: "bin", op: "^", left, right: atom() };
-    }
-    return left;
+    const left = atom();
+    if (!isOp("^")) return left;
+    i++;
+    return { kind: "bin", op: "^", left, right: unary() };
   };
   const unary = (): Expr => {
     const op = isOp("-", "+");
