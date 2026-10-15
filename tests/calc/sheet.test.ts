@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { cellKey, formatResult, parseFormulas, setupCalc } from "../../src/widgets/calc/sheet";
+import { cellKey, formatResult, parseFormulas, setupCalc, toNumber } from "../../src/widgets/calc/sheet";
 import { callout, click } from "../helpers/dom";
 
 /** A [!calc] callout whose table body is `rows`; `==x==` cells are given as <mark>. */
@@ -41,6 +41,20 @@ describe("parseFormulas", () => {
   });
 });
 
+describe("toNumber", () => {
+  test.each([
+    ["42", 42],
+    [" 3.5 ", 3.5],
+    ["1,200", 1200],
+    ["1,234,567.5", 1_234_567.5],
+    ["12 kg", 12],
+    ["-4", -4],
+    ["", 0],
+    ["n/a", 0],
+  ])("%p is %p", (text, want) => {
+    expect(toNumber(text)).toBe(want);
+  });
+});
 
 describe("formatResult", () => {
   test("trims float noise and trailing zeros", () => {
@@ -56,7 +70,7 @@ describe("formatResult", () => {
 
 /** Two inputs, a total and a weekly figure. */
 const rows = () => [
-  ["Rent", "<mark>1000</mark>"],
+  ["Rent", "<mark>1,000</mark>"],
   ["Food", "<mark>400</mark>"],
   ["Total", "1400"],
   ["Per week", "350"],
@@ -83,7 +97,7 @@ describe("setupCalc", () => {
     type(input, "5");
     expect(cell(el, 3, 2).textContent).toBe("405");
     click(el.querySelector(".eq-calc-reset")!);
-    expect(input.value).toBe("1000");
+    expect(input.value).toBe("1,000");
     expect(cell(el, 3, 2).textContent).toBe("1400");
   });
 

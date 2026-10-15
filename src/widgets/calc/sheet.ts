@@ -19,9 +19,13 @@ export function cellKey(col: number, row: number): string {
   return String.fromCodePoint(65 + col) + String(row + 1);
 }
 
-/** A cell's text as a number; anything unreadable counts as 0, like an empty cell. */
+/**
+ * A cell's text as a number; anything unreadable counts as 0, like an empty
+ * cell. Thousands separators (`1,200`) and a trailing unit (`12 kg`, `5%`)
+ * are allowed.
+ */
 export function toNumber(text: string): number {
-  const n = Number(text.trim());
+  const n = Number.parseFloat(text.replaceAll(",", "").trim());
   return Number.isFinite(n) ? n : 0;
 }
 
