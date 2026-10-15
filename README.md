@@ -136,6 +136,44 @@ time:
   carousel has focus.
 - The box keeps the height of the tallest slide, so the footer does not move.
 
+## Calc
+
+`[!calc]` turns a table into a small spreadsheet. Formulas go in the callout
+metadata, `;` between them:
+
+```markdown
+> [!calc|B3=B1+B2;B4=round(B3/4,1)] Monthly budget
+> | | |
+> |---|---|
+> | Rent | ==1,000== |
+> | Food | ==400== |
+> | Total | 1400 |
+> | Per week | 350 |
+```
+
+- The table body is the grid: row 1, column 1 is `A1`. The header row is not
+  part of it.
+- `==value==` cells become inputs. Every edit recomputes the fomula cells.
+- The title gets a reset button that restores the values from the note.
+- Keep the computed values in the note too: they show where the plugin is
+  not installed.
+
+Formula language:
+
+| Syntax | Meaning |
+|---|---|
+| `12`, `1.5` | numbers |
+| `B2` | the value of a cell; text that is not a number counts as 0 |
+| `+ - * /` | arithmetic, usual precedence |
+| `^` | power, right-associative: `2^3^2` is `2^9` |
+| `( )` | grouping |
+| `round(x)`, `round(x, digits)` | round; negative digits round to tens, hundreds, … |
+| `ceil(x, digits)`, `floor(x, digits)` | round up or down, digits as for `round` |
+
+A formula outside this language keeps the value the the note shows. A result that
+is not a number, such as division by zero, shows `—`. Formulas that refer to
+each other in a loop stop at the value written in the note.
+
 ## Development
 
 Requires [Bun](https://bun.sh) 1.4 or later.
@@ -156,6 +194,7 @@ src/widgets/registry.ts  Widget interface and the ordered widget list
 src/widgets/quiz/        [!quiz] card, answer section, choice grading
 src/widgets/code/        [!code] editor, [!file] panes, [!tabs] and the shared tab bar
 src/widgets/carousel/    [!carousel] image slides
+src/widgets/calc/        [!calc] formula parser and spreadsheet
 src/lib/                 DOM helpers and shuffle, shared by widgets
 tests/stubs/             obsidian API stand-ins and DOM helpers for happy-dom
 tests/helpers/           callout fixtures
