@@ -21,20 +21,25 @@ export async function setupDemo(box: HTMLElement, env: WidgetEnv): Promise<void>
   const content = box.querySelector<HTMLElement>(":scope > .callout-content");
   const link = content?.querySelector<HTMLElement>("a.internal-link");
   if (!content || !link) return;
-  box.dataset.eqDemo = "1";
-  box.classList.add("eq-demo");
-
   const { app } = env.plugin;
   const target = link.dataset.href ?? link.getAttribute("href") ?? "";
   const file = app.metadataCache.getFirstLinkpathDest(target, env.ctx.sourcePath);
+  // leave the plain link, so the note still says which file is missing
+  if (file?.extension !== "html") return;
+  box.dataset.eqDemo = "1";
+  box.classList.add("eq-demo");
+  // the callout title is the caption; the default "Demo" title is not one
+  const caption = box.querySelector(":scope > .callout-title .callout-title-inner")?.textContent?.trim() ?? "";
+  const shown = caption.toLowerCase() === "demo" ? "" : caption;
   const frame = createEl("iframe", {
     cls: "eq-demo-frame",
-    attr: { sandbox: "allow-scripts", title: file?.basename ?? target },
+    attr: { sandbox: "allow-scripts", title: shown || file.basename },
   });
   frame.style.height = `${frameHeight(box.dataset.calloutMetadata)}px`;
   content.empty();
   content.appendChild(frame);
-  frame.srcdoc = file ? await app.vault.cachedRead(file) : "";
+  if (shown) content.createDiv({ cls: "eq-demo-cap", text: shown });
+  frame.srcdoc = await app.vault.cachedRead(file);
 }
 
 export const htmlDemo: Widget = {

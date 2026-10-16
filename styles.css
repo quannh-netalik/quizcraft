@@ -618,3 +618,16 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
   border-radius: 8px;
   background: #fff;
 }
+/* caption: a small pill centred under the frame */
+.theme-light { --eq-demo-cap-bg: #f9fafb; --eq-demo-cap: #000; }
+.theme-dark { --eq-demo-cap-bg: #222327; --eq-demo-cap: #c1c2c6; }
+.eq-demo-cap {
+  display: table;
+  margin: 10px auto 0;
+  padding: 4px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 21px;
+  background-color: var(--eq-demo-cap-bg);
+  color: var(--eq-demo-cap);
+}
