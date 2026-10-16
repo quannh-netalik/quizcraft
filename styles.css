@@ -601,3 +601,33 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
 .eq-calc-reset:hover { color: var(--eq-brand); background: var(--eq-hover); }
 .eq-calc-reset svg { width: 16px; height: 16px; }
 
+
+/* ===== Demo: > [!demo] + [[file.html]], the page runs in a sandboxed frame ===== */
+.callout.eq-demo {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+}
+.callout.eq-demo > .callout-title { display: none; }
+.callout.eq-demo > .callout-content { padding: 0; margin: 0; }
+.eq-demo-frame {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  background: #fff;
+}
+/* caption: a small pill centred under the frame */
+.theme-light { --eq-demo-cap-bg: #f9fafb; --eq-demo-cap: #000; }
+.theme-dark { --eq-demo-cap-bg: #222327; --eq-demo-cap: #c1c2c6; }
+.eq-demo-cap {
+  display: table;
+  margin: 10px auto 0;
+  padding: 4px 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 21px;
+  background-color: var(--eq-demo-cap-bg);
+  color: var(--eq-demo-cap);
+}
