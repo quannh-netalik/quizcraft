@@ -174,6 +174,23 @@ A formula outside this language keeps the value the the note shows. A result tha
 is not a number, such as division by zero, shows `—`. Formulas that refer to
 each other in a loop stop at the value written in the note.
 
+## HTML demo
+
+`[!demo]` runs an HTML file from the vault in a frame under the text:
+
+```markdown
+> [!demo|320] A ticking clock
+> [[clock.html]]
+```
+
+- The number after `|` is the frame height in pixels; the default is 400.
+- The title becomes a caption under the frame. Leave it out, or keep the
+  default "Demo", for no caption.
+- The page runs with scripts on, sandboxed: it cannot reach the vault,
+  Obsidian, or the note around it.
+- When the link does not point to an `.html` file in the vault, the callout
+  stays a plain link, so the note still shows what is missing.
+
 ## Development
 
 Requires [Bun](https://bun.sh) 1.4 or later.
@@ -195,6 +212,7 @@ src/widgets/quiz/        [!quiz] card, answer section, choice grading
 src/widgets/code/        [!code] editor, [!file] panes, [!tabs] and the shared tab bar
 src/widgets/carousel/    [!carousel] image slides
 src/widgets/calc/        [!calc] formula parser and spreadsheet
+src/widgets/demo/        [!demo] sandboxed HTML frame
 src/lib/                 DOM helpers and shuffle, shared by widgets
 tests/stubs/             obsidian API stand-ins and DOM helpers for happy-dom
 tests/helpers/           callout fixtures
