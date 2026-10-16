@@ -3,6 +3,7 @@ import { calcSheet } from "./calc/sheet";
 import { carousel } from "./carousel/carousel";
 import { codeEditor } from "./code/code";
 import { contentTabs } from "./code/tabs";
+import { htmlDemo } from "./demo/demo";
 import { choiceQuiz } from "./quiz/choice";
 import { quizCard } from "./quiz/card";
 
@@ -24,7 +25,7 @@ export interface Widget {
 }
 
 /** Widgets run in this order, so a widget may rely on the ones before it. */
-export const WIDGETS: Widget[] = [quizCard, choiceQuiz, codeEditor, contentTabs, carousel, calcSheet];
+export const WIDGETS: Widget[] = [quizCard, choiceQuiz, codeEditor, contentTabs, carousel, calcSheet, htmlDemo];
 
 /** `root` itself when it matches, otherwise every match below it. */
 export function findAll(root: HTMLElement, selector: string): HTMLElement[] {
