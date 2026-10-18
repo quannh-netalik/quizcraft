@@ -1,5 +1,5 @@
 import { setIcon } from "obsidian";
-import { guard, wrapChildren } from "../../lib/dom";
+import { wrapChildren } from "../../lib/dom";
 import { shuffled } from "../../lib/shuffle";
 import type { QuizCallout } from "./card";
 import type { Widget } from "../registry";
