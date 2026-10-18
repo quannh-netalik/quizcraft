@@ -506,8 +506,8 @@
 .eq-car-right { justify-content: flex-end; }
 .eq-car-count { font-size: 14px; color: var(--eq-car-text); font-variant-numeric: tabular-nums; }
 /* `.eq-car button.eq-car-btn` (0,2,1) beats Obsidian's `button:not(.clickable-icon)` (0,1,1) */
-.theme-light { --eq-car-primary: #5553ff; --eq-car-ghost-hover: #f0f0ff; }
-.theme-dark { --eq-car-primary: #5b59f0; --eq-car-ghost-hover: #2a2933; }
+.theme-light { --eq-car-primary: #5553ff; --eq-car-primary-hover: #4341e6; --eq-car-ghost-hover: #f0f0ff; --eq-car-off: #c4c6cf; }
+.theme-dark { --eq-car-primary: #5b59f0; --eq-car-primary-hover: #6d6bff; --eq-car-ghost-hover: #2a2933; --eq-car-off: #4d4a5e; }
 .eq-car button.eq-car-btn {
   all: unset;
   box-sizing: border-box;
@@ -518,18 +518,26 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background: var(--background-modifier-hover);
+  background: transparent;
   border: 1px solid transparent;
   box-shadow: none;
   color: var(--eq-car-icon);
   transition: background-color 0.15s, color 0.15s, border-color 0.15s;
 }
+/* prev/next are filled; fullscreen/restart are ghost buttons that tint on hover */
 .eq-car button.eq-car-btn:hover { background: var(--eq-car-ghost-hover); color: var(--eq-car-primary); }
+.eq-car button.eq-car-prev,
+.eq-car button.eq-car-next { background: var(--eq-car-primary); border-color: var(--eq-car-primary); color: #fff; }
+.eq-car button.eq-car-prev:hover,
+.eq-car button.eq-car-next:hover { background: var(--eq-car-primary-hover); border-color: var(--eq-car-primary-hover); }
 .eq-car button.eq-car-btn:disabled,
 .eq-car button.eq-car-btn:disabled:hover {
-  opacity: 0.4;
+  background: transparent;
+  border-color: var(--eq-car-off);
+  color: var(--eq-car-off);
   cursor: not-allowed;
 }
+.eq-car button.eq-car-full:disabled, .eq-car button.eq-car-restart:disabled { border-color: transparent; }
 
 /* fullscreen: slide fills the screen, footer stays at the bottom */
 .eq-car:fullscreen { display: flex; flex-direction: column; border-radius: 0; }
