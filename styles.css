@@ -656,3 +656,13 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
   border-color: var(--eq-brand);
   background-color: var(--eq-hover);
 }
+/* the held tile is lifted above the others and follows the pointer */
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-dragging {
+  position: relative;
+  z-index: 2;
+  transition: none !important;
+  cursor: grabbing;
+  border-color: var(--eq-brand);
+  box-shadow: 0 0 0 1px var(--eq-brand), 0 6px 16px rgba(0, 0, 0, 0.15);
+  background-color: var(--eq-selected-bg);
+}

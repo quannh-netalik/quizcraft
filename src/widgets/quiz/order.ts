@@ -1,5 +1,5 @@
 import { setIcon } from "obsidian";
-import { wrapChildren } from "../../lib/dom";
+import { guard, wrapChildren } from "../../lib/dom";
 import { shuffled } from "../../lib/shuffle";
 import type { QuizCallout } from "./card";
 import type { Widget } from "../registry";
@@ -30,11 +30,39 @@ export function setupOrder(callout: QuizCallout): void {
   callout.dataset.eqOrder = "1";
   callout.classList.add("eq-quiz", "eq-order");
   const steps = [...list.children].filter((li): li is HTMLElement => li.tagName === "LI");
+
+  // the held tile follows the pointer; on release it drops before the first
+  // tile whose middle is below the pointer
+  const startDrag = (li: HTMLElement, e: PointerEvent) => {
+    if (callout.classList.contains("eq-done") || e.button !== 0) return;
+    e.preventDefault();
+    const y0 = e.clientY;
+    li.classList.add("eq-dragging");
+    const move = (ev: PointerEvent) => {
+      li.style.transform = `translateY(${ev.clientY - y0}px) scale(1.02)`;
+    };
+    const up = (ev: PointerEvent) => {
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", up);
+      li.style.transform = "";
+      li.classList.remove("eq-dragging");
+      const others = [...list.children].filter((n) => n !== li);
+      const before = others.find((n) => {
+        const r = n.getBoundingClientRect();
+        return ev.clientY < r.top + r.height / 2;
+      });
+      list.insertBefore(li, before ?? null);
+    };
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", up);
+  };
+
   for (const li of steps) {
     li.dataset.step = li.textContent?.trim() ?? "";
     li.classList.add("eq-step");
     wrapChildren(li, "eq-step-text");
     setIcon(li.createSpan({ cls: "eq-grip" }), "grip-vertical");
+    li.addEventListener("pointerdown", (e) => startDrag(li, e));
   }
   // the steps start in random order, never already solved
   for (const li of shuffled(steps, inKeyOrder(key))) list.appendChild(li);
