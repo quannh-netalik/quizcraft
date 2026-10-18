@@ -153,7 +153,7 @@ metadata, `;` between them:
 
 - The table body is the grid: row 1, column 1 is `A1`. The header row is not
   part of it.
-- `==value==` cells become inputs. Every edit recomputes the fomula cells.
+- `==value==` cells become inputs. Every edit recomputes the formula cells.
 - The title gets a reset button that restores the values from the note.
 - Keep the computed values in the note too: they show where the plugin is
   not installed.
@@ -170,7 +170,7 @@ Formula language:
 | `round(x)`, `round(x, digits)` | round; negative digits round to tens, hundreds, … |
 | `ceil(x, digits)`, `floor(x, digits)` | round up or down, digits as for `round` |
 
-A formula outside this language keeps the value the the note shows. A result that
+A formula outside this language keeps the value the note shows. A result that
 is not a number, such as division by zero, shows `—`. Formulas that refer to
 each other in a loop stop at the value written in the note.
 
