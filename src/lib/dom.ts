@@ -16,3 +16,20 @@ export function guard(node: HTMLElement, handler: (e: MouseEvent) => void): void
     handler(e);
   });
 }
+
+/**
+ * Move the content of a list item into one span with class `cls`, so it can be
+ * a flex child. Obsidian's bullet and fold markers stay direct children, where
+ * themes and snippets expect them.
+ */
+export function wrapChildren(li: HTMLElement, cls: string): HTMLSpanElement {
+  const span = createSpan({ cls });
+  // copy first: moving nodes out changes the live childNodes list
+  for (const n of Array.from(li.childNodes)) {
+    const marker =
+      n instanceof HTMLElement && (n.classList.contains("list-bullet") || n.classList.contains("list-collapse-indicator"));
+    if (!marker) span.appendChild(n);
+  }
+  li.appendChild(span);
+  return span;
+}

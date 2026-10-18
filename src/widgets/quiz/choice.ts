@@ -28,6 +28,8 @@ export function relabel(li: HTMLElement, letter: string): void {
  */
 export function setupChoice(callout: QuizCallout): void {
   if (callout.dataset.eqReady) return;
+  // order and match quizzes have their own widgets
+  if (callout.dataset.calloutMetadata) return;
   const content = callout.querySelector<HTMLElement>(":scope > .callout-content");
   const list = content?.querySelector<HTMLElement>(":scope > ul");
   if (!content || !list) return;
