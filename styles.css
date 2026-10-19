@@ -656,7 +656,8 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
   border-color: var(--eq-brand);
   background-color: var(--eq-hover);
 }
-/* the held tile is lifted above the others and follows the pointer */
+/* while sorting, passed tiles slide; the held tile is lifted above them and follows the pointer */
+.callout.eq-card.eq-order > .callout-content > ul.eq-sorting > li.eq-step { transition: transform 0.18s ease; }
 .callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-dragging {
   position: relative;
   z-index: 2;
