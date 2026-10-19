@@ -2,6 +2,7 @@ import { setIcon } from "obsidian";
 import { wrapChildren } from "../../lib/dom";
 import { shuffled } from "../../lib/shuffle";
 import type { QuizCallout } from "./card";
+import { gradedFooter } from "./footer";
 import type { Widget } from "../registry";
 
 export const ORDER_SELECTOR = '.callout[data-callout="quiz"][data-callout-metadata="order"]';
@@ -9,6 +10,11 @@ export const ORDER_SELECTOR = '.callout[data-callout="quiz"][data-callout-metada
 /** The right order: the numbered list in the answer section, one step per item. */
 export function orderKey(qa: HTMLElement | undefined): string[] {
   return [...(qa?.querySelectorAll(".eq-qa-body > ol > li") ?? [])].map((li) => li.textContent?.trim() ?? "");
+}
+
+/** For each position, whether the step there is the one the key puts there. */
+export function gradeOrder(steps: readonly string[], key: readonly string[]): boolean[] {
+  return steps.map((step, i) => step === key[i]);
 }
 
 /** True when the steps already stand in the answer order. */
@@ -83,8 +89,29 @@ export function setupOrder(callout: QuizCallout): void {
     setIcon(li.createSpan({ cls: "eq-grip" }), "grip-vertical");
     li.addEventListener("pointerdown", (e) => startDrag(li, e));
   }
-  // the steps start in random order, never already solved
-  for (const li of shuffled(steps, inKeyOrder(key))) list.appendChild(li);
+  // the steps start in random order, never already solved; Try again deals again
+  const deal = () => {
+    for (const li of shuffled(steps, inKeyOrder(key))) list.appendChild(li);
+  };
+  deal();
+
+  gradedFooter(
+    callout,
+    content,
+    () => {
+      const current = [...list.children] as HTMLElement[];
+      const marks = gradeOrder(
+        current.map((li) => li.dataset.step ?? ""),
+        key,
+      );
+      for (const [i, li] of current.entries()) li.classList.add(marks[i] ? "eq-correct" : "eq-wrong");
+      return { right: marks.filter(Boolean).length, total: key.length };
+    },
+    () => {
+      for (const li of steps) li.classList.remove("eq-correct", "eq-wrong");
+      deal();
+    },
+  );
 }
 
 export const orderQuiz: Widget = {

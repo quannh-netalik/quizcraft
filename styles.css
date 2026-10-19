@@ -667,3 +667,15 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
   box-shadow: 0 0 0 1px var(--eq-brand), 0 6px 16px rgba(0, 0, 0, 0.15);
   background-color: var(--eq-selected-bg);
 }
+.callout.eq-card.eq-order.eq-done > .callout-content > ul > li.eq-step { cursor: default; }
+.eq-order.eq-done .eq-grip { display: none; }
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-correct {
+  border-color: var(--eq-right);
+  box-shadow: 0 0 0 1px var(--eq-right);
+  background-color: var(--eq-right-bg);
+}
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-wrong {
+  border-color: var(--eq-wrong);
+  box-shadow: 0 0 0 1px var(--eq-wrong);
+  background-color: var(--eq-wrong-bg);
+}
