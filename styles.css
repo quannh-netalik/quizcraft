@@ -658,6 +658,7 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
 }
 /* while sorting, passed tiles slide; the held tile is lifted above them and follows the pointer */
 .callout.eq-card.eq-order > .callout-content > ul.eq-sorting > li.eq-step { transition: transform 0.18s ease; }
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-dropping { transition: transform 0.18s ease, box-shadow 0.18s; }
 .callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-dragging {
   position: relative;
   z-index: 2;
@@ -679,3 +680,5 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
   box-shadow: 0 0 0 1px var(--eq-wrong);
   background-color: var(--eq-wrong-bg);
 }
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step:focus { outline: none; }
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step:focus-visible { box-shadow: 0 0 0 2px var(--eq-brand); }

@@ -18,6 +18,10 @@ function quiz(steps: readonly string[] = KEY): HTMLElement {
 const tiles = (el: HTMLElement) => [...content(el).querySelectorAll<HTMLElement>(":scope > ul > li")];
 const order = (el: HTMLElement) => tiles(el).map((li) => li.dataset.step);
 
+function key(li: HTMLElement, k: string): void {
+  li.dispatchEvent(new KeyboardEvent("keydown", { key: k, bubbles: true, cancelable: true }));
+}
+
 describe("gradeOrder", () => {
   test("marks each position", () => {
     expect(gradeOrder(["Boil water", "Steep", "Add tea", "Pour"], KEY)).toEqual([true, false, false, true]);
@@ -37,12 +41,25 @@ describe("setupOrder", () => {
     }
   });
 
+  test("ArrowUp and ArrowDown move a tile one place", () => {
+    const el = quiz();
+    const before = order(el);
+    const second = tiles(el)[1]!;
+    key(second, "ArrowUp");
+    expect(order(el)).toEqual([before[1], before[0], before[2], before[3]]);
+    key(second, "ArrowUp");
+    expect(order(el)[0]).toBe(before[1]);
+    key(second, "ArrowDown");
+    expect(order(el)).toEqual(before);
+  });
 
   test("grades positions and resets on Try again", () => {
     const el = quiz();
-    // put the tiles in key order
-    const ul = tiles(el)[0]!.parentElement!;
-    for (const step of KEY) ul.append(tiles(el).find((t) => t.dataset.step === step)!);
+    // sort the tiles into the key order with the keyboard
+    for (const [target, step] of KEY.entries()) {
+      const li = tiles(el).find((t) => t.dataset.step === step)!;
+      for (let at = tiles(el).indexOf(li); at > target; at--) key(li, "ArrowUp");
+    }
     expect(order(el)).toEqual(KEY);
     const btn = el.querySelector<HTMLButtonElement>(".eq-btn")!;
     click(btn);
@@ -62,4 +79,11 @@ describe("setupOrder", () => {
     expect(el.querySelector(".eq-status")!.textContent).toBe(`Not quite: ${right} of 4 right`);
   });
 
+  test("keys are ignored after submit", () => {
+    const el = quiz();
+    const before = order(el);
+    click(el.querySelector(".eq-btn")!);
+    key(tiles(el)[1]!, "ArrowUp");
+    expect(order(el)).toEqual(before);
+  });
 });

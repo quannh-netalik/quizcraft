@@ -72,11 +72,20 @@ export function setupOrder(callout: QuizCallout): void {
     const up = () => {
       document.removeEventListener("pointermove", move);
       document.removeEventListener("pointerup", up);
+      // where the held tile is drawn now, before the DOM catches up
+      const before = li.getBoundingClientRect().top;
+      // no transition while the other tiles snap back into their DOM slots
       list.classList.remove("eq-sorting");
       for (const n of items) n.style.transform = "";
-      li.classList.remove("eq-dragging");
       const target = items[to];
       if (to !== from && target) list.insertBefore(li, to > from ? target.nextSibling : target);
+      // FLIP: start the tile where it was dropped, then let it glide into its slot
+      li.style.transform = `translateY(${before - li.getBoundingClientRect().top}px)`;
+      li.getBoundingClientRect(); // force layout so the start position applies
+      li.classList.remove("eq-dragging");
+      li.classList.add("eq-dropping");
+      li.style.transform = "";
+      window.setTimeout(() => li.classList.remove("eq-dropping"), 200);
     };
     document.addEventListener("pointermove", move);
     document.addEventListener("pointerup", up);
@@ -88,6 +97,18 @@ export function setupOrder(callout: QuizCallout): void {
     wrapChildren(li, "eq-step-text");
     setIcon(li.createSpan({ cls: "eq-grip" }), "grip-vertical");
     li.addEventListener("pointerdown", (e) => startDrag(li, e));
+    // keyboard: focus a tile, then ArrowUp / ArrowDown moves it one place
+    li.tabIndex = 0;
+    li.addEventListener("keydown", (e) => {
+      if (callout.classList.contains("eq-done") || (e.key !== "ArrowUp" && e.key !== "ArrowDown")) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const prev = li.previousElementSibling;
+      const next = li.nextElementSibling;
+      if (e.key === "ArrowUp" && prev) list.insertBefore(li, prev);
+      if (e.key === "ArrowDown" && next) list.insertBefore(next, li);
+      li.focus();
+    });
   }
   // the steps start in random order, never already solved; Try again deals again
   const deal = () => {
