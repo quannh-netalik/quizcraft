@@ -1,5 +1,5 @@
 import { setIcon } from "obsidian";
-import { wrapChildren } from "../../lib/dom";
+import { guard, wrapChildren } from "../../lib/dom";
 import { shuffled } from "../../lib/shuffle";
 import type { QuizCallout } from "./card";
 import { gradedFooter } from "./footer";
@@ -41,6 +41,8 @@ export function setupOrder(callout: QuizCallout): void {
   // height. The DOM, and so the step numbers, change only on release.
   const startDrag = (li: HTMLElement, e: PointerEvent) => {
     if (callout.classList.contains("eq-done") || e.button !== 0) return;
+    // a touch elsewhere on the tile scrolls the page; only the grip drags
+    if (e.pointerType === "touch" && !(e.target instanceof Element && e.target.closest(".eq-grip"))) return;
     e.preventDefault();
     const items = [...list.children] as HTMLElement[];
     const from = items.indexOf(li);
@@ -97,6 +99,8 @@ export function setupOrder(callout: QuizCallout): void {
     wrapChildren(li, "eq-step-text");
     setIcon(li.createSpan({ cls: "eq-grip" }), "grip-vertical");
     li.addEventListener("pointerdown", (e) => startDrag(li, e));
+    // a click reaching Live Preview would move the cursor into the callout source
+    guard(li, () => {});
     // keyboard: focus a tile, then ArrowUp / ArrowDown moves it one place
     li.tabIndex = 0;
     li.addEventListener("keydown", (e) => {

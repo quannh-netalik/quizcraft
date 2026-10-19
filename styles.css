@@ -650,7 +650,7 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
   transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
 }
 .eq-step-text { flex: 1; min-width: 0; }
-.eq-grip { display: flex; color: var(--text-faint); cursor: grab; }
+.eq-grip { display: flex; color: var(--text-faint); touch-action: none; cursor: grab; }
 .eq-grip .svg-icon { width: 18px; height: 18px; }
 .callout.eq-card.eq-order:not(.eq-done) > .callout-content > ul > li.eq-step:hover {
   border-color: var(--eq-brand);
