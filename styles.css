@@ -640,14 +640,29 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
   color: var(--eq-demo-cap);
 }
 
-/* ===== Order: > [!quiz|order], drag the steps into order ===== */
+/* ===== Order: > [!quiz|order], drag the steps into order =====
+   Position numbers are a CSS counter, so they follow the tiles as they move. */
+.callout.eq-card.eq-order > .callout-content > ul { counter-reset: eq-step; }
 .callout.eq-card.eq-order > .callout-content > ul > li.eq-step {
+  counter-increment: eq-step;
   display: flex;
   align-items: center;
   gap: 12px;
   cursor: grab;
   user-select: none;
   transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
+}
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step::before {
+  content: counter(eq-step);
+  flex: 0 0 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--eq-selected-bg);
+  color: var(--eq-brand);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
 }
 .eq-step-text { flex: 1; min-width: 0; }
 .eq-grip { display: flex; color: var(--text-faint); touch-action: none; cursor: grab; }
@@ -670,15 +685,16 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
 }
 .callout.eq-card.eq-order.eq-done > .callout-content > ul > li.eq-step { cursor: default; }
 .eq-order.eq-done .eq-grip { display: none; }
-.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-correct {
-  border-color: var(--eq-right);
-  box-shadow: 0 0 0 1px var(--eq-right);
+/* graded: a coloured left edge and number only; four filled tiles in a row read as noise */
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-correct { box-shadow: inset 3px 0 0 var(--eq-right); }
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-wrong { box-shadow: inset 3px 0 0 var(--eq-wrong); }
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-correct::before {
   background-color: var(--eq-right-bg);
+  color: var(--eq-right);
 }
-.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-wrong {
-  border-color: var(--eq-wrong);
-  box-shadow: 0 0 0 1px var(--eq-wrong);
+.callout.eq-card.eq-order > .callout-content > ul > li.eq-step.eq-wrong::before {
   background-color: var(--eq-wrong-bg);
+  color: var(--eq-wrong);
 }
 .callout.eq-card.eq-order > .callout-content > ul > li.eq-step:focus { outline: none; }
 .callout.eq-card.eq-order > .callout-content > ul > li.eq-step:focus-visible { box-shadow: 0 0 0 2px var(--eq-brand); }
