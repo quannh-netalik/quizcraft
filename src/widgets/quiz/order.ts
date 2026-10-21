@@ -46,16 +46,18 @@ export function setupOrder(callout: QuizCallout): void {
     e.preventDefault();
     const items = [...list.children] as HTMLElement[];
     const from = items.indexOf(li);
+    // Measure once, before anything moves: reading rects on every pointermove
+    // forces a layout per event, and the transforms set below would skew them.
+    const rects = items.map((n) => n.getBoundingClientRect());
+    const held = rects[from];
+    if (!held) return;
+    const gap = (rects[1]?.top ?? 0) - (rects[0]?.bottom ?? 0);
+    const step = held.height + Math.max(gap, 0);
     const y0 = e.clientY;
     let to = from;
     li.classList.add("eq-dragging");
     list.classList.add("eq-sorting");
     const move = (ev: PointerEvent) => {
-      const rects = items.map((n) => n.getBoundingClientRect());
-      const held = rects[from];
-      if (!held) return;
-      const gap = (rects[1]?.top ?? 0) - (rects[0]?.bottom ?? 0);
-      const step = held.height + Math.max(gap, 0);
       const dy = ev.clientY - y0;
       li.style.transform = `translateY(${dy}px) scale(1.02)`;
       const mid = held.top + held.height / 2 + dy;
