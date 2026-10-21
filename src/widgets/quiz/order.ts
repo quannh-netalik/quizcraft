@@ -73,9 +73,12 @@ export function setupOrder(callout: QuizCallout): void {
         n.style.transform = shift ? `translateY(${shift}px)` : "";
       }
     };
+    // pointercancel (the OS takes the touch, say) ends the drag like a release;
+    // without it the listeners stay on document and the tile stays lifted
     const up = () => {
       document.removeEventListener("pointermove", move);
       document.removeEventListener("pointerup", up);
+      document.removeEventListener("pointercancel", up);
       // where the held tile is drawn now, before the DOM catches up
       const before = li.getBoundingClientRect().top;
       // no transition while the other tiles snap back into their DOM slots
@@ -93,6 +96,7 @@ export function setupOrder(callout: QuizCallout): void {
     };
     document.addEventListener("pointermove", move);
     document.addEventListener("pointerup", up);
+    document.addEventListener("pointercancel", up);
   };
 
   for (const li of steps) {
