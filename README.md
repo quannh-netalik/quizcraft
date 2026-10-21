@@ -74,6 +74,35 @@ with one right option can still ask for checkboxes by containing
 `*(Multi-select)*`. A quiz with no key lines shows *No answer key found*
 instead of grading.
 
+### Order quizzes
+
+`[!quiz|order]` lists the steps as bullets. The numbered list after
+`==Answer==` is the right order:
+
+```markdown
+> [!quiz|order] Make tea
+> Put the steps in order.
+> - Pour
+> - Boil water
+> - Steep
+> - Add tea
+>
+> ==Answer==
+>
+> 1. Boil water
+> 2. Add tea
+> 3. Steep
+> 4. Pour
+```
+
+- The steps start shuffled, never already in the right order.
+- Drag a tile with the mouse, or with the grip on a touch screen. A focused
+  tile also moves with ArrowUp and ArrowDown.
+- **Submit Answer** marks every position and shows the score, for example
+  *Not quite: 2 of 4 right*. **Try again** shuffles the steps again.
+- Step text must match the key exactly; a quiz with fewer than two key items
+  stays a plain card.
+
 ## Code editors and tabs
 
 `[!code]` draws a dark code editor. Each `[!tab]` inside it is one language;
@@ -208,7 +237,7 @@ bun run bump 0.3.0  # set version in package.json, manifest.json, versions.json
 ```text
 src/main.ts              plugin entry: one markdown post-processor
 src/widgets/registry.ts  Widget interface and the ordered widget list
-src/widgets/quiz/        [!quiz] card, answer section, choice grading
+src/widgets/quiz/        [!quiz] card, answer section, choice and order grading, shared footer
 src/widgets/code/        [!code] editor, [!file] panes, [!tabs] and the shared tab bar
 src/widgets/carousel/    [!carousel] image slides
 src/widgets/calc/        [!calc] formula parser and spreadsheet
