@@ -1,4 +1,4 @@
-import { setIcon } from "obsidian";
+import { Menu, setIcon } from "obsidian";
 import { guard, wrapChildren } from "../../lib/dom";
 import type { QuizCallout } from "./card";
 import type { Widget } from "../registry";
@@ -16,6 +16,21 @@ export function matchKey(qa: HTMLElement | undefined): string[] {
 }
 
 /**
+ * Give row `i` the choice `c`. A choice is used once: when another row holds
+ * `c`, that row takes row i's old pick instead (a swap).
+ */
+export function choose(picked: readonly string[], i: number, c: string): string[] {
+  const next = [...picked];
+  const holder = next.indexOf(c);
+  if (holder !== -1 && holder !== i) next[holder] = next[i] ?? "";
+  next[i] = c;
+  return next;
+}
+
+/** Text of each list item, trimmed. */
+const itemTexts = (items: readonly Element[]): string[] => items.map((li) => li.textContent?.trim() ?? "");
+
+/**
  * `> [!quiz|match]`: the first bullet list holds the left items, the second
  * the choices. The answer section pairs each left item with its choice.
  */
@@ -30,18 +45,36 @@ export function setupMatch(callout: QuizCallout): void {
   callout.dataset.eqMatch = "1";
   callout.classList.add("eq-quiz", "eq-match");
   // the choices are offered in the pickers; the list itself is hidden
+  const choices = itemTexts([...rights.children]);
   rights.classList.add("eq-match-pool");
   // picked[i] is the choice row i holds, "" while empty
-  const picked = rows.map(() => "");
-  const picks = rows.map((li) => {
+  let picked = rows.map(() => "");
+  const picks = rows.map((li, i) => {
     li.classList.add("eq-match-row");
     wrapChildren(li, "eq-match-left");
     const slot = li.createDiv({ cls: "eq-match-slot" });
     const pick = slot.createEl("button", { cls: "eq-match-pick", attr: { type: "button", "aria-haspopup": "menu" } });
     pick.createSpan({ cls: "eq-match-val" });
     setIcon(pick.createSpan({ cls: "eq-match-chev" }), "chevron-down");
+    // Obsidian's own menu: themed, keyboard friendly, a bottom sheet on mobile
     guard(pick, () => {
-      // the choice menu opens here
+      if (callout.classList.contains("eq-done")) return;
+      const menu = new Menu();
+      for (const c of choices) {
+        menu.addItem((item) =>
+          item
+            .setTitle(c)
+            .setChecked(picked[i] === c)
+            .onClick(() => {
+              picked = choose(picked, i, c);
+              paint();
+            }),
+        );
+      }
+      // `dom` is not in the typings, but every desktop and mobile build has it
+      (menu as Menu & { dom?: HTMLElement }).dom?.addClass("eq-match-menu");
+      const r = pick.getBoundingClientRect();
+      menu.showAtPosition({ x: r.left, y: r.bottom + 4, width: r.width });
     });
     return pick;
   });

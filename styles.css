@@ -733,3 +733,4 @@ button.eq-match-pick.is-empty:hover { border-color: var(--eq-brand); }
 .eq-match-val { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .eq-match-chev { flex: 0 0 auto; display: flex; color: var(--text-muted); }
 .eq-match-chev svg { width: 16px; height: 16px; }
+.menu.eq-match-menu { max-width: min(520px, 92vw); }
