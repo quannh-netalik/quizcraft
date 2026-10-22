@@ -1,6 +1,8 @@
 import { Menu, setIcon } from "obsidian";
 import { guard, wrapChildren } from "../../lib/dom";
+import { sameOrder, shuffled } from "../../lib/shuffle";
 import type { QuizCallout } from "./card";
+import { gradedFooter } from "./footer";
 import type { Widget } from "../registry";
 
 export const MATCH_SELECTOR = '.callout[data-callout="quiz"][data-callout-metadata="match"]';
@@ -27,6 +29,11 @@ export function choose(picked: readonly string[], i: number, c: string): string[
   return next;
 }
 
+/** For each row, whether its pick is the key's choice. */
+export function gradeMatch(picked: readonly string[], key: readonly string[]): boolean[] {
+  return key.map((k, i) => picked[i] === k);
+}
+
 /** Text of each list item, trimmed. */
 const itemTexts = (items: readonly Element[]): string[] => items.map((li) => li.textContent?.trim() ?? "");
 
@@ -45,8 +52,15 @@ export function setupMatch(callout: QuizCallout): void {
   callout.dataset.eqMatch = "1";
   callout.classList.add("eq-quiz", "eq-match");
   // the choices are offered in the pickers; the list itself is hidden
-  const choices = itemTexts([...rights.children]);
+  const pool = itemTexts([...rights.children]);
+  // menu order is random, dealt again on Try again
+  let choices = shuffled(pool);
   rights.classList.add("eq-match-pool");
+  // rows are dealt in random order too, never the markdown order; row i stays
+  // tied to key[i] whatever its place on screen
+  const dealRows = () => {
+    for (const li of shuffled(rows, sameOrder(rows))) lefts.appendChild(li);
+  };
   // picked[i] is the choice row i holds, "" while empty
   let picked = rows.map(() => "");
   const picks = rows.map((li, i) => {
@@ -76,14 +90,41 @@ export function setupMatch(callout: QuizCallout): void {
       const r = pick.getBoundingClientRect();
       menu.showAtPosition({ x: r.left, y: r.bottom + 4, width: r.width });
     });
-    return pick;
+    return { slot, pick };
   });
   const paint = () => {
-    for (const [i, pick] of picks.entries()) {
+    for (const [i, { pick }] of picks.entries()) {
       pick.querySelector(".eq-match-val")?.setText(picked[i] || "Select a match");
       pick.classList.toggle("is-empty", !picked[i]);
     }
   };
+  // graded: the picker gives way to the pick, with the right choice under a wrong one
+  gradedFooter(
+    callout,
+    content,
+    () => {
+      const marks = gradeMatch(picked, key);
+      for (const [i, { slot }] of picks.entries()) {
+        const ok = marks[i] ?? false;
+        rows[i]?.classList.add(ok ? "eq-correct" : "eq-wrong");
+        const res = slot.createDiv({ cls: "eq-match-result" });
+        res.createDiv({ cls: "eq-match-yours", text: picked[i] || "\u2014" });
+        if (!ok) res.createDiv({ cls: "eq-match-fix", text: key[i] ?? "" });
+      }
+      return { right: marks.filter(Boolean).length, total: key.length };
+    },
+    () => {
+      picked = rows.map(() => "");
+      choices = shuffled(pool);
+      dealRows();
+      for (const [i, { slot }] of picks.entries()) {
+        rows[i]?.classList.remove("eq-correct", "eq-wrong");
+        slot.querySelector(":scope > .eq-match-result")?.remove();
+      }
+      paint();
+    },
+  );
+  dealRows();
   paint();
 }
 
