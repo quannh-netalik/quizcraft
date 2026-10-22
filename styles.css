@@ -698,3 +698,38 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
 }
 .callout.eq-card.eq-order > .callout-content > ul > li.eq-step:focus { outline: none; }
 .callout.eq-card.eq-order > .callout-content > ul > li.eq-step:focus-visible { box-shadow: 0 0 0 2px var(--eq-brand); }
+
+/* ===== Match: > [!quiz|match], one picker per left item ===== */
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  align-items: center;
+  column-gap: 16px;
+}
+.eq-match-left { font-weight: 500; }
+.callout.eq-card.eq-match > .callout-content > .eq-match-pool { display: none; }
+.eq-match-slot { min-width: 0; }
+button.eq-match-pick {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 8px 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background-color: var(--background-modifier-hover);
+  color: var(--text-normal);
+  font-size: 15px;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s, background-color 0.12s;
+}
+button.eq-match-pick:hover { border-color: var(--eq-brand); }
+button.eq-match-pick:focus-visible { box-shadow: 0 0 0 2px var(--eq-brand); }
+button.eq-match-pick.is-empty { border: 1px dashed var(--background-modifier-border); background-color: transparent; color: var(--text-faint); }
+button.eq-match-pick.is-empty:hover { border-color: var(--eq-brand); }
+.eq-match-val { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.eq-match-chev { flex: 0 0 auto; display: flex; color: var(--text-muted); }
+.eq-match-chev svg { width: 16px; height: 16px; }
