@@ -160,14 +160,17 @@ export function setupMatch(callout: QuizCallout): void {
     });
     return { slot, pick };
   });
+  let btn: HTMLButtonElement | undefined;
   const paint = () => {
     for (const [i, { pick }] of picks.entries()) {
       pick.querySelector(".eq-match-val")?.setText(picked[i] || "Select a match");
       pick.classList.toggle("is-empty", !picked[i]);
     }
+    // a half-filled quiz would grade the empty rows as wrong
+    if (btn) btn.disabled = picked.some((v) => !v);
   };
   // graded: the picker gives way to the pick, with the right choice under a wrong one
-  gradedFooter(
+  btn = gradedFooter(
     callout,
     content,
     () => {

@@ -78,6 +78,17 @@ describe("setupMatch", () => {
     expect(shown(el, "HTTP")).toBe("Select a match");
   });
 
+  test("enables Submit once every row has a pick", () => {
+    const el = quiz();
+    const btn = el.querySelector<HTMLButtonElement>(".eq-btn")!;
+    expect(btn.disabled).toBe(true);
+    pick(el, "HTTP", "Port 80");
+    pick(el, "HTTPS", "Port 22");
+    expect(btn.disabled).toBe(true);
+    pick(el, "SSH", "Port 443");
+    expect(btn.disabled).toBe(false);
+  });
+
   test("grades rows and shows the fix under a wrong pick", () => {
     const el = quiz();
     pick(el, "HTTP", "Port 80");
