@@ -716,6 +716,30 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
   color: var(--text-muted);
 }
 .callout.eq-card.eq-match > .callout-content > .eq-match-head > span:last-child { padding-left: 13px; }
+/* right padding holds the \2713/\2717 mark, so grading does not shift the columns */
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row { padding-block: 10px !important; padding-right: 48px !important; }
+/* plain list, not cards: hairline dividers, no fills */
+.callout.eq-card.eq-match > .callout-content > ul:has(> li.eq-match-row) { gap: 0; }
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row {
+  border: 0;
+  border-radius: 6px;
+  background-color: transparent;
+  border-bottom: 1px solid var(--background-modifier-border);
+  transition: background-color 0.15s ease;
+}
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row:last-child { border-bottom: 0; }
+.eq-match-key-row { border-radius: 6px; transition: background-color 0.15s ease; }
+/* soft neutral row hover, like a table */
+.eq-match-key-row:hover,
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row:hover { background-color: color-mix(in srgb, var(--text-normal) 4%, transparent); }
+/* graded rows: only a small mark at the right edge is green or red */
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row:is(.eq-correct, .eq-wrong) { position: relative; }
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row:is(.eq-correct, .eq-wrong)::after {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 14px; font-weight: 700; line-height: 1; opacity: 0.85;
+}
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row.eq-correct::after { content: "\2713"; color: var(--eq-right); }
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row.eq-wrong::after { content: "\2717"; color: var(--eq-wrong); }
 .eq-match-left { font-weight: 500; overflow-wrap: anywhere; }
 .callout.eq-card.eq-match > .callout-content > .eq-match-pool { display: none; }
 .eq-match-slot { min-width: 0; }
@@ -749,7 +773,7 @@ button.eq-match-pick.is-empty:hover { border-color: var(--eq-brand); }
 /* graded: the picker gives way to the result, in the same column */
 .eq-match.eq-done button.eq-match-pick { display: none; }
 .eq-match-result { display: flex; flex-direction: column; gap: 4px; padding: 2px 0 2px 13px; font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; }
-.eq-match-row.eq-correct .eq-match-yours { color: var(--eq-right); }
+.eq-match-row.eq-correct .eq-match-yours { color: var(--text-normal); }
 .eq-match-row.eq-wrong .eq-match-yours { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--eq-wrong); }
 .eq-match-fix { color: var(--text-normal); font-weight: 500; }
 .eq-match-fix::before { content: "\2713  "; white-space: pre; color: var(--eq-right); }
