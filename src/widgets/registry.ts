@@ -6,6 +6,7 @@ import { contentTabs } from "./code/tabs";
 import { htmlDemo } from "./demo/demo";
 import { choiceQuiz } from "./quiz/choice";
 import { quizCard } from "./quiz/card";
+import { matchQuiz } from "./quiz/match";
 import { orderQuiz } from "./quiz/order";
 
 /** What a widget gets besides its callout element. */
@@ -26,7 +27,7 @@ export interface Widget {
 }
 
 /** Widgets run in this order, so a widget may rely on the ones before it. */
-export const WIDGETS: Widget[] = [quizCard, choiceQuiz, orderQuiz, codeEditor, contentTabs, carousel, calcSheet, htmlDemo];
+export const WIDGETS: Widget[] = [quizCard, choiceQuiz, orderQuiz, matchQuiz, codeEditor, contentTabs, carousel, calcSheet, htmlDemo];
 
 /** `root` itself when it matches, otherwise every match below it. */
 export function findAll(root: HTMLElement, selector: string): HTMLElement[] {
