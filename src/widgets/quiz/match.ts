@@ -131,6 +131,7 @@ export function setupMatch(callout: QuizCallout): void {
   };
   // picked[i] is the choice row i holds, "" while empty
   let picked = rows.map(() => "");
+  const leftText = itemTexts(rows);
   const picks = rows.map((li, i) => {
     li.classList.add("eq-match-row");
     wrapChildren(li, "eq-match-left");
@@ -143,9 +144,15 @@ export function setupMatch(callout: QuizCallout): void {
       if (callout.classList.contains("eq-done")) return;
       const menu = new Menu();
       for (const c of choices) {
+        // a choice another row holds names that row, so the swap is no surprise
+        const holder = picked.indexOf(c);
+        const title = createFragment((f) => {
+          f.appendText(c);
+          if (holder !== -1 && holder !== i) f.createSpan({ cls: "eq-match-used", text: ` \u00b7 ${leftText[holder] ?? ""}` });
+        });
         menu.addItem((item) =>
           item
-            .setTitle(c)
+            .setTitle(title)
             .setChecked(picked[i] === c)
             .onClick(() => {
               picked = choose(picked, i, c);

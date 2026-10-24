@@ -31,10 +31,12 @@ const row = (el: HTMLElement, left: string) =>
     (li) => li.querySelector(".eq-match-left")?.textContent === left,
   )!;
 
+const titleText = (t: string | DocumentFragment) => (typeof t === "string" ? t : (t.textContent ?? ""));
+
 /** Open row `left`'s picker and click choice `c`. */
 function pick(el: HTMLElement, left: string, c: string): void {
   click(row(el, left).querySelector(".eq-match-pick")!);
-  const item = Menu.last!.items.find((it) => it.title === c)!;
+  const item = Menu.last!.items.find((it) => titleText(it.title).startsWith(c))!;
   item.handler();
 }
 
@@ -76,6 +78,15 @@ describe("setupMatch", () => {
     pick(el, "SSH", "Port 22");
     expect(shown(el, "SSH")).toBe("Port 22");
     expect(shown(el, "HTTP")).toBe("Select a match");
+  });
+
+  test("names the row that holds a taken choice", () => {
+    const el = quiz();
+    pick(el, "HTTP", "Port 22");
+    click(row(el, "SSH").querySelector(".eq-match-pick")!);
+    const titles = Menu.last!.items.map((it) => titleText(it.title));
+    expect(titles).toContain("Port 22 \u00b7 HTTP");
+    expect(titles).toContain("Port 80");
   });
 
   test("enables Submit once every row has a pick", () => {
