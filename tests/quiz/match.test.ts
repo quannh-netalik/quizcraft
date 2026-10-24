@@ -111,6 +111,24 @@ describe("setupMatch", () => {
     expect(el.querySelector(".eq-status")!.textContent).toBe("Not quite: 1 of 3 right");
   });
 
+  test("Try again clears picks and results and deals the rows again", () => {
+    const el = quiz();
+    pick(el, "HTTP", "Port 80");
+    pick(el, "HTTPS", "Port 443");
+    pick(el, "SSH", "Port 22");
+    const btn = el.querySelector<HTMLButtonElement>(".eq-btn")!;
+    click(btn);
+    expect(el.querySelector(".eq-status")!.textContent).toBe("Correct!");
+    click(btn);
+    expect(el.classList.contains("eq-done")).toBe(false);
+    expect(el.querySelectorAll(".eq-match-result, .eq-correct, .eq-wrong")).toHaveLength(0);
+    expect(shown(el, "HTTP")).toBe("Select a match");
+    expect(btn.disabled).toBe(true);
+    // rows never come back in markdown order
+    const lefts = [...content(el).querySelectorAll(".eq-match-left")].map((n) => n.textContent);
+    expect(lefts).not.toEqual(PAIRS.map(([l]) => l));
+  });
+
   test("ignores a quiz whose key does not cover every row", () => {
     const el = callout(
       "quiz",
