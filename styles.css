@@ -797,3 +797,11 @@ button.eq-match-pick.is-empty:hover { border-color: var(--eq-brand); }
 .eq-match-key-ans { color: var(--text-normal); font-weight: 500; }
 .eq-match-key-hint { margin-top: 3px; font-size: 14px; color: var(--text-muted); }
 .eq-match-used { color: var(--text-faint); font-size: 0.9em; }
+/* narrow panes and phones: one column, the picker under its item */
+@media (max-width: 600px) {
+  .callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row { grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
+  .callout.eq-card.eq-match > .callout-content > .eq-match-head { display: none; }
+  .eq-match-key-head { display: none; }
+  .eq-match-key-row { grid-template-columns: minmax(0, 1fr); row-gap: 4px; padding-right: 17px; }
+  .eq-match-key-right { padding-left: 0; }
+}
