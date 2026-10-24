@@ -103,6 +103,43 @@ instead of grading.
 - Step text must match the key exactly; a quiz with fewer than two key items
   stays a plain card.
 
+### Match quizzes
+
+`[!quiz|match]` has two bullet lists: the items on the left, then the choices.
+A bold paragraph above each list labels the column. The answer pairs each
+left item with its choice, in bold, in the order of the left list:
+
+```markdown
+> [!quiz|match] Ports
+> Match each protocol to its default port.
+>
+> **Protocol**
+> - HTTP
+> - HTTPS
+> - SSH
+>
+> **Port**
+> - 22
+> - 80
+> - 443
+>
+> ==Answer==
+>
+> - HTTP → **80**
+> - HTTPS → **443**
+>   - TLS on top of HTTP
+> - SSH → **22**
+```
+
+- Each left item gets a picker. It opens a menu of the choices, in random
+  order; the rows are shuffled too.
+- A choice is used once: picking one another row holds swaps the two rows.
+- **Submit Answer** is enabled once every row has a pick. Wrong picks are
+  struck through, with the right choice under them.
+- The answer shows as a two-column table; a nested bullet is a hint under
+  its answer.
+- The quiz stays a plain card unless every left item has a bold answer.
+
 ## Code editors and tabs
 
 `[!code]` draws a dark code editor. Each `[!tab]` inside it is one language;
@@ -237,7 +274,7 @@ bun run bump 0.3.0  # set version in package.json, manifest.json, versions.json
 ```text
 src/main.ts              plugin entry: one markdown post-processor
 src/widgets/registry.ts  Widget interface and the ordered widget list
-src/widgets/quiz/        [!quiz] card, answer section, choice and order grading, shared footer
+src/widgets/quiz/        [!quiz] card, answer section, choice, order and match grading, shared footer
 src/widgets/code/        [!code] editor, [!file] panes, [!tabs] and the shared tab bar
 src/widgets/carousel/    [!carousel] image slides
 src/widgets/calc/        [!calc] formula parser and spreadsheet
