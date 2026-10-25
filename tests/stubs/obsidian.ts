@@ -8,7 +8,27 @@ export class Plugin {
     this.postProcessors.push(processor);
   }
 
-  onload(): void {}
+  data: unknown = null;
+  readonly settingTabs: PluginSettingTab[] = [];
+  constructor(
+    readonly app: unknown = {},
+    readonly manifest: unknown = {},
+  ) {}
+
+  addSettingTab(tab: PluginSettingTab): void {
+    this.settingTabs.push(tab);
+  }
+
+  onload(): void | Promise<void> {}
+
+  loadData(): Promise<unknown> {
+    return Promise.resolve(this.data);
+  }
+
+  saveData(data: unknown): Promise<void> {
+    this.data = data;
+    return Promise.resolve();
+  }
 }
 
 export function setIcon(el: HTMLElement, name: string): void {
@@ -52,6 +72,49 @@ export class Menu {
 
   showAtPosition(_position: { x: number; y: number; width?: number }): this {
     Menu.last = this;
+    return this;
+  }
+}
+
+export class PluginSettingTab {
+  readonly containerEl = document.createElement("div");
+  constructor(
+    readonly app: unknown,
+    readonly plugin: Plugin,
+  ) {}
+
+  display(): void {}
+}
+
+/** Records name and toggle, so tests can flip a setting. */
+export class Setting {
+  name = "";
+  toggle: { value: boolean; onChange: (value: boolean) => unknown } | undefined;
+  constructor(readonly containerEl: HTMLElement) {}
+
+  setName(name: string): this {
+    this.name = name;
+    return this;
+  }
+
+  setDesc(_desc: string): this {
+    return this;
+  }
+
+  addToggle(cb: (toggle: { setValue(v: boolean): unknown; onChange(fn: (v: boolean) => unknown): unknown }) => void): this {
+    const state = { value: false, onChange: (_v: boolean): unknown => undefined };
+    const api = {
+      setValue: (v: boolean) => {
+        state.value = v;
+        return api;
+      },
+      onChange: (fn: (v: boolean) => unknown) => {
+        state.onChange = fn;
+        return api;
+      },
+    };
+    cb(api);
+    this.toggle = state;
     return this;
   }
 }

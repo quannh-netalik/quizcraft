@@ -26,7 +26,7 @@ export function relabel(li: HTMLElement, letter: string): void {
  * [!quiz] with 2+ lettered options (`- A) text`): pick and submit.
  * Each option keeps the letter it has in the markdown in data-eq-letter.
  */
-export function setupChoice(callout: QuizCallout): void {
+export function setupChoice(callout: QuizCallout, { shuffle: allowShuffle = true } = {}): void {
   if (callout.dataset.eqReady) return;
   // order and match quizzes have their own widgets
   if (callout.dataset.calloutMetadata) return;
@@ -52,7 +52,8 @@ export function setupChoice(callout: QuizCallout): void {
   // sorting a fresh copy; toSorted() is ES2023, which mobile builds may lack
   // oxlint-disable-next-line unicorn/no-array-sort
   const labels = options.map(letterOf).sort();
-  const shuffle = canShuffle(
+  // order and match quizzes always shuffle: their order is the question
+  const shuffle = allowShuffle && canShuffle(
     options.map((li) => li.textContent ?? ""),
     qa?.textContent ?? "",
   );
@@ -135,5 +136,5 @@ export function setupChoice(callout: QuizCallout): void {
 export const choiceQuiz: Widget = {
   name: "choice-quiz",
   selector: QUIZ_SELECTOR,
-  setup: (callout) => setupChoice(callout),
+  setup: (callout, env) => setupChoice(callout, { shuffle: env.settings.shuffleOptions }),
 };

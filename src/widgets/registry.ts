@@ -1,4 +1,5 @@
 import type { MarkdownPostProcessorContext, Plugin } from "obsidian";
+import type { QuizcraftSettings } from "../settings/settings";
 import { calcSheet } from "./calc/sheet";
 import { carousel } from "./carousel/carousel";
 import { codeEditor } from "./code/code";
@@ -13,6 +14,8 @@ import { orderQuiz } from "./quiz/order";
 export interface WidgetEnv {
   plugin: Plugin;
   ctx: MarkdownPostProcessorContext;
+  /** Live settings object: a change applies to the next render. */
+  settings: QuizcraftSettings;
 }
 
 /**
