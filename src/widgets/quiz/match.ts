@@ -54,10 +54,10 @@ export function renderKeyGrid(qa: HTMLElement | undefined, leftHead = "", rightH
     row.createDiv({ cls: "eq-match-key-left", text: left });
     const right = row.createDiv({ cls: "eq-match-key-right" });
     const ans = right.createDiv({ cls: "eq-match-key-ans" });
-    if (strong) for (const n of strong.childNodes) ans.appendChild(n.cloneNode(true));
+    if (strong) for (const n of strong.childNodes) ans.append(n.cloneNode(true));
     for (const h of li.querySelectorAll(":scope > ul > li")) {
       const hint = right.createDiv({ cls: "eq-match-key-hint" });
-      for (const n of ownNodes(h)) hint.appendChild(n.cloneNode(true));
+      for (const n of ownNodes(h)) hint.append(n.cloneNode(true));
     }
   }
   ul.classList.add("eq-match-pool");
@@ -127,7 +127,7 @@ export function setupMatch(callout: QuizCallout): void {
   // rows are dealt in random order too, never the markdown order; row i stays
   // tied to key[i] whatever its place on screen
   const dealRows = () => {
-    for (const li of shuffled(rows, sameOrder(rows))) lefts.appendChild(li);
+    for (const li of shuffled(rows, sameOrder(rows))) lefts.append(li);
   };
   // picked[i] is the choice row i holds, "" while empty
   let picked = rows.map(() => "");
@@ -167,17 +167,8 @@ export function setupMatch(callout: QuizCallout): void {
     });
     return { slot, pick };
   });
-  let btn: HTMLButtonElement | undefined;
-  const paint = () => {
-    for (const [i, { pick }] of picks.entries()) {
-      pick.querySelector(".eq-match-val")?.setText(picked[i] || "Select a match");
-      pick.classList.toggle("is-empty", !picked[i]);
-    }
-    // a half-filled quiz would grade the empty rows as wrong
-    if (btn) btn.disabled = picked.some((v) => !v);
-  };
   // graded: the picker gives way to the pick, with the right choice under a wrong one
-  btn = gradedFooter(
+  const btn = gradedFooter(
     callout,
     content,
     () => {
@@ -202,6 +193,14 @@ export function setupMatch(callout: QuizCallout): void {
       paint();
     },
   );
+  const paint = () => {
+    for (const [i, { pick }] of picks.entries()) {
+      pick.querySelector(".eq-match-val")?.setText(picked[i] || "Select a match");
+      pick.classList.toggle("is-empty", !picked[i]);
+    }
+    // a half-filled quiz would grade the empty rows as wrong
+    btn.disabled = picked.some((v) => !v);
+  };
   dealRows();
   paint();
 }

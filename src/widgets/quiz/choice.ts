@@ -73,7 +73,8 @@ export function setupChoice(callout: QuizCallout): void {
 
   // footer sits between the options and the answer section
   const footer = createDiv({ cls: "eq-footer" });
-  content.insertBefore(footer, qa ?? null);
+  if (qa) qa.before(footer);
+  else content.append(footer);
   // the answer stays hidden until Submit, so it cannot be peeked at
   if (qa && keyLetters(qa).length) qa.classList.add("eq-answer");
   const status = footer.createSpan({ cls: "eq-status" });

@@ -28,8 +28,8 @@ export function decorateBody(body: HTMLElement): void {
     first.classList.add("eq-key-letter");
     first.dataset.letter = m[1];
     const rest = createSpan({ cls: "eq-key-text" });
-    while (first.nextSibling) rest.appendChild(first.nextSibling);
-    p.appendChild(rest);
+    while (first.nextSibling) rest.append(first.nextSibling);
+    p.append(rest);
   }
 }
 
@@ -82,7 +82,7 @@ function splitKeyLines(p: HTMLElement): void {
     while (j < nodes.length && nodes[j]?.nodeType === Node.TEXT_NODE && !nodes[j]?.textContent?.trim()) j++;
     if (!isKey(nodes[j])) continue;
     const line = createEl("p");
-    while (br.nextSibling) line.appendChild(br.nextSibling);
+    while (br.nextSibling) line.append(br.nextSibling);
     if (line.firstChild?.nodeType === Node.TEXT_NODE && !line.firstChild.textContent?.trim()) line.firstChild.remove();
     br.remove();
     p.after(line);

@@ -21,7 +21,8 @@ export function gradedFooter(
 ): HTMLButtonElement {
   const qa = callout.eqQa;
   const footer = createDiv({ cls: "eq-footer" });
-  content.insertBefore(footer, qa ?? null);
+  if (qa) qa.before(footer);
+  else content.append(footer);
   // hidden until Submit, like lettered quizzes
   qa?.classList.add("eq-answer");
   const status = footer.createSpan({ cls: "eq-status" });

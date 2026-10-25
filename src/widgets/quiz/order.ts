@@ -85,7 +85,8 @@ export function setupOrder(callout: QuizCallout): void {
       list.classList.remove("eq-sorting");
       for (const n of items) n.style.transform = "";
       const target = items[to];
-      if (to !== from && target) list.insertBefore(li, to > from ? target.nextSibling : target);
+      if (to > from) target?.after(li);
+      if (to < from) target?.before(li);
       // FLIP: start the tile where it was dropped, then let it glide into its slot
       li.style.transform = `translateY(${before - li.getBoundingClientRect().top}px)`;
       li.getBoundingClientRect(); // force layout so the start position applies
@@ -115,14 +116,14 @@ export function setupOrder(callout: QuizCallout): void {
       e.stopPropagation();
       const prev = li.previousElementSibling;
       const next = li.nextElementSibling;
-      if (e.key === "ArrowUp" && prev) list.insertBefore(li, prev);
-      if (e.key === "ArrowDown" && next) list.insertBefore(next, li);
+      if (e.key === "ArrowUp") prev?.before(li);
+      if (e.key === "ArrowDown") next?.after(li);
       li.focus();
     });
   }
   // the steps start in random order, never already solved; Try again deals again
   const deal = () => {
-    for (const li of shuffled(steps, inKeyOrder(key))) list.appendChild(li);
+    for (const li of shuffled(steps, inKeyOrder(key))) list.append(li);
   };
   deal();
 

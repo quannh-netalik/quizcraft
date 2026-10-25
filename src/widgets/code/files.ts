@@ -17,7 +17,7 @@ export function setupFiles(body: HTMLElement | null): void {
   body.prepend(nav, view);
   const entries = files.map((el) => {
     const name = calloutName(el, "file");
-    view.appendChild(el);
+    view.append(el);
     const btn = nav.createEl("button", { cls: "eq-file", text: name, attr: { title: name } });
     return { el, btn };
   });

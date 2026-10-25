@@ -39,7 +39,7 @@ export function setupCarousel(box: HTMLElement): void {
 
   const wrap = createDiv({ cls: "eq-car", attr: { tabindex: "0" } });
   const stage = wrap.createDiv({ cls: "eq-car-stage" });
-  for (const s of slides) stage.createDiv({ cls: "eq-car-slide" }).appendChild(s);
+  for (const s of slides) stage.createDiv({ cls: "eq-car-slide" }).append(s);
 
   // footer: [fullscreen][restart]  i / n  [prev][next]
   const bar = wrap.createDiv({ cls: "eq-car-bar" });
@@ -54,7 +54,7 @@ export function setupCarousel(box: HTMLElement): void {
   right.append(prev, next);
   // the caption sits right under the image, inside the box
   const caption = createDiv({ cls: "eq-car-caption" });
-  wrap.insertBefore(caption, bar);
+  bar.before(caption);
 
   content.empty();
   content.append(wrap);

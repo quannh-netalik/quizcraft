@@ -28,8 +28,8 @@ export function wrapChildren(li: HTMLElement, cls: string): HTMLSpanElement {
   for (const n of Array.from(li.childNodes)) {
     const marker =
       n instanceof HTMLElement && (n.classList.contains("list-bullet") || n.classList.contains("list-collapse-indicator"));
-    if (!marker) span.appendChild(n);
+    if (!marker) span.append(n);
   }
-  li.appendChild(span);
+  li.append(span);
   return span;
 }

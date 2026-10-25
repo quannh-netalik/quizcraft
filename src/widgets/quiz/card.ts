@@ -41,7 +41,7 @@ export function setupCard(callout: QuizCallout): void {
   head.createSpan({ cls: "eq-qa-label" });
   setIcon(head.createSpan({ cls: "eq-qa-fold" }), "chevron-right");
   const body = qa.createDiv({ cls: "eq-qa-body" });
-  while (marker.nextSibling) body.appendChild(marker.nextSibling);
+  while (marker.nextSibling) body.append(marker.nextSibling);
   marker.replaceWith(qa);
   decorateBody(body);
   callout.eqQa = qa;

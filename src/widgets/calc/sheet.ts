@@ -70,7 +70,7 @@ export function readCells(table: HTMLTableElement): Map<string, Cell> {
           attr: { type: "text", inputmode: "decimal", value: cell.base, "aria-label": key },
         });
         td.empty();
-        td.appendChild(cell.input);
+        td.append(cell.input);
       }
       cells.set(key, cell);
     }

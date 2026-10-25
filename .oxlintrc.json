@@ -8,7 +8,10 @@
   "rules": {
     "eqeqeq": "error",
     "no-unused-vars": "error",
-    "typescript/no-explicit-any": "error"
+    "typescript/no-explicit-any": "error",
+    "prefer-const": "error",
+    "unicorn/prefer-dom-node-append": "error",
+    "unicorn/prefer-modern-dom-apis": "error"
   },
   "env": {
     "browser": true

@@ -37,7 +37,7 @@ export async function setupDemo(box: HTMLElement, env: WidgetEnv): Promise<void>
   });
   frame.style.height = `${frameHeight(box.dataset.calloutMetadata)}px`;
   content.empty();
-  content.appendChild(frame);
+  content.append(frame);
   if (shown) content.createDiv({ cls: "eq-demo-cap", text: shown });
   frame.srcdoc = await app.vault.cachedRead(file);
 }

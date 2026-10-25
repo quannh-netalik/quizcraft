@@ -37,7 +37,7 @@ export function installObsidianDom(): void {
   for (const proto of hosts) {
     proto.createEl = function (this: Host, tag: keyof HTMLElementTagNameMap, o?: ElOptions | string) {
       const el = build(tag, o);
-      this.appendChild(el);
+      this.append(el);
       return el;
     };
     proto.createDiv = function (this: Host, o?: ElOptions | string) {
@@ -47,7 +47,7 @@ export function installObsidianDom(): void {
       return (this as unknown as { createEl: typeof createEl }).createEl("span", o);
     };
     proto.appendText = function (this: Host, text: string) {
-      this.appendChild(document.createTextNode(text));
+      this.append(document.createTextNode(text));
     };
     proto.empty = function (this: Host) {
       while (this.firstChild) this.removeChild(this.firstChild);
