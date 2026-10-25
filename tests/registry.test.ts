@@ -1,10 +1,11 @@
 import { expect, test } from "bun:test";
 import QuizcraftPlugin from "../src/main";
+import { DEFAULT_SETTINGS } from "../src/settings/settings";
 import { findAll, renderWidgets, type Widget } from "../src/widgets/registry";
 
-test("plugin registers a single markdown post-processor", () => {
+test("plugin registers a single markdown post-processor", async () => {
   const plugin = new QuizcraftPlugin({} as never, {} as never);
-  plugin.onload();
+  await plugin.onload();
   expect((plugin as unknown as { postProcessors: unknown[] }).postProcessors).toHaveLength(1);
 });
 
@@ -22,6 +23,6 @@ test("renderWidgets runs each widget on its own callouts", () => {
     { name: "quiz", selector: '.callout[data-callout="quiz"]', setup: (el) => seen.push(`quiz:${el.dataset.callout}`) },
     { name: "code", selector: '.callout[data-callout="code"]', setup: (el) => seen.push(`code:${el.dataset.callout}`) },
   ];
-  renderWidgets(document.body, { plugin: {} as never, ctx: {} as never }, widgets);
+  renderWidgets(document.body, { plugin: {} as never, ctx: {} as never, settings: { ...DEFAULT_SETTINGS } }, widgets);
   expect(seen).toEqual(["quiz:quiz", "code:code"]);
 });
