@@ -21,9 +21,13 @@ const active = (el: Element) => el.querySelector(".eq-tab.is-active")?.textConte
 
 /** One [!code] editor per language list, all set up. */
 function editors(...langs: string[][]): HTMLElement[] {
+  return editorsWith({}, ...langs);
+}
+
+function editorsWith(options: { remember?: boolean }, ...langs: string[][]): HTMLElement[] {
   document.body.innerHTML = langs.map((l) => box("code", "Example", l.map((n) => tab(n)).join(""))).join("");
   const els = [...document.body.children] as HTMLElement[];
-  for (const el of els) setupCode(el);
+  for (const el of els) setupCode(el, options);
   return els;
 }
 
@@ -92,5 +96,20 @@ describe("setupCode language sync", () => {
     const [a, b] = editors(["Go", "Python"], ["Go"]);
     expect(active(a!)).toBe("Python");
     expect(active(b!)).toBe("Go");
+  });
+});
+
+describe("setupCode without language memory", () => {
+  test("still switches open editors but stores nothing", () => {
+    const [a, b] = editorsWith({ remember: false }, ["Go", "Python"], ["Go", "Python"]);
+    click(buttons(a!)[1]!);
+    expect(active(b!)).toBe("Python");
+    expect(localStorage.getItem(LANGUAGE_KEY)).toBeNull();
+  });
+
+  test("opens on the first tab even when a language was stored before", () => {
+    localStorage.setItem(LANGUAGE_KEY, "Python");
+    const [a] = editorsWith({ remember: false }, ["Go", "Python"]);
+    expect(active(a!)).toBe("Go");
   });
 });

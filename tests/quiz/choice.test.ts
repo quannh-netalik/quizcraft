@@ -1,5 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import { relabel } from "../../src/widgets/quiz/choice";
+import { setupCard } from "../../src/widgets/quiz/card";
+import { relabel, setupChoice } from "../../src/widgets/quiz/choice";
+import { callout } from "../helpers/dom";
 
 function li(html: string): HTMLElement {
   const el = document.createElement("li");
@@ -31,5 +33,26 @@ describe("relabel", () => {
     const el = li("\n<span>C) three</span>");
     relabel(el, "A");
     expect(el.textContent).toBe("\nA) three");
+  });
+});
+
+const texts = (el: HTMLElement) => [...el.querySelectorAll("li.eq-option")].map((o) => o.textContent?.trim());
+
+describe("setupChoice shuffle setting", () => {
+  const OPTIONS = ["A) one", "B) two", "C) three", "D) four", "E) five", "F) six"];
+
+  function quiz(shuffle: boolean): HTMLElement {
+    const el = callout("quiz", `<ul>${OPTIONS.map((o) => `<li>${o}</li>`).join("")}</ul><p><mark>Answer</mark></p><p>B) two</p>`);
+    setupCard(el);
+    setupChoice(el, { shuffle });
+    return el;
+  }
+
+  test("keeps the markdown order when shuffling is off", () => {
+    expect(texts(quiz(false))).toEqual(OPTIONS);
+  });
+
+  test("deals a new order when shuffling is on", () => {
+    expect(texts(quiz(true))).not.toEqual(OPTIONS);
   });
 });
