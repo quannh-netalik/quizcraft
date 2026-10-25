@@ -257,6 +257,16 @@ each other in a loop stop at the value written in the note.
 - When the link does not point to an `.html` file in the vault, the callout
   stays a plain link, so the note still shows what is missing.
 
+## Settings
+
+Settings → Quizcraft has two toggles. A change applies to notes rendered after
+it; reopen a note to see it.
+
+| Setting | Default | Effect |
+|---|---|---|
+| Shuffle quiz options | on | Deal multiple-choice options in random order. Off keeps the markdown order. Order and match quizzes always shuffle, because their order is the question. |
+| Remember code language | on | Open code editors on the language picked last, in every note and after a restart. Off opens each editor on its first tab; picking a tab still switches the other open editors. |
+
 ## Development
 
 Requires [Bun](https://bun.sh) 1.4 or later.
@@ -272,7 +282,8 @@ bun run bump 0.3.0  # set version in package.json, manifest.json, versions.json
 ### Project layout
 
 ```text
-src/main.ts              plugin entry: one markdown post-processor
+src/main.ts              plugin entry: settings, setting tab, one markdown post-processor
+src/settings/            QuizcraftSettings, DEFAULT_SETTINGS and the setting tab
 src/widgets/registry.ts  Widget interface and the ordered widget list
 src/widgets/quiz/        [!quiz] card, answer section, choice, order and match grading, shared footer
 src/widgets/code/        [!code] editor, [!file] panes, [!tabs] and the shared tab bar
