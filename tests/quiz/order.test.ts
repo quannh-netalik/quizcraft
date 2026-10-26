@@ -87,3 +87,33 @@ describe("setupOrder", () => {
     expect(order(el)).toEqual(before);
   });
 });
+
+/** A mouse pointer event; happy-dom has no PointerEvent, so the fields are set by hand. */
+function pointer(target: EventTarget, type: string, y: number): void {
+  const e = new Event(type, { bubbles: true, cancelable: true }) as Event & Record<string, unknown>;
+  Object.assign(e, { button: 0, clientY: y, pointerType: "mouse" });
+  target.dispatchEvent(e);
+}
+
+describe("drag lifecycle", () => {
+  test("a blur ends the drag and drops the lifted tile", () => {
+    const el = quiz();
+    const li = tiles(el)[0]!;
+    pointer(li, "pointerdown", 10);
+    expect(li.classList.contains("eq-dragging")).toBe(true);
+    window.dispatchEvent(new Event("blur"));
+    expect(li.classList.contains("eq-dragging")).toBe(false);
+    // released: later moves no longer touch the tile
+    pointer(document, "pointermove", 80);
+    expect(li.style.transform).toBe("");
+  });
+
+  test("a tile removed mid-drag stops following the pointer", () => {
+    const el = quiz();
+    const li = tiles(el)[0]!;
+    pointer(li, "pointerdown", 10);
+    el.remove();
+    pointer(document, "pointermove", 80);
+    expect(li.style.transform).toBe("");
+  });
+});
