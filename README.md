@@ -291,6 +291,7 @@ src/widgets/carousel/    [!carousel] image slides
 src/widgets/calc/        [!calc] formula parser and spreadsheet
 src/widgets/demo/        [!demo] sandboxed HTML frame
 src/lib/                 DOM helpers and shuffle, shared by widgets
+styles/                  one stylesheet per widget; build.ts joins them into styles.css
 tests/stubs/             obsidian API stand-ins and DOM helpers for happy-dom
 tests/helpers/           callout fixtures
 tests/<area>/            tests, one folder per src area

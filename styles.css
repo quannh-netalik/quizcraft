@@ -1,6 +1,7 @@
 /* Quizcraft — interactive widgets built from callouts.
    Card layout (border, radius, title strip) is left to the theme or a CSS snippet;
-   these rules add the states and parts the plugin creates. */
+   these rules add the states and parts the plugin creates.
+   Generated from styles/*.css by build.ts; edit those files, not this one. */
 
 /* ===== Answer section of a [!quiz] card =====
    Markdown: everything after the "> ==Answer==" marker line. The plugin moves it into
@@ -608,7 +609,6 @@ body .eq-car .internal-embed.image-embed[alt]::after { content: none; display: n
 }
 .eq-calc-reset:hover { color: var(--eq-brand); background: var(--eq-hover); }
 .eq-calc-reset svg { width: 16px; height: 16px; }
-
 
 /* ===== Demo: > [!demo] + [[file.html]], the page runs in a sandboxed frame ===== */
 .callout.eq-demo {

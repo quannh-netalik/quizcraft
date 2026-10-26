@@ -1,0 +1,106 @@
+/* ===== Match: > [!quiz|match], one picker per left item =====
+   Two columns (left item | picker), one header row with both labels. */
+.callout.eq-card.eq-match > .callout-content > .eq-match-head,
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  align-items: center;
+  column-gap: 16px;
+}
+.callout.eq-card.eq-match > .callout-content > .eq-match-head {
+  padding: 0 48px 6px 17px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+}
+.callout.eq-card.eq-match > .callout-content > .eq-match-head > span:last-child { padding-left: 13px; }
+/* right padding holds the \2713/\2717 mark, so grading does not shift the columns */
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row { padding-block: 10px !important; padding-right: 48px !important; }
+/* plain list, not cards: hairline dividers, no fills */
+.callout.eq-card.eq-match > .callout-content > ul:has(> li.eq-match-row) { gap: 0; }
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row {
+  border: 0;
+  border-radius: 6px;
+  background-color: transparent;
+  border-bottom: 1px solid var(--background-modifier-border);
+  transition: background-color 0.15s ease;
+}
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row:last-child { border-bottom: 0; }
+.eq-match-key-row { border-radius: 6px; transition: background-color 0.15s ease; }
+/* soft neutral row hover, like a table */
+.eq-match-key-row:hover,
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row:hover { background-color: color-mix(in srgb, var(--text-normal) 4%, transparent); }
+/* graded rows: only a small mark at the right edge is green or red */
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row:is(.eq-correct, .eq-wrong) { position: relative; }
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row:is(.eq-correct, .eq-wrong)::after {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 14px; font-weight: 700; line-height: 1; opacity: 0.85;
+}
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row.eq-correct::after { content: "\2713"; color: var(--eq-right); }
+.callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row.eq-wrong::after { content: "\2717"; color: var(--eq-wrong); }
+.eq-match-left { font-weight: 500; overflow-wrap: anywhere; }
+.callout.eq-card.eq-match > .callout-content > .eq-match-pool { display: none; }
+.eq-match-slot { min-width: 0; }
+button.eq-match-pick {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 8px 12px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background-color: var(--background-modifier-hover);
+  color: var(--text-normal);
+  font-size: 15px;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s, background-color 0.12s;
+}
+button.eq-match-pick:hover { border-color: var(--eq-brand); }
+button.eq-match-pick:focus-visible { box-shadow: 0 0 0 2px var(--eq-brand); }
+button.eq-match-pick.is-empty { border: 1px dashed var(--background-modifier-border); background-color: transparent; color: var(--text-faint); }
+button.eq-match-pick.is-empty:hover { border-color: var(--eq-brand); }
+/* long names wrap, never truncate: a cut-off choice cannot be told apart from another */
+.eq-match-val { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.eq-match-chev { flex: 0 0 auto; display: flex; color: var(--text-muted); }
+.eq-match-chev svg { width: 16px; height: 16px; }
+.menu.eq-match-menu { max-width: min(520px, 92vw); }
+.menu.eq-match-menu .menu-item-title { white-space: normal; }
+/* graded: the picker gives way to the result, in the same column */
+.eq-match.eq-done button.eq-match-pick { display: none; }
+.eq-match-result { display: flex; flex-direction: column; gap: 4px; padding: 2px 0 2px 13px; font-size: 15px; line-height: 1.35; overflow-wrap: anywhere; }
+.eq-match-row.eq-correct .eq-match-yours { color: var(--text-normal); }
+.eq-match-row.eq-wrong .eq-match-yours { color: var(--text-muted); text-decoration: line-through; text-decoration-color: var(--eq-wrong); }
+.eq-match-fix { color: var(--text-normal); font-weight: 500; }
+.eq-match-fix::before { content: "\2713  "; white-space: pre; color: var(--eq-right); }
+
+/* match answer: two-column key in the question's grid, hint under the answer */
+.eq-match .eq-qa-body > ul.eq-match-pool { display: none; }
+.eq-match-key { margin: 0 0 10px; font-size: 15px; }
+.eq-match-key-head, .eq-match-key-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  column-gap: 16px;
+  padding: 10px 48px 10px 17px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  line-height: 1.4;
+}
+.eq-match-key-row:last-child { border-bottom: 0; }
+.eq-match-key-head { padding-bottom: 6px; border-bottom: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--text-muted); }
+.eq-match-key-head > span:last-child { padding-left: 13px; }
+.eq-match-key-right { padding-left: 13px; min-width: 0; overflow-wrap: anywhere; }
+.eq-match-key-left { color: var(--text-muted); overflow-wrap: anywhere; }
+.eq-match-key-ans { color: var(--text-normal); font-weight: 500; }
+.eq-match-key-hint { margin-top: 3px; font-size: 14px; color: var(--text-muted); }
+.eq-match-used { color: var(--text-faint); font-size: 0.9em; }
+/* narrow panes and phones: one column, the picker under its item */
+@media (max-width: 600px) {
+  .callout.eq-card.eq-match > .callout-content > ul > li.eq-match-row { grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
+  .callout.eq-card.eq-match > .callout-content > .eq-match-head { display: none; }
+  .eq-match-key-head { display: none; }
+  .eq-match-key-row { grid-template-columns: minmax(0, 1fr); row-gap: 4px; padding-right: 17px; }
+  .eq-match-key-right { padding-left: 0; }
+}

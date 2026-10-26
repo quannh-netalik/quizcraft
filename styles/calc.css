@@ -1,0 +1,47 @@
+/* ===== Calc: > [!calc] + table, a small spreadsheet =====
+   ==x== cells are yellow inputs; formula cells are bold brand-coloured outputs. */
+.theme-light { --eq-calc-in-bg: #fcf3d1; --eq-calc-in-border: #e9d48a; }
+.theme-dark { --eq-calc-in-bg: #3a3420; --eq-calc-in-border: #6b5d2e; }
+.callout[data-callout="calc"] {
+  --callout-color: 85, 83, 255;
+  --callout-icon: lucide-calculator;
+  background-color: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+}
+.theme-dark .callout[data-callout="calc"] { --callout-color: 139, 138, 247; }
+.callout[data-callout="calc"] > .callout-title {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  font-weight: 600;
+}
+.callout[data-callout="calc"] > .callout-content { padding: 0; margin: 0; }
+.callout[data-callout="calc"] .table-wrapper, .callout[data-callout="calc"] table { width: 100%; margin: 0; border: 0; }
+.callout[data-callout="calc"] thead { display: none; }
+.callout[data-callout="calc"] td {
+  padding: 6px 14px;
+  border-left: 0; border-right: 0;
+  border-color: var(--background-modifier-border);
+  vertical-align: middle;
+}
+.callout[data-callout="calc"] tr:last-child td { border-bottom: 0; }
+.callout[data-callout="calc"] td mark { background: var(--eq-calc-in-bg); color: var(--text-normal); padding: 1px 6px; border-radius: 4px; }
+.eq-calc-in {
+  width: 100%; min-width: 5em; max-width: 12em;
+  background: var(--eq-calc-in-bg) !important;
+  border: 1px solid var(--eq-calc-in-border) !important;
+  border-radius: 4px !important;
+  padding: 2px 8px !important;
+  height: auto !important;
+  font: inherit; color: var(--text-normal);
+}
+.eq-calc-in:focus { outline: 2px solid var(--eq-brand); outline-offset: 0; }
+.eq-calc-out { font-weight: 600; color: var(--eq-brand); font-variant-numeric: tabular-nums; }
+.eq-calc-reset {
+  margin-left: auto; display: flex; align-items: center; cursor: pointer;
+  color: var(--text-muted); padding: 2px; border-radius: 4px;
+}
+.eq-calc-reset:hover { color: var(--eq-brand); background: var(--eq-hover); }
+.eq-calc-reset svg { width: 16px; height: 16px; }
