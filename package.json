@@ -17,7 +17,8 @@
     "lint": "oxlint --deny-warnings",
     "test": "bun test",
     "check": "bun run typecheck && bun run lint && bun test",
-    "bump": "bun scripts/version-bump.ts"
+    "bump": "bun scripts/version-bump.ts",
+    "check:styles": "bun scripts/check-styles.ts"
   },
   "keywords": [
     "obsidian",

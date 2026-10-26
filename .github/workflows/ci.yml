@@ -32,5 +32,8 @@ jobs:
       - name: Test
         run: bun test
 
+      - name: Check generated styles.css
+        run: bun run check:styles
+
       - name: Build
         run: bun run build
