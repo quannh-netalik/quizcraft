@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { findAnswerMarker, setupCard, type QuizCallout } from "../../src/widgets/quiz/card";
+import { answerOf, findAnswerMarker, setupCard } from "../../src/widgets/quiz/card";
 import { callout, click, content } from "../helpers/dom";
 
 const QUESTION = `<p>Which one?</p><ul><li>A) one</li><li>B) two</li></ul>`;
@@ -30,7 +30,7 @@ describe("setupCard", () => {
   test("moves everything after the marker into the answer section", () => {
     const box = callout("quiz", `${QUESTION}<p><mark>Answer</mark></p><p><strong>B)</strong> two</p><p>Because.</p>`);
     setupCard(box);
-    const qa = (box as QuizCallout).eqQa!;
+    const qa = answerOf(box)!;
     expect(box.classList.contains("eq-card")).toBe(true);
     expect(qa.parentElement).toBe(content(box));
     expect(qa.querySelector(".eq-qa-body")!.children).toHaveLength(2);
@@ -41,20 +41,20 @@ describe("setupCard", () => {
     const box = callout("quiz", QUESTION);
     setupCard(box);
     expect(box.classList.contains("eq-card")).toBe(true);
-    expect((box as QuizCallout).eqQa).toBeUndefined();
+    expect(answerOf(box)).toBeUndefined();
   });
 
   test("a marker with no answer after it stays in place", () => {
     const box = callout("quiz", `${QUESTION}<p><mark>Answer</mark></p>`);
     setupCard(box);
-    expect((box as QuizCallout).eqQa).toBeUndefined();
+    expect(answerOf(box)).toBeUndefined();
     expect(content(box).querySelector("mark")).not.toBeNull();
   });
 
   test("clicking the head toggles the answer open", () => {
     const box = callout("quiz", `${QUESTION}<p><mark>Answer</mark></p><p>B</p>`);
     setupCard(box);
-    const qa = (box as QuizCallout).eqQa!;
+    const qa = answerOf(box)!;
     click(qa.querySelector(".eq-qa-head")!);
     expect(qa.classList.contains("is-open")).toBe(true);
     click(qa.querySelector(".eq-qa-head")!);

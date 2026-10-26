@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { Menu } from "../stubs/obsidian";
-import { setupCard } from "../../src/widgets/quiz/card";
+import { answerOf, setupCard } from "../../src/widgets/quiz/card";
 import { choose, gradeMatch, matchKey, setupMatch } from "../../src/widgets/quiz/match";
 import { callout, click, content } from "../helpers/dom";
 
@@ -66,7 +66,7 @@ describe("gradeMatch", () => {
 describe("setupMatch", () => {
   test("reads the key in left-list order", () => {
     const el = quiz();
-    expect(matchKey((el as { eqQa?: HTMLElement }).eqQa)).toEqual(PAIRS.map(([, r]) => r));
+    expect(matchKey(answerOf(el))).toEqual(PAIRS.map(([, r]) => r));
     expect(el.classList.contains("eq-match")).toBe(true);
   });
 

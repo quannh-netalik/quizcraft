@@ -1,7 +1,7 @@
 import { Menu, setIcon } from "obsidian";
 import { guard, wrapChildren } from "../../lib/dom";
 import { sameOrder, shuffled } from "../../lib/shuffle";
-import type { QuizCallout } from "./card";
+import { answerOf, type QuizCallout } from "./card";
 import { gradedFooter } from "./footer";
 import type { Widget } from "../registry";
 
@@ -98,7 +98,7 @@ export function setupMatch(callout: QuizCallout): void {
   if (callout.dataset.eqMatch) return;
   const content = callout.querySelector<HTMLElement>(":scope > .callout-content");
   const [lefts, rights] = content ? [...content.querySelectorAll<HTMLElement>(":scope > ul")] : [];
-  const key = matchKey(callout.eqQa);
+  const key = matchKey(answerOf(callout));
   const rows = lefts ? [...lefts.children].filter((li): li is HTMLElement => li.tagName === "LI") : [];
   // every left item needs exactly one answer, or there is nothing to grade against
   if (!content || !lefts || !rights || rows.length < 2 || key.length !== rows.length || key.some((k) => !k)) return;
@@ -115,7 +115,7 @@ export function setupMatch(callout: QuizCallout): void {
   const rightLabel = columnLabel(rights);
   const leftHead = leftLabel?.textContent?.trim() ?? "";
   const rightHead = rightLabel?.textContent?.trim() ?? "";
-  renderKeyGrid(callout.eqQa, leftHead, rightHead);
+  renderKeyGrid(answerOf(callout), leftHead, rightHead);
   if (leftHead || rightHead) {
     const head = createDiv({ cls: "eq-match-head" });
     head.createSpan({ text: leftHead });

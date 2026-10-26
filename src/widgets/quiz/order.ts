@@ -1,7 +1,7 @@
 import { setIcon } from "obsidian";
 import { guard, wrapChildren } from "../../lib/dom";
 import { shuffled } from "../../lib/shuffle";
-import type { QuizCallout } from "./card";
+import { answerOf, type QuizCallout } from "./card";
 import { gradedFooter } from "./footer";
 import type { Widget } from "../registry";
 
@@ -31,7 +31,7 @@ export function setupOrder(callout: QuizCallout): void {
   if (callout.dataset.eqOrder) return;
   const content = callout.querySelector<HTMLElement>(":scope > .callout-content");
   const list = content?.querySelector<HTMLElement>(":scope > ul");
-  const key = orderKey(callout.eqQa);
+  const key = orderKey(answerOf(callout));
   if (!content || !list || key.length < 2) return;
   callout.dataset.eqOrder = "1";
   callout.classList.add("eq-quiz", "eq-order");

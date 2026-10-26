@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { setupCard } from "../../src/widgets/quiz/card";
+import { answerOf, setupCard } from "../../src/widgets/quiz/card";
 import { gradeOrder, inKeyOrder, orderKey, setupOrder } from "../../src/widgets/quiz/order";
 import { callout, click, content } from "../helpers/dom";
 
@@ -31,7 +31,7 @@ describe("gradeOrder", () => {
 describe("setupOrder", () => {
   test("reads the numbered key", () => {
     const el = quiz();
-    expect(orderKey((el as { eqQa?: HTMLElement }).eqQa)).toEqual(KEY);
+    expect(orderKey(answerOf(el))).toEqual(KEY);
   });
 
   test("never starts solved", () => {

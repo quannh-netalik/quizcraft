@@ -1,5 +1,5 @@
 import { guard } from "../../lib/dom";
-import type { QuizCallout } from "./card";
+import { answerOf, type QuizCallout } from "./card";
 
 /** Result of grading a whole quiz: how many parts are right, out of how many. */
 export interface Score {
@@ -19,7 +19,7 @@ export function gradedFooter(
   grade: () => Score,
   clear: () => void,
 ): HTMLButtonElement {
-  const qa = callout.eqQa;
+  const qa = answerOf(callout);
   const footer = createDiv({ cls: "eq-footer" });
   if (qa) qa.before(footer);
   else content.append(footer);

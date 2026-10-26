@@ -2,7 +2,7 @@ import { keyLetters, relabelKey } from "./answer";
 import { guard } from "../../lib/dom";
 import { sameOrder, shuffled } from "../../lib/shuffle";
 import { canShuffle, grade, optionLetter } from "./parse";
-import { QUIZ_SELECTOR, type QuizCallout } from "./card";
+import { answerOf, QUIZ_SELECTOR, type QuizCallout } from "./card";
 import type { Widget } from "../registry";
 
 /** The letter an option has in the markdown; grading always uses it. */
@@ -43,7 +43,7 @@ export function setupChoice(callout: QuizCallout, { shuffle: allowShuffle = true
 
   // more than one key line = pick several (checkboxes), otherwise one (radios).
   // The question can also say so itself, for a multi-select quiz with one right option.
-  const qa = callout.eqQa;
+  const qa = answerOf(callout);
   const question = [...content.childNodes].filter((n) => n !== qa).map((n) => n.textContent).join(" ");
   const multi = (qa ? keyLetters(qa) : []).length > 1 || /multi-select/i.test(question);
   callout.classList.add(multi ? "eq-multi" : "eq-single");
