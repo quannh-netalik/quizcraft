@@ -38,8 +38,18 @@ export function findAll(root: HTMLElement, selector: string): HTMLElement[] {
   return [...root.querySelectorAll<HTMLElement>(selector)];
 }
 
+/**
+ * Run every widget on the callouts it owns under `root`. One callout that a
+ * widget cannot handle is logged and skipped: the rest of the note still renders.
+ */
 export function renderWidgets(root: HTMLElement, env: WidgetEnv, widgets: readonly Widget[] = WIDGETS): void {
   for (const widget of widgets) {
-    for (const callout of findAll(root, widget.selector)) widget.setup(callout, env);
+    for (const callout of findAll(root, widget.selector)) {
+      try {
+        widget.setup(callout, env);
+      } catch (error) {
+        console.error(`Quizcraft: ${widget.name} failed`, error);
+      }
+    }
   }
 }
