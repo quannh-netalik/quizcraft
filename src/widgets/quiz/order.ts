@@ -1,7 +1,7 @@
 import { setIcon } from "obsidian";
 import { guard, wrapChildren } from "../../lib/dom";
 import { shuffled } from "../../lib/shuffle";
-import type { QuizCallout } from "./card";
+import { answerOf, type QuizCallout } from "./card";
 import { gradedFooter } from "./footer";
 import type { Widget } from "../registry";
 
@@ -31,7 +31,7 @@ export function setupOrder(callout: QuizCallout): void {
   if (callout.dataset.eqOrder) return;
   const content = callout.querySelector<HTMLElement>(":scope > .callout-content");
   const list = content?.querySelector<HTMLElement>(":scope > ul");
-  const key = orderKey(callout.eqQa);
+  const key = orderKey(answerOf(callout));
   if (!content || !list || key.length < 2) return;
   callout.dataset.eqOrder = "1";
   callout.classList.add("eq-quiz", "eq-order");
@@ -57,7 +57,14 @@ export function setupOrder(callout: QuizCallout): void {
     let to = from;
     li.classList.add("eq-dragging");
     list.classList.add("eq-sorting");
+    // one signal removes every drag listener at once, however the drag ends
+    const drag = new AbortController();
     const move = (ev: PointerEvent) => {
+      // the note re-rendered mid-drag: this tile is gone, so stop listening
+      if (!li.isConnected) {
+        drag.abort();
+        return;
+      }
       const dy = ev.clientY - y0;
       li.style.transform = `translateY(${dy}px) scale(1.02)`;
       const mid = held.top + held.height / 2 + dy;
@@ -73,12 +80,10 @@ export function setupOrder(callout: QuizCallout): void {
         n.style.transform = shift ? `translateY(${shift}px)` : "";
       }
     };
-    // pointercancel (the OS takes the touch, say) ends the drag like a release;
-    // without it the listeners stay on document and the tile stays lifted
+    // pointercancel (the OS takes the touch, say) and losing window focus end
+    // the drag like a release; without them the tile stays lifted
     const up = () => {
-      document.removeEventListener("pointermove", move);
-      document.removeEventListener("pointerup", up);
-      document.removeEventListener("pointercancel", up);
+      drag.abort();
       // where the held tile is drawn now, before the DOM catches up
       const before = li.getBoundingClientRect().top;
       // no transition while the other tiles snap back into their DOM slots
@@ -95,9 +100,11 @@ export function setupOrder(callout: QuizCallout): void {
       li.style.transform = "";
       window.setTimeout(() => li.classList.remove("eq-dropping"), 200);
     };
-    document.addEventListener("pointermove", move);
-    document.addEventListener("pointerup", up);
-    document.addEventListener("pointercancel", up);
+    const { signal } = drag;
+    document.addEventListener("pointermove", move, { signal });
+    document.addEventListener("pointerup", up, { signal });
+    document.addEventListener("pointercancel", up, { signal });
+    window.addEventListener("blur", up, { signal });
   };
 
   for (const li of steps) {

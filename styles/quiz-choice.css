@@ -1,0 +1,138 @@
+/* ===== Lettered [!quiz]: option tiles =====
+   Specificity is raised (.callout.eq-card.eq-quiz ... li.eq-option) because snippets load after plugin CSS. */
+.theme-light {
+  --eq-brand: #5553ff;
+  --eq-hover: rgba(85, 83, 255, 0.06);
+  --eq-selected-bg: rgba(85, 83, 255, 0.10);
+}
+.theme-dark {
+  --eq-brand: #8b8af7;
+  --eq-hover: rgba(182, 182, 226, 0.06);
+  --eq-selected-bg: rgba(182, 182, 226, 0.14);
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option {
+  position: relative;
+  margin: 0;
+  padding: 11px 48px 11px 16px !important;
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
+}
+.callout.eq-card.eq-quiz:not(.eq-done) > .callout-content > ul > li.eq-option:hover {
+  border-color: var(--eq-brand);
+  background-color: var(--eq-hover);
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-selected {
+  border-color: var(--eq-brand);
+  box-shadow: 0 0 0 1px var(--eq-brand);
+  background-color: var(--eq-selected-bg);
+}
+.callout.eq-card.eq-quiz.eq-done > .callout-content > ul > li.eq-option { cursor: default; }
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-correct {
+  border-color: var(--eq-right);
+  box-shadow: 0 0 0 1px var(--eq-right);
+  background-color: var(--eq-right-bg);
+  color: var(--text-normal);
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-wrong {
+  border-color: var(--eq-wrong);
+  box-shadow: 0 0 0 1px var(--eq-wrong);
+  background-color: var(--eq-wrong-bg);
+  color: var(--text-normal);
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-missed {
+  border-color: var(--eq-right);
+  border-style: dashed;
+}
+
+/* footer: tinted strip under the options, status on the left, Submit on the right */
+.callout.eq-card.eq-quiz .eq-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px -24px -16px;
+  padding: 12px 16px 12px 24px;
+  background-color: var(--edu-quiz-head);
+  border-top: 1px solid var(--edu-quiz-line, var(--background-modifier-border));
+}
+.callout.eq-card > .callout-content > .eq-footer + .eq-qa { margin-top: 0; }
+.eq-quiz .eq-status { font-size: 14px; font-weight: 600; }
+.eq-quiz .eq-status.is-right { color: var(--eq-right); }
+.eq-quiz .eq-status.is-wrong { color: var(--eq-wrong); }
+.eq-quiz button.eq-btn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  height: auto;
+  border-radius: 6px;
+  border: none;
+  box-shadow: none;
+  background-color: var(--eq-brand);
+  color: #fff;
+  cursor: pointer;
+}
+.eq-quiz button.eq-btn:disabled {
+  background-color: var(--eq-btn-disabled-bg);
+  color: var(--eq-btn-disabled);
+  cursor: default;
+}
+
+/* Radio (single answer) / checkbox (multi-select) markers.
+   [data-callout] in the selector beats snippets that restyle li::before for bullets. */
+.callout[data-callout="quiz"].eq-quiz .eq-option::before {
+  content: "";
+  display: inline-block;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-right: 12px;
+  vertical-align: -2px;
+  border: 2px solid var(--text-faint);
+  background-color: transparent;
+  transition: background-color 0.12s, border-color 0.12s, box-shadow 0.12s;
+}
+.callout[data-callout="quiz"].eq-quiz.eq-single .eq-option::before { border-radius: 50%; }
+.callout[data-callout="quiz"].eq-quiz.eq-multi  .eq-option::before { border-radius: 3px; }
+
+/* selected */
+.callout[data-callout="quiz"].eq-quiz .eq-option.eq-selected::before { border-color: var(--eq-brand); }
+.callout[data-callout="quiz"].eq-quiz.eq-single .eq-option.eq-selected::before {
+  background-color: var(--eq-brand);
+  box-shadow: inset 0 0 0 2px var(--edu-quiz-bg, var(--background-primary));
+}
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-selected::before,
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-correct::before,
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-wrong::before {
+  background: var(--eq-brand) no-repeat center / 10px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3.5 3.5L11 1.5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* after submit: picked options keep their mark, in result colour */
+.callout[data-callout="quiz"].eq-quiz .eq-option.eq-correct::before { border-color: var(--eq-right); }
+.callout[data-callout="quiz"].eq-quiz .eq-option.eq-wrong::before   { border-color: var(--eq-wrong); }
+.callout[data-callout="quiz"].eq-quiz.eq-single .eq-option.eq-correct::before {
+  background-color: var(--eq-right);
+  box-shadow: inset 0 0 0 2px var(--eq-right-bg);
+}
+.callout[data-callout="quiz"].eq-quiz.eq-single .eq-option.eq-wrong::before {
+  background-color: var(--eq-wrong);
+  box-shadow: inset 0 0 0 2px var(--eq-wrong-bg);
+}
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-correct::before { background-color: var(--eq-right); }
+.callout[data-callout="quiz"].eq-quiz.eq-multi .eq-option.eq-wrong::before   { background-color: var(--eq-wrong); }
+.callout[data-callout="quiz"].eq-quiz .eq-option.eq-missed::before { border-color: var(--eq-right); border-style: dashed; }
+
+/* result mark on the right edge of the tile, instead of a tick glued to the text */
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option::after {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-correct::after { content: "\2713"; font-size: 16px; color: var(--eq-right); }
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-wrong::after   { content: "\2717"; font-size: 16px; color: var(--eq-wrong); }
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-missed::after  { content: "Correct answer"; font-weight: 600; color: var(--eq-right); right: 14px; }
+.callout.eq-card.eq-quiz > .callout-content > ul > li.eq-option.eq-missed { padding-right: 140px !important; }

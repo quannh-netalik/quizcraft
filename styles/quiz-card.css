@@ -1,0 +1,107 @@
+/* ===== Answer section of a [!quiz] card =====
+   Markdown: everything after the "> ==Answer==" marker line. The plugin moves it into
+     div.eq-qa > div.eq-qa-head ("Show answer" / "Answer", chevron) + div.eq-qa-body
+   at the bottom of the same card. */
+.theme-light {
+  --eq-ans-head: #f8f8ff; --eq-ans-head-hover: #efeffe; --eq-ans-head-text: #5553ff;
+  --eq-ans-muted: #6b7280;
+}
+.theme-dark {
+  --eq-ans-head: #23222b; --eq-ans-head-hover: #2a2933; --eq-ans-head-text: #8b8af7;
+  --eq-ans-muted: #8d8e96;
+}
+.callout.eq-card[data-callout="quiz"] > .callout-content > .eq-qa {  /* beats a snippet's :last-child margin reset */
+  margin: 16px -24px -16px;
+  border-top: 1px solid var(--edu-quiz-line, var(--background-modifier-border));
+}
+
+/* lettered quizzes: hidden until Submit */
+.eq-card .eq-qa.eq-answer:not(.eq-revealed) { display: none; }
+.eq-card .eq-footer:has(+ .eq-qa:not(.eq-answer)),
+.eq-card .eq-footer:has(+ .eq-qa.eq-revealed) { margin-bottom: 0; }
+
+.eq-card .eq-qa-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px 10px 24px;
+  background-color: var(--eq-ans-head);
+  color: var(--eq-ans-head-text);
+  font-size: 17px;
+  line-height: 26px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+.eq-card .eq-qa-head:hover { background-color: var(--eq-ans-head-hover); }
+.eq-card .eq-qa-icon, .eq-card .eq-qa-fold { display: flex; }
+.eq-card .eq-qa-icon .svg-icon { width: 18px; height: 18px; stroke-width: 2.5; }
+.eq-card .eq-qa-label::before { content: "Show answer"; }
+.eq-card .eq-qa.is-open .eq-qa-label::before { content: "Answer"; }
+.eq-card .eq-qa-fold { margin-left: auto; opacity: 0.7; transition: transform 0.15s; }
+.eq-card .eq-qa-fold .svg-icon { width: 16px; height: 16px; }
+.eq-card .eq-qa.is-open .eq-qa-fold { transform: rotate(90deg); }
+
+.eq-card .eq-qa-body {
+  display: none;
+  padding: 16px 24px 18px;
+  border-top: 1px solid var(--edu-quiz-line, var(--background-modifier-border));
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--text-normal);
+}
+.eq-card .eq-qa.is-open .eq-qa-body { display: block; }
+.eq-card .eq-qa-body > :first-child { margin-top: 0; }
+.eq-card .eq-qa-body > :last-child { margin-bottom: 0; }
+.eq-card .eq-qa-body > p { margin: 0 0 10px; }
+.eq-card .eq-qa-body > ul,
+.eq-card .eq-qa-body > ol { margin: 0 0 10px; padding-inline-start: 22px; }
+.eq-card .eq-qa-body li { margin: 2px 0; }
+.eq-card .eq-qa-body code { font-size: 0.88em; }
+
+/* correct option line: (B) option text — the badge is the only green in the body */
+.theme-light { --eq-right: #1d6335; --eq-wrong: #b91c1c; --eq-right-bg: #e2f8ea; --eq-wrong-bg: #fdecec; --eq-btn-disabled-bg: #f3f4f6; --eq-btn-disabled: #9ca3af; }
+.theme-dark { --eq-right: #48a868; --eq-wrong: #f17171; --eq-right-bg: #122618; --eq-wrong-bg: #2b1316; --eq-btn-disabled-bg: #292a30; --eq-btn-disabled: #6b6c75; }
+.eq-card .eq-qa-body p.eq-key {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 10px;
+  font-weight: 600;
+  line-height: 26px;
+}
+.eq-card .eq-qa-body p:not(.eq-key) + p.eq-key { margin-top: 16px; }
+.eq-card .eq-qa-body p.eq-key em { font-style: normal; }
+.eq-card .eq-key-letter {
+  flex: 0 0 24px;
+  height: 24px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background-color: var(--eq-right);
+  font-size: 0;                 /* hide "B." … */
+  text-align: center;
+}
+.eq-card .eq-key-letter::before {
+  content: attr(data-letter);   /* … show "B" in a badge */
+  font-size: 13px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #fff;
+}
+.theme-dark .eq-card .eq-key-letter::before { color: #0f1a13; }
+.eq-card .eq-key-text { flex: 1; min-width: 0; }
+
+/* "Why not the others" = secondary part */
+.eq-card .eq-qa-body p.eq-sub {
+  margin: 16px 0 6px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--edu-quiz-line, var(--background-modifier-border));
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--eq-ans-muted);
+}
+.eq-card .eq-qa-body p.eq-sub strong { font-weight: 700; color: inherit; }
+.eq-card .eq-sub-list { font-size: 16px; color: var(--eq-ans-muted); }
+.eq-card .eq-sub-list li::marker { color: var(--eq-ans-muted); }

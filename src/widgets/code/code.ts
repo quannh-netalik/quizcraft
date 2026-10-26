@@ -8,19 +8,17 @@ export const CODE_SELECTOR = '.callout[data-callout="code"]';
 export const LANGUAGE_KEY = "quizcraft:code-language";
 
 /**
- * An editor after setupCode: `eqSelect` switches it to the named tab. With
- * `strict`, an editor without that tab keeps its current one.
+ * Tab switch of each set-up editor, so picking a language in one editor can
+ * switch the others. With `strict`, an editor without that language keeps its tab.
  */
-interface EditorBox extends HTMLElement {
-  eqSelect?: (name: string, strict?: boolean) => void;
-}
+const selectors = new WeakMap<HTMLElement, (name: string, strict?: boolean) => void>();
 
 /**
  * `> [!code] caption` holding `>> [!tab] Go` callouts: a dark code editor with
  * one tab per language. A tab holds one code block or `>>> [!file] name` callouts.
  * Picking a language switches every open editor to it, and new editors start on it.
  */
-export function setupCode(box: EditorBox, { remember = true } = {}): void {
+export function setupCode(box: HTMLElement, { remember = true } = {}): void {
   if (box.dataset.eqTabs) return;
   const content = box.querySelector<HTMLElement>(":scope > .callout-content");
   if (!content) return;
@@ -38,13 +36,13 @@ export function setupCode(box: EditorBox, { remember = true } = {}): void {
   const { select } = buildTabBar(content, panels, {
     onPick: (t) => {
       if (remember) localStorage.setItem(LANGUAGE_KEY, t.name);
-      for (const other of document.querySelectorAll<EditorBox>(".eq-code")) {
+      for (const other of document.querySelectorAll<HTMLElement>(".eq-code")) {
         // a Go-only editor must not jump to its first tab when Python is picked elsewhere
-        if (other !== box) other.eqSelect?.(t.name, true);
+        if (other !== box) selectors.get(other)?.(t.name, true);
       }
     },
   });
-  box.eqSelect = select;
+  selectors.set(box, select);
   // without memory every editor opens on its first tab; live broadcast still works
   select(remember ? (localStorage.getItem(LANGUAGE_KEY) ?? "") : "");
 }

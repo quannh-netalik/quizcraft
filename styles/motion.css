@@ -1,0 +1,14 @@
+/* ===== Reduced motion =====
+   Readers who ask the OS for less motion get instant state changes: no sliding
+   tiles, no fades. Dragging still works; tiles just jump to their new place. */
+@media (prefers-reduced-motion: reduce) {
+  .eq-card *,
+  .eq-card,
+  .eq-code *,
+  .eq-tabs *,
+  .eq-car *,
+  .eq-calc-reset {
+    transition: none !important;
+    animation: none !important;
+  }
+}

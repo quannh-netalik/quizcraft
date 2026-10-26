@@ -89,6 +89,8 @@ npm run build
 Also run `git diff --check` before committing.
 
 Release artifacts are exactly `main.js`, `manifest.json`, and `styles.css`.
+`styles.css` is generated from `styles/*.css` (order in `scripts/styles.ts`):
+edit the parts, then run `bun run dev` or `bun run build`.
 Source code, tests, README, and package metadata remain in the repository but
 are not copied into an installed vault plugin folder. When installation is
 requested, copy the three artifacts to `../.obsidian/plugins/quizcraft/` and verify

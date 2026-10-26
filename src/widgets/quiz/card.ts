@@ -5,10 +5,18 @@ import type { Widget } from "../registry";
 
 export const QUIZ_SELECTOR = '.callout[data-callout="quiz"]';
 
-/** A [!quiz] callout after setupCard: `eqQa` is its answer section, when the note has one. */
-export interface QuizCallout extends HTMLElement {
-  eqQa?: HTMLElement;
-}
+/** A [!quiz] callout; kept as a name so widget signatures say what they take. */
+export type QuizCallout = HTMLElement;
+
+/**
+ * Answer section of each set-up card. A WeakMap, not an expando on the
+ * element: nothing leaks onto Obsidian's DOM, and an entry goes away with
+ * its callout when the note re-renders.
+ */
+const answers = new WeakMap<HTMLElement, HTMLElement>();
+
+/** The answer section setupCard made for `callout`, when the note has one. */
+export const answerOf = (callout: HTMLElement): HTMLElement | undefined => answers.get(callout);
 
 /** The `==Answer==` paragraph: a lone <mark> reading "Answer". */
 export function findAnswerMarker(content: HTMLElement): HTMLElement | undefined {
@@ -44,7 +52,7 @@ export function setupCard(callout: QuizCallout): void {
   while (marker.nextSibling) body.append(marker.nextSibling);
   marker.replaceWith(qa);
   decorateBody(body);
-  callout.eqQa = qa;
+  answers.set(callout, qa);
   guard(head, () => qa.classList.toggle("is-open"));
 }
 
