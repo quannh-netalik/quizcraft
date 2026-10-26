@@ -805,3 +805,18 @@ button.eq-match-pick.is-empty:hover { border-color: var(--eq-brand); }
   .eq-match-key-row { grid-template-columns: minmax(0, 1fr); row-gap: 4px; padding-right: 17px; }
   .eq-match-key-right { padding-left: 0; }
 }
+
+/* ===== Reduced motion =====
+   Readers who ask the OS for less motion get instant state changes: no sliding
+   tiles, no fades. Dragging still works; tiles just jump to their new place. */
+@media (prefers-reduced-motion: reduce) {
+  .eq-card *,
+  .eq-card,
+  .eq-code *,
+  .eq-tabs *,
+  .eq-car *,
+  .eq-calc-reset {
+    transition: none !important;
+    animation: none !important;
+  }
+}

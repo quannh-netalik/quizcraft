@@ -12,6 +12,8 @@ export const STYLE_PARTS = [
   "demo",
   "quiz-order",
   "quiz-match",
+  // last, so its overrides win
+  "motion",
 ] as const;
 
 const BANNER = `/* Quizcraft — interactive widgets built from callouts.
