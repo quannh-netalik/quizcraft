@@ -4,8 +4,45 @@ Quizcraft turns plain Obsidian callouts into interactive widgets. Notes stay
 ordinary Markdown: without the plugin they still read as a question followed by
 its answer, and the plugin never writes to a note.
 
-> **Status:** rewrite in progress. The YAML code-block format of 0.1.x has been
-> removed; the callout format below replaces it.
+Coming from 0.1.x? The `quizcraft` YAML code block is gone. Each question is
+now a `[!quiz]` callout; see [Quiz cards](#quiz-cards).
+
+## Install
+
+Quizcraft is not in the community plugin list yet. Until it is, install a
+release by hand or through BRAT.
+
+**Manual**
+
+1. Download `main.js`, `manifest.json` and `styles.css` from the
+   [latest release](https://github.com/quannh-netalik/quizcraft/releases/latest).
+2. Put them in `<vault>/.obsidian/plugins/quizcraft/`.
+3. Reload Obsidian and enable **Quizcraft** under *Settings → Community plugins*.
+
+**BRAT**
+
+1. Install the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin.
+2. Run *BRAT: Add a beta plugin for testing* with `quannh-netalik/quizcraft`.
+3. Enable **Quizcraft** under *Settings → Community plugins*.
+
+Quizcraft works on desktop and mobile and needs Obsidian 1.5 or later.
+
+## Quick example
+
+```markdown
+> [!quiz] Which HTTP status means "not found"?
+> - A) 301
+> - B) 404
+> - C) 500
+>
+> ==Answer==
+>
+> B) 404
+```
+
+In Reading view or Live Preview this is a card with three options and a
+**Submit Answer** button. Without the plugin it reads as the question with its
+answer underneath.
 
 ## Markdown contract
 
