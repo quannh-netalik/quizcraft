@@ -1,6 +1,6 @@
 {
   "name": "quizcraft",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Interactive quiz, code, slide and calculator widgets from Obsidian callouts.",
   "main": "main.js",
   "files": [
