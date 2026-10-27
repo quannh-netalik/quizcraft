@@ -29,8 +29,19 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Check tag matches manifest and versions.json
+        shell: bash
+        run: |
+          version=$(jq -r .version manifest.json)
+          [[ "$version" == "$GITHUB_REF_NAME" ]] || { echo "manifest.json is $version, tag is $GITHUB_REF_NAME"; exit 1; }
+          [[ "$(jq -r .version package.json)" == "$version" ]] || { echo "package.json version differs"; exit 1; }
+          jq -e --arg v "$version" 'has($v)' versions.json > /dev/null || { echo "versions.json has no $version"; exit 1; }
+
       - name: Check
         run: bun run check
+
+      - name: Check generated styles.css
+        run: bun run check:styles
 
       - name: Build
         run: bun run build
