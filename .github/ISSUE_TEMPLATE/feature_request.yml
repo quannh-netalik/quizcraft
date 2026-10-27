@@ -1,0 +1,16 @@
+name: Feature request
+description: A new widget, or an option for an existing one.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What you want to write in a note
+      description: Sketch the markdown you would like to use, and what it should turn into.
+    validations:
+      required: true
+  - type: textarea
+    id: without
+    attributes:
+      label: Without the plugin
+      description: Notes must still read well without Quizcraft. How would this callout read then?
