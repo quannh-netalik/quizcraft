@@ -10,9 +10,12 @@ Quizcraft is a publishable Obsidian community plugin. It turns callouts
 
 - Keep the plugin ID `quizcraft` and display name `Quizcraft` synchronized
   across package.json, manifest.json, source, and README.
-- Never write to a note. Widgets read the rendered callout DOM only.
+- Widgets never write to a note; they read the rendered callout DOM only.
+  The only writer is `src/migrate/`, whose commands run on request and change
+  `quizcraft` YAML blocks only. Keep its output in the documented syntax.
 - A callout a widget cannot parse stays exactly as Obsidian rendered it.
-- Keep `src/main.ts` thin: settings, setting tab, one markdown post-processor.
+- Keep `src/main.ts` thin: settings, setting tab, migrate commands, one
+  markdown post-processor.
 - Each widget lives in `src/widgets/<area>/`, exports a `Widget`, and is listed
   in `WIDGETS` in `src/widgets/registry.ts`. Order in that list matters: the
   quiz card runs before the choice, order, and match widgets.

@@ -2,10 +2,11 @@
 
 Quizcraft turns plain Obsidian callouts into interactive widgets. Notes stay
 ordinary Markdown: without the plugin they still read as a question followed by
-its answer, and the plugin never writes to a note.
+its answer, and the widgets never write to a note.
 
 Coming from 0.1.x? The `quizcraft` YAML code block is gone. Each question is
-now a `[!quiz]` callout; see [Quiz cards](#quiz-cards).
+now a `[!quiz]` callout; see [Quiz cards](#quiz-cards). A command converts
+your old blocks: see [Upgrading from 0.1.x](#upgrading-from-01x).
 
 ## Install
 
@@ -64,7 +65,8 @@ metadata (`[!type|meta]`) carries widget options.
 
 Rules shared by every widget:
 
-- The plugin reads the rendered callout and never edits the source note.
+- A widget reads the rendered callout and never edits the source note. Only
+  the YAML conversion commands write to notes, and only when you run them.
 - A callout the plugin cannot parse is left exactly as Obsidian rendered it.
 - Answers live in the note itself, after a `==Answer==` marker line.
 
@@ -312,6 +314,34 @@ each other in a loop stop at the value written in the note.
 
 <img src="docs/images/demo.jpg" alt="An HTML clock running in a sandboxed frame with its caption" width="640">
 
+## Upgrading from 0.1.x
+
+Version 1.0 dropped the `quizcraft` YAML code block; an old block now shows as
+plain code. Two commands rewrite old blocks as `[!quiz]` callouts:
+
+- **Quizcraft: Convert YAML quizzes in this note**
+- **Quizcraft: Convert YAML quizzes in all notes** lists how many notes it
+  will change and asks before it writes.
+
+Back up the vault first if it is not under version control. Each question
+becomes one callout:
+
+| 0.1.x `type` | Becomes |
+|---|---|
+| `single` | `[!quiz]` with lettered options and one key line |
+| `multiple` | `[!quiz]` with one key line per answer; one answer adds `*(Multi-select)*` |
+| `ordering` | `[!quiz\|order]`, steps listed in reverse, numbered key in order |
+| `matching` | `[!quiz\|match]` with **Item** and **Match** columns, choices sorted A–Z |
+
+A one-question block takes the block's `title` as its callout title. A block
+with several questions keeps the title as a bold line above *Question 1*,
+*Question 2*, and so on. The `explanation` follows the key in the answer
+section.
+
+A block the commands cannot read, such as invalid YAML or an answer number
+past the last option, stays as it was. The notice names the note and the
+reason, and the full list goes to the developer console.
+
 ## Settings
 
 Settings → Quizcraft has two toggles. A change applies to notes rendered after
@@ -337,8 +367,9 @@ bun run bump 0.3.0  # set version in package.json, manifest.json, versions.json
 ### Project layout
 
 ```text
-src/main.ts              plugin entry: settings, setting tab, one markdown post-processor
+src/main.ts              plugin entry: settings, setting tab, commands, one markdown post-processor
 src/settings/            QuizcraftSettings, DEFAULT_SETTINGS and the setting tab
+src/migrate/             commands that convert 0.1.x YAML blocks to callouts
 src/widgets/registry.ts  Widget interface and the ordered widget list
 src/widgets/quiz/        [!quiz] card, answer section, choice, order and match grading, shared footer
 src/widgets/code/        [!code] editor, [!file] panes, [!tabs] and the shared tab bar
