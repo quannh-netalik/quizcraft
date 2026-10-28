@@ -83,6 +83,8 @@ function matchLines(q: Record_): { question: string[]; answer: string[] } {
     if (!Array.isArray(p) || p.length !== 2) throw new ConvertError(`pair ${i + 1} needs two items`);
     return [line(p[0], `pair ${i + 1}`), line(p[1], `pair ${i + 1}`)] as const;
   });
+  // a match quiz uses each choice once, so two rows cannot share one
+  if (new Set(pairs.map(([, r]) => r)).size !== pairs.length) throw new ConvertError("matching choices must differ");
   // choices listed alphabetically, not in key order
   // oxlint-disable-next-line unicorn/no-array-sort
   const choices = pairs.map(([, r]) => r).sort((a, b) => a.localeCompare(b));

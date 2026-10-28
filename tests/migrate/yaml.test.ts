@@ -96,6 +96,7 @@ test.each([
   ["two answers on single", "questions: [{type: single, question: q, options: [a, b], answers: [1, 2]}]"],
   ["one option", "questions: [{type: single, question: q, options: [a], answers: [1]}]"],
   ["bad pair", "questions: [{type: matching, question: q, pairs: [[a], [b, c]]}]"],
+  ["repeated choices", "questions: [{type: matching, question: q, pairs: [[a, x], [b, x]]}]"],
   ["repeated steps", "questions: [{type: ordering, question: q, items: [a, a]}]"],
   ["invalid yaml", "questions: [unclosed"],
 ])("%s is refused", (_name, yaml) => {

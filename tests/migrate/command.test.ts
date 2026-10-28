@@ -11,12 +11,13 @@ interface FakeFile {
 const YAML = "```quizcraft\nquestions:\n  - {type: single, question: Q?, options: [a, b], answers: [1]}\n```";
 
 /** A vault of in-memory notes and a plugin wired to it. */
-async function setup(notes: Record<string, string>, active?: string) {
+async function setup(notes: Record<string, string>, active?: string, broken: string[] = []) {
   const files: FakeFile[] = Object.keys(notes).map((path) => ({ path, extension: "md" }));
   const vault = {
     getMarkdownFiles: () => files,
     cachedRead: (f: FakeFile) => Promise.resolve(notes[f.path] ?? ""),
     process: (f: FakeFile, fn: (text: string) => string) => {
+      if (broken.includes(f.path)) return Promise.reject(new Error("file is locked"));
       notes[f.path] = fn(notes[f.path] ?? "");
       return Promise.resolve(notes[f.path]);
     },
@@ -92,4 +93,17 @@ test("blocks that fail are listed and stay in the note", async () => {
   console.warn = warn;
   expect(notes["a.md"]).toBe(bad);
   expect(Notice.shown[0]).toBe("No YAML quizzes to convert.\n1 left unchanged:\na.md: questions needs at least 1 items");
+});
+
+test("a note that cannot be written is reported and the rest still convert", async () => {
+  const { notes, command } = await setup({ "a.md": YAML, "b.md": YAML }, undefined, ["a.md"]);
+  const warn = console.warn;
+  console.warn = () => {};
+  await command("convert-yaml-vault").callback!();
+  click([...Modal.last!.contentEl.querySelectorAll("button")].find((b) => b.textContent === "Convert")!);
+  await settle();
+  console.warn = warn;
+  expect(notes["a.md"]).toBe(YAML);
+  expect(notes["b.md"]).toStartWith("> [!quiz]");
+  expect(Notice.shown[0]).toBe("Converted 1 YAML quiz in 1 note.\n1 left unchanged:\na.md: file is locked");
 });

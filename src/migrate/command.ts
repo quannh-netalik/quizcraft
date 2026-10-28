@@ -9,20 +9,41 @@ interface Tally {
   failed: string[];
 }
 
-/** Convert one note in place, adding what changed to `tally`. */
+const reason = (error: unknown): string => (error instanceof Error ? error.message : String(error));
+
+/**
+ * Convert one note in place, adding what changed to `tally`. A note that
+ * cannot be read or written is recorded as failed, so a vault run goes on.
+ */
 export async function convertFile(app: App, file: TFile, tally: Tally): Promise<void> {
-  if (!hasYamlQuiz(await app.vault.cachedRead(file))) return;
-  let blocks = 0;
-  await app.vault.process(file, (text) => {
-    const result = convertNote(text, parseYaml);
-    blocks = result.converted;
-    tally.failed.push(...result.failed.map((reason) => `${file.path}: ${reason}`));
-    return result.text;
-  });
-  if (blocks) {
-    tally.notes++;
-    tally.blocks += blocks;
+  try {
+    if (!hasYamlQuiz(await app.vault.cachedRead(file))) return;
+    let blocks = 0;
+    let failed: string[] = [];
+    await app.vault.process(file, (text) => {
+      const result = convertNote(text, parseYaml);
+      blocks = result.converted;
+      failed = result.failed;
+      return result.text;
+    });
+    tally.failed.push(...failed.map((why) => `${file.path}: ${why}`));
+    if (blocks) {
+      tally.notes++;
+      tally.blocks += blocks;
+    }
+  } catch (error) {
+    tally.failed.push(`${file.path}: ${reason(error)}`);
   }
+}
+
+/** The notes that hold a YAML block; a note that cannot be read is skipped. */
+async function notesWithYaml(app: App): Promise<TFile[]> {
+  const out: TFile[] = [];
+  for (const file of app.vault.getMarkdownFiles()) {
+    const text = await app.vault.cachedRead(file).catch(() => "");
+    if (hasYamlQuiz(text)) out.push(file);
+  }
+  return out;
 }
 
 const notify = (message: string, duration?: number): Notice => new Notice(message, duration);
@@ -92,10 +113,7 @@ export function registerMigrateCommands(plugin: Plugin): void {
     id: "convert-yaml-vault",
     name: "Convert YAML quizzes in all notes",
     callback: async () => {
-      const files: TFile[] = [];
-      for (const file of app.vault.getMarkdownFiles()) {
-        if (hasYamlQuiz(await app.vault.cachedRead(file))) files.push(file);
-      }
+      const files = await notesWithYaml(app);
       if (!files.length) {
         notify("No YAML quizzes to convert.");
         return;
