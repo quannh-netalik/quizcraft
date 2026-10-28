@@ -15,7 +15,7 @@
     "build": "bun run typecheck && bun build.ts --production",
     "typecheck": "tsc",
     "lint": "oxlint --deny-warnings",
-    "test": "bun test",
+    "test": "bun test; node scripts/setup.js",
     "check": "bun run typecheck && bun run lint && bun test",
     "bump": "bun scripts/version-bump.ts",
     "check:styles": "bun scripts/check-styles.ts"
