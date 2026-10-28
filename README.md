@@ -44,6 +44,8 @@ In Reading view or Live Preview this is a card with three options and a
 **Submit Answer** button. Without the plugin it reads as the question with its
 answer underneath.
 
+<img src="docs/images/quiz-single.png" alt="A graded quiz card: the right option is green and the answer section is open" width="640">
+
 ## Markdown contract
 
 Each widget is a callout. The callout type picks the widget; the callout
@@ -111,6 +113,8 @@ with one right option can still ask for checkboxes by containing
 `*(Multi-select)*`. A quiz with no key lines shows *No answer key found*
 instead of grading.
 
+<img src="docs/images/quiz-multi.png" alt="A graded multi-select quiz: a wrong pick in red, a right pick in green, a missed option dashed" width="640">
+
 ### Order quizzes
 
 `[!quiz|order]` lists the steps as bullets. The numbered list after
@@ -139,6 +143,8 @@ instead of grading.
   *Not quite: 2 of 4 right*. **Try again** shuffles the steps again.
 - Step text must match the key exactly; a quiz with fewer than two key items
   stays a plain card.
+
+<img src="docs/images/quiz-order.png" alt="A graded order quiz: each position marked right or wrong, with the score" width="640">
 
 ### Match quizzes
 
@@ -177,6 +183,8 @@ left item with its choice, in bold, in the order of the left list:
   its answer.
 - The quiz stays a plain card unless every left item has a bold answer.
 
+<img src="docs/images/quiz-match.png" alt="A graded match quiz: wrong picks struck through with the right port below, and the answer as a table" width="640">
+
 ## Code editors and tabs
 
 `[!code]` draws a dark code editor. Each `[!tab]` inside it is one language;
@@ -209,6 +217,8 @@ several files:
   open on it.
 - `> [!code]` with no caption hides the default "Code" title.
 
+<img src="docs/images/code.png" alt="A code editor on the Python tab with a list of two files" width="640">
+
 `[!tabs]` makes plain content tabs. Each `[!tab]` is one tab and holds any
 Markdown. `[!tab|leaf]` shows the [Lucide](https://lucide.dev) icon `leaf`
 before the name. Each `[!tabs]` box keeps its own selection.
@@ -221,6 +231,8 @@ before the name. Each `[!tabs]` box keeps its own selection.
 >> [!tab|terminal] Linux
 >> `curl -fsSL https://bun.sh/install | bash`
 ```
+
+<img src="docs/images/tabs.png" alt="Content tabs with Lucide icons" width="640">
 
 ## Carousel
 
@@ -238,6 +250,8 @@ time:
 - Use the footer buttons, click the slide, or press the arrow keys while the
   carousel has focus.
 - The box keeps the height of the tallest slide, so the footer does not move.
+
+<img src="docs/images/carousel.png" alt="A carousel on slide 2 of 3 with its caption and footer buttons" width="640">
 
 ## Calc
 
@@ -260,6 +274,8 @@ metadata, `;` between them:
 - The title gets a reset button that restores the values from the note.
 - Keep the computed values in the note too: they show where the plugin is
   not installed.
+
+<img src="docs/images/calc.png" alt="A calc table: editing Food to 520 recomputes Total and Per week" width="640">
 
 Formula language:
 
@@ -293,6 +309,8 @@ each other in a loop stop at the value written in the note.
   Obsidian, or the note around it.
 - When the link does not point to an `.html` file in the vault, the callout
   stays a plain link, so the note still shows what is missing.
+
+<img src="docs/images/demo.jpg" alt="An HTML clock running in a sandboxed frame with its caption" width="640">
 
 ## Settings
 
