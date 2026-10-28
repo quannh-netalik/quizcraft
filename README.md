@@ -10,8 +10,10 @@ your old blocks: see [Upgrading from 0.1.x](#upgrading-from-01x).
 
 ## Install
 
-Quizcraft is not in the community plugin list yet. Until it is, install a
-release by hand or through BRAT.
+**Community plugins**
+
+1. Open *Settings → Community plugins* and select **Browse**.
+2. Search for **Quizcraft**, then select **Install** and **Enable**.
 
 **Manual**
 
