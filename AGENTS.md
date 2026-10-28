@@ -51,6 +51,9 @@ Quizcraft is a publishable Obsidian community plugin. It turns callouts
   `scripts/styles.ts`. CI fails when the committed file is stale.
 - Use theme variables for colors and surfaces; both light and dark themes must
   read well.
+- Quiz cards draw their own frame in `styles/quiz-base.css`. Keep
+  `.callout.eq-card[data-callout="quiz"]` in those selectors: vault snippets load
+  after plugin CSS and often restyle every `.callout`.
 - Honor `prefers-reduced-motion` (`styles/motion.css`).
 
 ## Change workflow
