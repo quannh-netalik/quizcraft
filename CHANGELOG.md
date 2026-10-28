@@ -4,6 +4,14 @@ All notable changes to Quizcraft. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-10-28
+
+### Fixed
+
+- Quiz cards draw their own frame, title strip and option tiles. Before,
+  they relied on a vault CSS snippet; without it options showed as bullets
+  and the footer stuck out of the card.
+
 ## [1.0.0] - 2026-10-27
 
 ### Added
@@ -81,6 +89,7 @@ block. The YAML format is removed.
 
 Last release of the YAML code-block format.
 
+[1.0.1]: https://github.com/quannh-netalik/quizcraft/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/quannh-netalik/quizcraft/compare/0.5.0...1.0.0
 [0.5.0]: https://github.com/quannh-netalik/quizcraft/compare/0.2.0...0.5.0
 [0.2.0]: https://github.com/quannh-netalik/quizcraft/compare/0.1.1...0.2.0
