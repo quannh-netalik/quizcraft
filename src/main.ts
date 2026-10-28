@@ -1,4 +1,5 @@
 import { Plugin } from "obsidian";
+import { registerMigrateCommands } from "./migrate/command";
 import { QuizcraftSettingTab } from "./settings/setting-tab";
 import { mergeSettings, type QuizcraftSettings } from "./settings/settings";
 import { renderWidgets } from "./widgets/registry";
@@ -9,6 +10,7 @@ export default class QuizcraftPlugin extends Plugin {
   override async onload(): Promise<void> {
     await this.loadSettings();
     this.addSettingTab(new QuizcraftSettingTab(this.app, this));
+    registerMigrateCommands(this);
     // One post-processor for every widget; the registry decides which callouts to touch.
     this.registerMarkdownPostProcessor((el, ctx) => renderWidgets(el, { plugin: this, ctx, settings: this.settings }));
   }
