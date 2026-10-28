@@ -4,7 +4,7 @@ All notable changes to Quizcraft. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.1.0] - 2026-10-28
 
 ### Added
 
@@ -12,6 +12,10 @@ All notable changes to Quizcraft. The format follows
   all notes* rewrite 0.1.x `quizcraft` YAML blocks as `[!quiz]` callouts. The
   vault command asks first; blocks it cannot read stay unchanged and are
   listed.
+
+### Changed
+
+- README: install from *Community plugins*; Quizcraft is listed there.
 
 ## [1.0.1] - 2026-10-28
 
@@ -98,7 +102,7 @@ block. The YAML format is removed.
 
 Last release of the YAML code-block format.
 
-[Unreleased]: https://github.com/quannh-netalik/quizcraft/compare/1.0.1...HEAD
+[1.1.0]: https://github.com/quannh-netalik/quizcraft/compare/1.0.1...1.1.0
 [1.0.1]: https://github.com/quannh-netalik/quizcraft/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/quannh-netalik/quizcraft/compare/0.5.0...1.0.0
 [0.5.0]: https://github.com/quannh-netalik/quizcraft/compare/0.2.0...0.5.0
