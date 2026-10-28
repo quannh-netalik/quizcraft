@@ -1,0 +1,66 @@
+/* ===== [!quiz] card frame =====
+   Markdown:  > [!quiz] Question 1      <- callout title = header strip
+              > Question text...
+              > - A) option             <- each list item = a rounded tile
+   Border, header strip, padding and option tiles, so a card looks the same on
+   any theme. .eq-card is in every selector: vault snippets load after plugin
+   CSS, and a generic `.callout { border: ... }` rule must not win. */
+.theme-light {
+  --eq-quiz-border: #cccbff; --eq-quiz-head: #f8f8ff; --eq-quiz-head-text: #374151;
+  --eq-quiz-bg: var(--background-primary); --eq-quiz-line: #e4e3fb;
+  --eq-opt-border: #e5e7eb; --eq-opt-bg: #ffffff;
+}
+.theme-dark {
+  --eq-quiz-border: #363442; --eq-quiz-head: #23222b; --eq-quiz-head-text: #d4d2dd;
+  --eq-quiz-bg: var(--background-primary); --eq-quiz-line: #302f3a;
+  --eq-opt-border: #3a3944; --eq-opt-bg: #232228;
+}
+
+.callout.eq-card[data-callout="quiz"] {
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid var(--eq-quiz-border);
+  border-radius: 8px;
+  background-color: var(--eq-quiz-bg);
+  mix-blend-mode: normal;
+}
+.callout.eq-card[data-callout="quiz"] > .callout-title {
+  padding: 12px 24px;
+  gap: 0;
+  background-color: var(--eq-quiz-head);
+  border-bottom: 1px solid var(--eq-quiz-line);
+  color: var(--eq-quiz-head-text);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 600;
+}
+.callout.eq-card[data-callout="quiz"] > .callout-title .callout-icon { display: none; }
+.callout.eq-card[data-callout="quiz"] > .callout-title .callout-title-inner { color: inherit; font-weight: 600; }
+.callout.eq-card[data-callout="quiz"] > .callout-content {
+  padding: 16px 24px;
+  color: var(--text-normal);
+}
+.callout.eq-card[data-callout="quiz"] > .callout-content > :first-child { margin-top: 0; }
+.callout.eq-card[data-callout="quiz"] > .callout-content > :last-child { margin-bottom: 0; }
+
+/* list items: separate rounded tiles, 8px apart, no bullets */
+.callout.eq-card[data-callout="quiz"] > .callout-content > ul {
+  padding-inline-start: 0;
+  margin-block: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.callout.eq-card[data-callout="quiz"] > .callout-content > ul > li {
+  list-style: none;
+  margin: 0;
+  padding: 11px 16px;
+  line-height: 1.5;
+  border: 1px solid var(--eq-opt-border);
+  border-radius: 8px;
+  background-color: var(--eq-opt-bg);
+}
+.callout.eq-card[data-callout="quiz"] > .callout-content > ul > li::marker { content: none; }
+.callout.eq-card[data-callout="quiz"] > .callout-content > ul > li > :is(.list-bullet, .list-collapse-indicator) {
+  display: none;
+}

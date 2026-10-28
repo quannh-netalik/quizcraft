@@ -12,7 +12,7 @@
 }
 .callout.eq-card[data-callout="quiz"] > .callout-content > .eq-qa {  /* beats a snippet's :last-child margin reset */
   margin: 16px -24px -16px;
-  border-top: 1px solid var(--edu-quiz-line, var(--background-modifier-border));
+  border-top: 1px solid var(--eq-quiz-line);
 }
 
 /* lettered quizzes: hidden until Submit */
@@ -45,7 +45,7 @@
 .eq-card .eq-qa-body {
   display: none;
   padding: 16px 24px 18px;
-  border-top: 1px solid var(--edu-quiz-line, var(--background-modifier-border));
+  border-top: 1px solid var(--eq-quiz-line);
   font-size: 17px;
   line-height: 1.7;
   color: var(--text-normal);
@@ -95,7 +95,7 @@
 .eq-card .eq-qa-body p.eq-sub {
   margin: 16px 0 6px;
   padding-top: 14px;
-  border-top: 1px dashed var(--edu-quiz-line, var(--background-modifier-border));
+  border-top: 1px dashed var(--eq-quiz-line);
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.06em;
