@@ -3,6 +3,7 @@
 import { readFileSync } from "node:fs";
 
 export const STYLE_PARTS = [
+  "quiz-base",
   "quiz-card",
   "quiz-choice",
   "tabs",
@@ -17,8 +18,9 @@ export const STYLE_PARTS = [
 ] as const;
 
 const BANNER = `/* Quizcraft — interactive widgets built from callouts.
-   Card layout (border, radius, title strip) is left to the theme or a CSS snippet;
-   these rules add the states and parts the plugin creates.
+   Quiz cards bring their own frame (border, title strip, option tiles); other
+   callouts keep the theme's look. These rules also add the states and parts the
+   plugin creates.
    Generated from styles/*.css by build.ts; edit those files, not this one. */
 `;
 
